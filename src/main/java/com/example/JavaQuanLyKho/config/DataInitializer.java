@@ -109,6 +109,24 @@ public class DataInitializer {
             pUserCreate.setName("Tạo user mới");
             Permission savedUserCreate = permissionRepository.save(pUserCreate);
 
+            Permission pProductUpdate = new Permission();
+            pProductUpdate.setCode("PRODUCT_UPDATE");
+            pProductUpdate.setModule("MASTER_DATA");
+            pProductUpdate.setName("Cập nhật sản phẩm");
+            Permission savedProductUpdate = permissionRepository.save(pProductUpdate);
+
+            Permission pProductDelete = new Permission();
+            pProductDelete.setCode("PRODUCT_DELETE");
+            pProductDelete.setModule("MASTER_DATA");
+            pProductDelete.setName("Xóa sản phẩm");
+            Permission savedProductDelete = permissionRepository.save(pProductDelete);
+
+            Permission pProductLock = new Permission();
+            pProductLock.setCode("PRODUCT_LOCK");
+            pProductLock.setModule("MASTER_DATA");
+            pProductLock.setName("Khóa / Mở khóa sản phẩm");
+            Permission savedProductLock = permissionRepository.save(pProductLock);
+
             Role adminRole = new Role();
             adminRole.setCode("ADMIN");
             adminRole.setName("Administrator");
@@ -118,6 +136,9 @@ public class DataInitializer {
                     savedCategoryView,
                     savedProductView,
                     savedProductCreate,
+                    savedProductUpdate,
+                    savedProductDelete,
+                    savedProductLock,
                     savedLocationView,
                     savedLocationCreate,
                     savedRoleView,
