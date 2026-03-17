@@ -43,5 +43,28 @@ public class UserServiceImpl implements UserService {
         user.setRoles(roles);
         return userRepository.save(user);
     }
+
+    @Override
+    @Transactional
+    public User update(UUID userId, Set<UUID> roleIds) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found: " + userId));
+        Set<Role> roles = new HashSet<>(roleRepository.findAllById(roleIds));
+        user.setRoles(roles);
+        return userRepository.save(user);
+    }
+
+    @Override
+    @Transactional
+    public User lock(UUID userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found: " + userId));
+        if ("ACTIVE".equals(user.getStatus())) {
+            user.setStatus("LOCKED");
+        } else {
+            user.setStatus("ACTIVE");
+        }
+        return userRepository.save(user);
+    }
 }
 

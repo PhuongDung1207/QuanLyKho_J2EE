@@ -67,6 +67,48 @@ public class DataInitializer {
             pLocationCreate.setName("Tạo vị trí kho");
             Permission savedLocationCreate = permissionRepository.save(pLocationCreate);
 
+            Permission pRoleView = new Permission();
+            pRoleView.setCode("ROLE_VIEW");
+            pRoleView.setModule("ROLES");
+            pRoleView.setName("Xem danh sách role");
+            Permission savedRoleView = permissionRepository.save(pRoleView);
+
+            Permission pRoleCreate = new Permission();
+            pRoleCreate.setCode("ROLE_CREATE");
+            pRoleCreate.setModule("ROLES");
+            pRoleCreate.setName("Tạo role");
+            Permission savedRoleCreate = permissionRepository.save(pRoleCreate);
+
+            Permission pRoleUpdate = new Permission();
+            pRoleUpdate.setCode("ROLE_UPDATE");
+            pRoleUpdate.setModule("ROLES");
+            pRoleUpdate.setName("Cập nhật role (gán permission)");
+            Permission savedRoleUpdate = permissionRepository.save(pRoleUpdate);
+
+            Permission pUserUpdate = new Permission();
+            pUserUpdate.setCode("USER_UPDATE");
+            pUserUpdate.setModule("USERS");
+            pUserUpdate.setName("Cập nhật thông tin user");
+            Permission savedUserUpdate = permissionRepository.save(pUserUpdate);
+
+            Permission pUserLock = new Permission();
+            pUserLock.setCode("USER_LOCK");
+            pUserLock.setModule("USERS");
+            pUserLock.setName("Khóa / Mở khóa user");
+            Permission savedUserLock = permissionRepository.save(pUserLock);
+
+            Permission pUserView = new Permission();
+            pUserView.setCode("USER_VIEW");
+            pUserView.setModule("USERS");
+            pUserView.setName("Xem danh sách user");
+            Permission savedUserView = permissionRepository.save(pUserView);
+
+            Permission pUserCreate = new Permission();
+            pUserCreate.setCode("USER_CREATE");
+            pUserCreate.setModule("USERS");
+            pUserCreate.setName("Tạo user mới");
+            Permission savedUserCreate = permissionRepository.save(pUserCreate);
+
             Role adminRole = new Role();
             adminRole.setCode("ADMIN");
             adminRole.setName("Administrator");
@@ -77,7 +119,14 @@ public class DataInitializer {
                     savedProductView,
                     savedProductCreate,
                     savedLocationView,
-                    savedLocationCreate
+                    savedLocationCreate,
+                    savedRoleView,
+                    savedRoleCreate,
+                    savedRoleUpdate,
+                    savedUserView,
+                    savedUserCreate,
+                    savedUserUpdate,
+                    savedUserLock
             ));
             adminRole.setPermissions(adminPermissions);
             Role savedAdminRole = roleRepository.save(adminRole);
