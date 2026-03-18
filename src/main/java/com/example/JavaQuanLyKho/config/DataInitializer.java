@@ -67,17 +67,141 @@ public class DataInitializer {
             pLocationCreate.setName("Tạo vị trí kho");
             Permission savedLocationCreate = permissionRepository.save(pLocationCreate);
 
+            Permission pRoleView = new Permission();
+            pRoleView.setCode("ROLE_VIEW");
+            pRoleView.setModule("ROLES");
+            pRoleView.setName("Xem danh sách role");
+            Permission savedRoleView = permissionRepository.save(pRoleView);
+
+            Permission pRoleCreate = new Permission();
+            pRoleCreate.setCode("ROLE_CREATE");
+            pRoleCreate.setModule("ROLES");
+            pRoleCreate.setName("Tạo role");
+            Permission savedRoleCreate = permissionRepository.save(pRoleCreate);
+
+            Permission pRoleUpdate = new Permission();
+            pRoleUpdate.setCode("ROLE_UPDATE");
+            pRoleUpdate.setModule("ROLES");
+            pRoleUpdate.setName("Cập nhật role (gán permission)");
+            Permission savedRoleUpdate = permissionRepository.save(pRoleUpdate);
+
+            Permission pUserUpdate = new Permission();
+            pUserUpdate.setCode("USER_UPDATE");
+            pUserUpdate.setModule("USERS");
+            pUserUpdate.setName("Cập nhật thông tin user");
+            Permission savedUserUpdate = permissionRepository.save(pUserUpdate);
+
+            Permission pUserLock = new Permission();
+            pUserLock.setCode("USER_LOCK");
+            pUserLock.setModule("USERS");
+            pUserLock.setName("Khóa / Mở khóa user");
+            Permission savedUserLock = permissionRepository.save(pUserLock);
+
+            Permission pUserView = new Permission();
+            pUserView.setCode("USER_VIEW");
+            pUserView.setModule("USERS");
+            pUserView.setName("Xem danh sách user");
+            Permission savedUserView = permissionRepository.save(pUserView);
+
+            Permission pUserCreate = new Permission();
+            pUserCreate.setCode("USER_CREATE");
+            pUserCreate.setModule("USERS");
+            pUserCreate.setName("Tạo user mới");
+            Permission savedUserCreate = permissionRepository.save(pUserCreate);
+
+            Permission pProductUpdate = new Permission();
+            pProductUpdate.setCode("PRODUCT_UPDATE");
+            pProductUpdate.setModule("MASTER_DATA");
+            pProductUpdate.setName("Cập nhật sản phẩm");
+            Permission savedProductUpdate = permissionRepository.save(pProductUpdate);
+
+            Permission pProductDelete = new Permission();
+            pProductDelete.setCode("PRODUCT_DELETE");
+            pProductDelete.setModule("MASTER_DATA");
+            pProductDelete.setName("Xóa sản phẩm");
+            Permission savedProductDelete = permissionRepository.save(pProductDelete);
+
+            Permission pProductLock = new Permission();
+            pProductLock.setCode("PRODUCT_LOCK");
+            pProductLock.setModule("MASTER_DATA");
+            pProductLock.setName("Khóa / Mở khóa sản phẩm");
+            Permission savedProductLock = permissionRepository.save(pProductLock);
+
+            // ─── Category ────────────────────────────────────────────────────
+            Permission pCategoryCreate = new Permission();
+            pCategoryCreate.setCode("CATEGORY_CREATE");
+            pCategoryCreate.setModule("MASTER_DATA");
+            pCategoryCreate.setName("Tạo danh mục");
+            Permission savedCategoryCreate = permissionRepository.save(pCategoryCreate);
+
+            Permission pCategoryUpdate = new Permission();
+            pCategoryUpdate.setCode("CATEGORY_UPDATE");
+            pCategoryUpdate.setModule("MASTER_DATA");
+            pCategoryUpdate.setName("Cập nhật danh mục");
+            Permission savedCategoryUpdate = permissionRepository.save(pCategoryUpdate);
+
+            Permission pCategoryDelete = new Permission();
+            pCategoryDelete.setCode("CATEGORY_DELETE");
+            pCategoryDelete.setModule("MASTER_DATA");
+            pCategoryDelete.setName("Xóa danh mục");
+            Permission savedCategoryDelete = permissionRepository.save(pCategoryDelete);
+
+            // ─── UOM ─────────────────────────────────────────────────────────
+            Permission pUomCreate = new Permission();
+            pUomCreate.setCode("UOM_CREATE");
+            pUomCreate.setModule("MASTER_DATA");
+            pUomCreate.setName("Tạo đơn vị tính");
+            Permission savedUomCreate = permissionRepository.save(pUomCreate);
+
+            Permission pUomUpdate = new Permission();
+            pUomUpdate.setCode("UOM_UPDATE");
+            pUomUpdate.setModule("MASTER_DATA");
+            pUomUpdate.setName("Cập nhật đơn vị tính");
+            Permission savedUomUpdate = permissionRepository.save(pUomUpdate);
+
+            Permission pUomDelete = new Permission();
+            pUomDelete.setCode("UOM_DELETE");
+            pUomDelete.setModule("MASTER_DATA");
+            pUomDelete.setName("Xóa đơn vị tính");
+            Permission savedUomDelete = permissionRepository.save(pUomDelete);
+
+            // ─── Supplier ────────────────────────────────────────────────────
+            Permission pSupplierView = new Permission();
+            pSupplierView.setCode("SUPPLIER_VIEW");
+            pSupplierView.setModule("MASTER_DATA");
+            pSupplierView.setName("Xem nhà cung cấp");
+            Permission savedSupplierView = permissionRepository.save(pSupplierView);
+
+            Permission pSupplierCreate = new Permission();
+            pSupplierCreate.setCode("SUPPLIER_CREATE");
+            pSupplierCreate.setModule("MASTER_DATA");
+            pSupplierCreate.setName("Tạo nhà cung cấp");
+            Permission savedSupplierCreate = permissionRepository.save(pSupplierCreate);
+
+            Permission pSupplierUpdate = new Permission();
+            pSupplierUpdate.setCode("SUPPLIER_UPDATE");
+            pSupplierUpdate.setModule("MASTER_DATA");
+            pSupplierUpdate.setName("Cập nhật nhà cung cấp");
+            Permission savedSupplierUpdate = permissionRepository.save(pSupplierUpdate);
+
+            Permission pSupplierDelete = new Permission();
+            pSupplierDelete.setCode("SUPPLIER_DELETE");
+            pSupplierDelete.setModule("MASTER_DATA");
+            pSupplierDelete.setName("Xóa nhà cung cấp");
+            Permission savedSupplierDelete = permissionRepository.save(pSupplierDelete);
+
             Role adminRole = new Role();
             adminRole.setCode("ADMIN");
             adminRole.setName("Administrator");
             Set<Permission> adminPermissions = new HashSet<>(List.of(
                     savedWarehouseView,
-                    savedUomView,
-                    savedCategoryView,
-                    savedProductView,
-                    savedProductCreate,
-                    savedLocationView,
-                    savedLocationCreate
+                    savedUomView, savedUomCreate, savedUomUpdate, savedUomDelete,
+                    savedCategoryView, savedCategoryCreate, savedCategoryUpdate, savedCategoryDelete,
+                    savedProductView, savedProductCreate, savedProductUpdate, savedProductDelete, savedProductLock,
+                    savedLocationView, savedLocationCreate,
+                    savedRoleView, savedRoleCreate, savedRoleUpdate,
+                    savedUserView, savedUserCreate, savedUserUpdate, savedUserLock,
+                    savedSupplierView, savedSupplierCreate, savedSupplierUpdate, savedSupplierDelete
             ));
             adminRole.setPermissions(adminPermissions);
             Role savedAdminRole = roleRepository.save(adminRole);
