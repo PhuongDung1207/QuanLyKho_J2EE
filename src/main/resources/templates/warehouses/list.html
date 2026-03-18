@@ -1,71 +1,902 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
-    <title>Quản lý kho</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warehouses – WMS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-</head>
-<body>
-<div th:replace="fragments/navbar :: navbar"></div>
-<div class="container mt-4">
-    <h1 class="mb-4">Danh sách kho</h1>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
 
-    <div class="row">
-        <div class="col-md-8">
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th>Mã kho</th>
-                    <th>Tên kho</th>
-                    <th>Trạng thái</th>
-                    <th>Sức chứa</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="warehouse : ${warehouses}">
-                    <td th:text="${warehouse.code}">WH001</td>
-                    <td th:text="${warehouse.name}">Kho trung tâm</td>
-                    <td th:text="${warehouse.status}">ACTIVE</td>
-                    <td th:text="${warehouse.capacity}">0</td>
-                    <td>
-                        <a class="btn btn-sm btn-outline-secondary"
-                           th:href="@{'/warehouses/' + ${warehouse.id} + '/locations'}">Vị trí</a>
-                    </td>
-                </tr>
-                <tr th:if="${#lists.isEmpty(warehouses)}">
-                    <td colspan="5" class="text-center">Chưa có kho nào</td>
-                </tr>
-                </tbody>
-            </table>
+        body {
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+
+        /* ── Top bar ── */
+        .page-topbar {
+            background: #fff;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+        }
+
+        .page-topbar h1 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin: 0;
+            color: #0f172a;
+        }
+
+        .page-topbar p {
+            font-size: 0.78rem;
+            color: #64748b;
+            margin: 0;
+        }
+
+        .btn-add-wh {
+            background: #0369a1;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            padding: 0.48rem 1.1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 8px rgba(3, 105, 161, 0.28);
+            transition: background 0.18s, transform 0.15s;
+            cursor: pointer;
+        }
+
+        .btn-add-wh:hover {
+            background: #0284c7;
+            color: #fff;
+            transform: translateY(-1px);
+        }
+
+        /* ── Main ── */
+        .main-content {
+            padding: 1.5rem 2rem;
+        }
+
+        /* ── Action Styles ── */
+
+        /* ── Toolbar ── */
+        .toolbar {
+            display: flex;
+            gap: 0.65rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .search-wrap {
+            position: relative;
+            flex: 1;
+            min-width: 180px;
+        }
+
+        .search-wrap .bi-search {
+            position: absolute;
+            left: 11px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 0.9rem;
+            pointer-events: none;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.48rem 0.75rem 0.48rem 2.1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            background: #fff;
+            color: #1e293b;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: #0369a1;
+            box-shadow: 0 0 0 3px rgba(3, 105, 161, 0.12);
+        }
+
+        .filter-select {
+            padding: 0.45rem 1.9rem 0.45rem 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.83rem;
+            font-weight: 500;
+            color: #374151;
+            background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%2394a3b8' d='M6 8L0 0h12z'/%3E%3C/svg%3E") no-repeat right 10px center;
+            appearance: none;
+            -webkit-appearance: none;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .filter-select:focus {
+            border-color: #0369a1;
+            box-shadow: 0 0 0 3px rgba(3, 105, 161, 0.12);
+        }
+
+        /* ── Table card ── */
+        .table-card {
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .table {
+            margin: 0;
+        }
+
+        .table thead th {
+            background: #f8fafc;
+            color: #64748b;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            border-bottom: 1px solid #e2e8f0;
+            border-top: none;
+            padding: 0.7rem 1rem;
+            white-space: nowrap;
+        }
+
+        .table tbody td {
+            padding: 0.85rem 1rem;
+            vertical-align: middle;
+            border-color: #f1f5f9;
+            font-size: 0.875rem;
+        }
+
+        .table tbody tr {
+            transition: background 0.12s;
+        }
+
+        .table tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* ── Warehouse icon ── */
+        .wh-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 9px;
+            background: linear-gradient(135deg, #38bdf8, #0369a1);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.05rem;
+            flex-shrink: 0;
+        }
+
+        .wh-info {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+        }
+
+        .wh-name {
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: #0f172a;
+        }
+
+        .wh-id {
+            font-size: 0.73rem;
+            color: #94a3b8;
+        }
+
+        .badge-code {
+            background: #f0f9ff;
+            color: #0369a1;
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 0.28em 0.72em;
+            border-radius: 6px;
+            letter-spacing: 0.04em;
+            font-family: 'Courier New', monospace;
+            display: inline-block;
+        }
+
+        /* ── Status ── */
+        .badge-status {
+            font-size: 0.71rem;
+            font-weight: 700;
+            border-radius: 999px;
+            padding: 0.28em 0.75em;
+            letter-spacing: 0.04em;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .badge-active {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .badge-inactive {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        /* ── Capacity ── */
+        .cap-label {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        .cap-bar {
+            height: 5px;
+            border-radius: 3px;
+            background: #e2e8f0;
+            margin-top: 3px;
+            min-width: 70px;
+        }
+
+        .cap-fill {
+            height: 100%;
+            border-radius: 3px;
+            background: #0369a1;
+        }
+
+        /* ── Action buttons ── */
+        .btn-act {
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            color: #64748b;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.83rem;
+            transition: all 0.15s;
+            cursor: pointer;
+        }
+
+        .btn-act:hover {
+            background: #f1f5f9;
+            color: #1e293b;
+            border-color: #cbd5e1;
+        }
+
+        .btn-act.red:hover {
+            background: #fee2e2;
+            color: #b91c1c;
+            border-color: #fca5a5;
+        }
+
+        .btn-act.blue:hover {
+            background: #f0f9ff;
+            color: #0369a1;
+            border-color: #bae6fd;
+        }
+
+        .btn-locations {
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            color: #0369a1;
+            border-radius: 7px;
+            padding: 0.3rem 0.65rem;
+            font-size: 0.78rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: background 0.15s;
+            text-decoration: none;
+        }
+
+        .btn-locations:hover {
+            background: #f0f9ff;
+            border-color: #bae6fd;
+            color: #0369a1;
+        }
+
+        /* ── Table footer ── */
+        .table-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.7rem 1rem;
+            border-top: 1px solid #f1f5f9;
+            background: #fafbfc;
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+
+        /* ── Stat cards ── */
+        .stat-row {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.25rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            flex: 1;
+            min-width: 130px;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 0.9rem 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+
+        .stat-card:hover {
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .stat-icon-wrap {
+            width: 38px;
+            height: 38px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .si-blue {
+            background: #f0f9ff;
+            color: #0369a1;
+        }
+
+        .si-green {
+            background: #f0fdf4;
+            color: #16a34a;
+        }
+
+        .si-amber {
+            background: #fffbeb;
+            color: #d97706;
+        }
+
+        .stat-label {
+            font-size: 0.71rem;
+            color: #64748b;
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .stat-value {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #0f172a;
+            line-height: 1;
+        }
+
+        /* ── Form controls ── */
+        .form-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.3rem;
+        }
+
+        .form-control,
+        .form-select {
+            border-radius: 8px;
+            border: 1px solid #d1d5db;
+            font-size: 0.875rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #0369a1;
+            box-shadow: 0 0 0 3px rgba(3, 105, 161, 0.12);
+        }
+
+        .btn-save-wh {
+            background: #0369a1;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            padding: 0.52rem 1.3rem;
+            transition: background 0.18s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-save-wh:hover {
+            background: #0284c7;
+        }
+
+        .field-error {
+            font-size: 0.75rem;
+            color: #dc2626;
+            margin-top: 3px;
+        }
+
+        /* ── Empty / alerts ── */
+        .empty-state {
+            padding: 3rem 1rem;
+            text-align: center;
+            color: #94a3b8;
+        }
+
+        .empty-state .ei {
+            font-size: 2.4rem;
+            color: #cbd5e1;
+            margin-bottom: 0.7rem;
+        }
+
+        .alert {
+            border-radius: 10px;
+            font-size: 0.875rem;
+        }
+
+        /* ── Edit Modal ── */
+        .modal-content {
+            border: none;
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #0284c7, #0369a1);
+            color: #fff;
+            padding: 1.1rem 1.4rem;
+            border: none;
+        }
+
+        .modal-title {
+            font-weight: 700;
+            font-size: 0.98rem;
+        }
+
+        .modal-header .btn-close {
+            filter: brightness(0) invert(1);
+            opacity: 0.85;
+        }
+
+        .modal-body {
+            padding: 1.3rem 1.4rem;
+        }
+
+        .modal-footer {
+            border-top: 1px solid #f1f5f9;
+            padding: 0.9rem 1.4rem;
+        }
+
+        .btn-modal-save {
+            background: #0369a1;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            padding: 0.5rem 1.3rem;
+            transition: background 0.18s;
+        }
+
+        .btn-modal-save:hover {
+            background: #0284c7;
+            color: #fff;
+        }
+
+        .btn-modal-cancel {
+            background: #f1f5f9;
+            color: #374151;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            padding: 0.5rem 1.1rem;
+        }
+
+        .btn-modal-cancel:hover {
+            background: #e2e8f0;
+        }
+    </style>
+</head>
+
+<body>
+    <div th:replace="fragments/sidebar :: sidebar"></div>
+
+    <div class="wms-main">
+
+        <!-- ── Top bar ── -->
+        <div class="page-topbar">
+            <div>
+                <h1><i class="bi bi-building me-2" style="color:#0369a1"></i>Warehouse Management</h1>
+                <p>Manage all warehouses and their storage locations</p>
+            </div>
+            <button class="btn-add-wh" type="button"
+                    data-bs-toggle="modal" data-bs-target="#addModal">
+                <i class="bi bi-plus-lg"></i>
+                <span>Add Warehouse</span>
+            </button>
         </div>
-        <div class="col-md-4">
-            <h2 class="h5">Thêm kho mới</h2>
-            <form th:action="@{/warehouses}" th:object="${createForm}" method="post">
-                <div class="mb-3">
-                    <label for="code" class="form-label">Mã kho</label>
-                    <input id="code" type="text" class="form-control" th:field="*{code}">
-                    <div class="text-danger small" th:if="${#fields.hasErrors('code')}" th:errors="*{code}"></div>
+
+        <div class="main-content">
+
+            <!-- Flash alerts -->
+            <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                <span th:text="${errorMessage}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show mb-3" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i>
+                <span th:text="${successMessage}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+
+
+            <!-- ── Toolbar ── -->
+            <div class="toolbar">
+                <div class="search-wrap">
+                    <i class="bi bi-search"></i>
+                    <input type="text" class="search-input" id="searchInput" placeholder="Search by name or code...">
                 </div>
-                <div class="mb-3">
-                    <label for="name" class="form-label">Tên kho</label>
-                    <input id="name" type="text" class="form-control" th:field="*{name}">
-                    <div class="text-danger small" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                <select class="filter-select" id="statusFilter">
+                    <option value="">All Status</option>
+                    <option value="ACTIVE">Active</option>
+                    <option value="INACTIVE">Inactive</option>
+                </select>
+            </div>
+
+            <!-- ── Table ── -->
+            <div class="table-card">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th style="width:42px">#</th>
+                            <th>WAREHOUSE</th>
+                            <th>CODE</th>
+                            <th>STATUS</th>
+                            <th>CAPACITY</th>
+                            <th style="width:90px">LOCATIONS</th>
+                            <th style="width:100px">ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="whBody">
+                        <tr th:each="w, stat : ${warehouses}"
+                            th:attr="data-name=${w.name}, data-code=${w.code}, data-status=${w.status}">
+                            <td class="text-muted" style="font-size:0.82rem" th:text="${stat.count}">1</td>
+                            <td>
+                                <div class="wh-info">
+                                    <div class="wh-icon"><i class="bi bi-building"></i></div>
+                                    <div>
+                                        <div class="wh-name" th:text="${w.name}">Warehouse</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge-code" th:text="${w.code}">CODE</span>
+                            </td>
+                            <td>
+                                <span th:if="${w.status == 'ACTIVE'}" class="badge-status badge-active">
+                                    <span class="status-dot" style="background:#16a34a"></span>Active
+                                </span>
+                                <span th:if="${w.status != 'ACTIVE'}" class="badge-status badge-inactive">
+                                    <span class="status-dot" style="background:#94a3b8"></span>
+                                    <span th:text="${w.status}">--</span>
+                                </span>
+                            </td>
+                            <td>
+                                <div class="cap-label" th:text="${w.capacity != null ? w.capacity : '—'}">—</div>
+                                <div class="cap-bar" th:if="${w.capacity != null}">
+                                    <div class="cap-fill" style="width:55%"></div>
+                                </div>
+                            </td>
+                            <td>
+                                <a class="btn-locations" th:href="@{'/warehouses/' + ${w.id} + '/locations'}">
+                                    <i class="bi bi-geo-alt"></i>View
+                                </a>
+                            </td>
+                            <td>
+                                <div class="d-flex gap-1">
+                                    <!-- Edit btn -->
+                                    <button class="btn-act blue" type="button" title="Edit" th:attr="data-wid=${w.id},
+                                             data-wname=${w.name},
+                                             data-wcode=${w.code},
+                                             data-wstatus=${w.status},
+                                             data-wcap=${w.capacity}" onclick="openEditModal(this)">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <!-- Delete btn -->
+                                    <form th:action="@{'/warehouses/' + ${w.id} + '/delete'}" method="post"
+                                        style="margin:0;display:inline" th:attr="data-wname=${w.name}">
+                                        <button type="button" class="btn-act red" title="Delete"
+                                            onclick="confirmDelete(this.closest('form'))">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- Empty state -->
+                        <tr th:if="${#lists.isEmpty(warehouses)}">
+                            <td colspan="7">
+                                <div class="empty-state">
+                                    <div class="ei"><i class="bi bi-building"></i></div>
+                                    <p style="color:#475569;font-weight:600;margin-bottom:4px">No warehouses yet</p>
+                                    <small>Click <strong>Add Warehouse</strong> above to create the first one</small>
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- No search results -->
+                        <tr id="noResultRow" style="display:none">
+                            <td colspan="7">
+                                <div class="empty-state">
+                                    <div class="ei"><i class="bi bi-search"></i></div>
+                                    <p style="color:#475569;font-weight:600;margin-bottom:4px">No matching warehouses
+                                    </p>
+                                    <small>Try a different keyword or filter</small>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="table-footer">
+                    <span id="tableCount" th:text="${warehouses.size()} + ' warehouse(s) total'">0 total</span>
                 </div>
-                <div class="mb-3">
-                    <label for="status" class="form-label">Trạng thái</label>
-                    <input id="status" type="text" class="form-control" th:field="*{status}" value="ACTIVE">
-                    <div class="text-danger small" th:if="${#fields.hasErrors('status')}" th:errors="*{status}"></div>
+            </div>
+
+            <!-- ── Stat Cards ── -->
+            <div class="stat-row">
+                <div class="stat-card">
+                    <div class="stat-icon-wrap si-blue"><i class="bi bi-building"></i></div>
+                    <div>
+                        <div class="stat-label">TOTAL</div>
+                        <div class="stat-value" th:text="${warehouses.size()}">0</div>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label for="capacity" class="form-label">Sức chứa</label>
-                    <input id="capacity" type="number" step="0.01" class="form-control" th:field="*{capacity}">
+                <div class="stat-card">
+                    <div class="stat-icon-wrap si-green"><i class="bi bi-check-circle"></i></div>
+                    <div>
+                        <div class="stat-label">ACTIVE</div>
+                        <div class="stat-value" id="activeCount">0</div>
+                    </div>
                 </div>
-                <button type="submit" class="btn btn-primary">Lưu kho</button>
-            </form>
+                <div class="stat-card">
+                    <div class="stat-icon-wrap si-amber"><i class="bi bi-geo-alt-fill"></i></div>
+                    <div>
+                        <div class="stat-label">LOCATIONS</div>
+                        <div class="stat-value" th:text="${allLocations.size()}">0</div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- ══ Add Warehouse Modal ══ -->
+    <div class="modal fade" id="addModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-plus-circle me-2"></i>Add New Warehouse
+                    </h5>
+                    <button type="button" class="btn-close"
+                            data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form th:action="@{/warehouses}" th:object="${createForm}" method="post">
+                    <div class="modal-body">
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <label for="add-code" class="form-label">Code *</label>
+                                <input id="add-code" type="text" class="form-control"
+                                       th:field="*{code}" placeholder="WH001"
+                                       required style="text-transform:uppercase">
+                                <div class="field-error"
+                                     th:if="${#fields.hasErrors('code')}"
+                                     th:errors="*{code}"></div>
+                            </div>
+                            <div class="col-6">
+                                <label for="add-status" class="form-label">Status *</label>
+                                <select id="add-status" class="form-select"
+                                        th:field="*{status}">
+                                    <option value="ACTIVE">ACTIVE</option>
+                                    <option value="INACTIVE">INACTIVE</option>
+                                    <option value="MAINTENANCE">MAINTENANCE</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label for="add-name" class="form-label">Name *</label>
+                                <input id="add-name" type="text" class="form-control"
+                                       th:field="*{name}" placeholder="Central Warehouse" required>
+                                <div class="field-error"
+                                     th:if="${#fields.hasErrors('name')}"
+                                     th:errors="*{name}"></div>
+                            </div>
+                            <div class="col-12">
+                                <label for="add-capacity" class="form-label">Capacity</label>
+                                <div class="input-group">
+                                    <input id="add-capacity" type="number" step="0.01"
+                                           class="form-control" th:field="*{capacity}"
+                                           placeholder="0.00">
+                                    <span class="input-group-text"
+                                          style="font-size:0.8rem;color:#64748b">units</span>
+                                </div>
+                            </div>
+                            <!-- Locations picker -->
+                            <div class="col-12" th:if="${!#lists.isEmpty(allLocations)}">
+                                <label class="form-label">
+                                    <i class="bi bi-geo-alt me-1" style="color:#0369a1"></i>
+                                    Storage Locations
+                                    <span class="text-muted fw-normal" style="font-size:0.75rem">(optional – Ctrl/⌘)</span>
+                                </label>
+                                <select multiple class="form-select" name="locationIds"
+                                        style="height:100px;font-size:0.82rem">
+                                    <option th:each="loc : ${allLocations}"
+                                            th:value="${loc.id}"
+                                            th:text="${loc.code + (loc.type != null ? ' [' + loc.type + ']' : '')}">LOC</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-modal-cancel"
+                                data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn-modal-save">
+                            <i class="bi bi-save me-1"></i>Save Warehouse
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ Edit Warehouse Modal ══ -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-pencil-square me-2"></i>Edit Warehouse
+                    </h5>
+                    <button type="button" class="btn-close"
+                            data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="editForm" method="post">
+                    <div class="modal-body">
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <label for="edit-code" class="form-label">Code *</label>
+                                <input type="text" class="form-control" id="edit-code" name="code" required
+                                    style="text-transform:uppercase">
+                            </div>
+                            <div class="col-6">
+                                <label for="edit-status" class="form-label">Status *</label>
+                                <select class="form-select" id="edit-status" name="status">
+                                    <option value="ACTIVE">ACTIVE</option>
+                                    <option value="INACTIVE">INACTIVE</option>
+                                    <option value="MAINTENANCE">MAINTENANCE</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label for="edit-name" class="form-label">Name *</label>
+                                <input type="text" class="form-control" id="edit-name" name="name" required>
+                            </div>
+                            <div class="col-12">
+                                <label for="edit-capacity" class="form-label">Capacity</label>
+                                <div class="input-group">
+                                    <input type="number" step="0.01" class="form-control" id="edit-capacity"
+                                        name="capacity">
+                                    <span class="input-group-text" style="font-size:0.8rem;color:#64748b">units</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-modal-cancel" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn-modal-save">
+                            <i class="bi bi-save me-1"></i>Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+/* ── Stat: active count ── */
+        (function () {
+            var rows = document.querySelectorAll('#whBody tr[data-status]');
+            var active = 0;
+            rows.forEach(function (r) { if (r.dataset.status === 'ACTIVE') active++; });
+            document.getElementById('activeCount').textContent = active;
+        })();
+
+        /* ── Search + Status filter ── */
+        var searchInput = document.getElementById('searchInput');
+        var statusFilter = document.getElementById('statusFilter');
+        var noResultRow = document.getElementById('noResultRow');
+        var tableCount = document.getElementById('tableCount');
+
+        function applyFilter() {
+            var q = searchInput.value.toLowerCase();
+            var status = statusFilter.value;
+            var rows = document.querySelectorAll('#whBody tr[data-name]');
+            var visible = 0;
+            rows.forEach(function (row) {
+                var matchText = !q || row.dataset.name.toLowerCase().includes(q)
+                    || row.dataset.code.toLowerCase().includes(q);
+                var matchStatus = !status || row.dataset.status === status;
+                var show = matchText && matchStatus;
+                row.style.display = show ? '' : 'none';
+                if (show) visible++;
+            });
+            noResultRow.style.display = (visible === 0 && rows.length > 0) ? '' : 'none';
+            tableCount.textContent = visible + ' warehouse(s) found';
+        }
+        searchInput.addEventListener('input', applyFilter);
+        statusFilter.addEventListener('change', applyFilter);
+
+        /* ── Edit Modal ── */
+        function openEditModal(btn) {
+            var id = btn.getAttribute('data-wid');
+            var code = btn.getAttribute('data-wcode');
+            var name = btn.getAttribute('data-wname');
+            var status = btn.getAttribute('data-wstatus');
+            var cap = btn.getAttribute('data-wcap');
+
+            document.getElementById('editForm').action = '/warehouses/' + id + '/update';
+            document.getElementById('edit-code').value = code;
+            document.getElementById('edit-name').value = name;
+            document.getElementById('edit-status').value = status;
+            document.getElementById('edit-capacity').value = (cap && cap !== 'null') ? cap : '';
+
+            new bootstrap.Modal(document.getElementById('editModal')).show();
+        }
+
+        /* ── Confirm Delete ── */
+        function confirmDelete(form) {
+            var name = form.getAttribute('data-wname');
+            if (confirm('Delete warehouse "' + name + '"?\nThis action cannot be undone.')) {
+                form.submit();
+            }
+        }
+    </script>
 </body>
+
 </html>
