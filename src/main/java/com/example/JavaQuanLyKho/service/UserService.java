@@ -12,5 +12,9 @@ public interface UserService {
     Page<User> findAll(Pageable pageable);
 
     User create(User user, Set<UUID> roleIds, String rawPassword);
+
+    User update(UUID userId, Set<UUID> roleIds);
+
+    User lock(UUID userId);
 }
 

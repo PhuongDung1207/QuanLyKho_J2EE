@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -32,6 +33,8 @@ public class UsersViewController {
         this.roleRepository = roleRepository;
     }
 
+    // ─── Inner Form Classes ───────────────────────────────────────────────────
+
     public static class CreateUserForm {
         @NotBlank
         private String username;
@@ -41,38 +44,24 @@ public class UsersViewController {
         private String status;
         private List<UUID> roleIds;
 
-        public String getUsername() {
-            return username;
-        }
-
-        public void setUsername(String username) {
-            this.username = username;
-        }
-
-        public String getPassword() {
-            return password;
-        }
-
-        public void setPassword(String password) {
-            this.password = password;
-        }
-
-        public String getStatus() {
-            return status;
-        }
-
-        public void setStatus(String status) {
-            this.status = status;
-        }
-
-        public List<UUID> getRoleIds() {
-            return roleIds;
-        }
-
-        public void setRoleIds(List<UUID> roleIds) {
-            this.roleIds = roleIds;
-        }
+        public String getUsername() { return username; }
+        public void setUsername(String username) { this.username = username; }
+        public String getPassword() { return password; }
+        public void setPassword(String password) { this.password = password; }
+        public String getStatus() { return status; }
+        public void setStatus(String status) { this.status = status; }
+        public List<UUID> getRoleIds() { return roleIds; }
+        public void setRoleIds(List<UUID> roleIds) { this.roleIds = roleIds; }
     }
+
+    public static class UpdateUserForm {
+        private List<UUID> roleIds;
+
+        public List<UUID> getRoleIds() { return roleIds; }
+        public void setRoleIds(List<UUID> roleIds) { this.roleIds = roleIds; }
+    }
+
+    // ─── Endpoints ───────────────────────────────────────────────────────────
 
     @GetMapping
     public String list(Model model) {
@@ -100,5 +89,17 @@ public class UsersViewController {
         userService.create(user, roleIds, form.getPassword());
         return "redirect:/users";
     }
-}
 
+    @PostMapping("/{id}/update")
+    public String update(@PathVariable UUID id, UpdateUserForm form) {
+        Set<UUID> roleIds = form.getRoleIds() != null ? new HashSet<>(form.getRoleIds()) : new HashSet<>();
+        userService.update(id, roleIds);
+        return "redirect:/users";
+    }
+
+    @PostMapping("/{id}/lock")
+    public String lock(@PathVariable UUID id) {
+        userService.lock(id);
+        return "redirect:/users";
+    }
+}

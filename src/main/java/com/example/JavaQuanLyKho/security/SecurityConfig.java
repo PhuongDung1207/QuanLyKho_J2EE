@@ -41,7 +41,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter, CustomUserDetailsService customUserDetailsService) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers("/actuator/health").permitAll()
@@ -49,14 +49,24 @@ public class SecurityConfig {
                         .requestMatchers("/uoms/**").permitAll()
                         .requestMatchers("/categories/**").permitAll()
                         .requestMatchers("/products/**").permitAll()
-                        .requestMatchers("/users/**").permitAll()
-                        .requestMatchers("/roles/**").permitAll()
+                        // Users - Thymeleaf views
+                        .requestMatchers(HttpMethod.GET, "/users").hasAuthority("USER_VIEW")
+                        .requestMatchers(HttpMethod.POST, "/users").hasAuthority("USER_CREATE")
+                        .requestMatchers(HttpMethod.POST, "/users/{id}/update").hasAuthority("USER_UPDATE")
+                        .requestMatchers(HttpMethod.POST, "/users/{id}/lock").hasAuthority("USER_LOCK")
                         .requestMatchers("/permissions/**").permitAll()
                         .requestMatchers("/login", "/logout").permitAll()
+                        // Roles - Thymeleaf views
+                        .requestMatchers(HttpMethod.GET, "/roles").hasAuthority("ROLE_VIEW")
+                        .requestMatchers(HttpMethod.POST, "/roles").hasAuthority("ROLE_CREATE")
+                        .requestMatchers(HttpMethod.POST, "/roles/assign-permissions").hasAuthority("ROLE_UPDATE")
                         .requestMatchers(HttpMethod.GET, "/api/v1/uoms/**").hasAuthority("UOM_VIEW")
                         .requestMatchers(HttpMethod.GET, "/api/v1/categories/**").hasAuthority("CATEGORY_VIEW")
                         .requestMatchers(HttpMethod.GET, "/api/v1/products/**").hasAuthority("PRODUCT_VIEW")
-                        .requestMatchers(HttpMethod.POST, "/api/v1/products/**").hasAuthority("PRODUCT_CREATE")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/products").hasAuthority("PRODUCT_CREATE")
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/products/**").hasAuthority("PRODUCT_UPDATE")
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/products/**").hasAuthority("PRODUCT_DELETE")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/products/*/lock").hasAuthority("PRODUCT_LOCK")
                         .requestMatchers(HttpMethod.GET, "/api/v1/warehouses/*/locations/**").hasAuthority("LOCATION_VIEW")
                         .requestMatchers(HttpMethod.POST, "/api/v1/warehouses/*/locations/**").hasAuthority("LOCATION_CREATE")
                         .anyRequest().authenticated()

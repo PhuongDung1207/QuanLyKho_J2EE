@@ -36,6 +36,9 @@ public class Product {
     @Column(name = "attributes")
     private String attributesJson;
 
+    @Column(name = "status", nullable = false, length = 20)
+    private String status = "ACTIVE";
+
     public UUID getId() {
         return id;
     }
@@ -90,6 +93,14 @@ public class Product {
 
     public void setAttributesJson(String attributesJson) {
         this.attributesJson = attributesJson;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
 

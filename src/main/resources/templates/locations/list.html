@@ -2,50 +2,86 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Vị trí kho</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vị trí kho – WMS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body>
-<div th:replace="fragments/navbar :: navbar"></div>
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-md-8">
-            <h1 class="mb-3">Vị trí - <span th:text="${warehouse.name}">Kho</span></h1>
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th>Code</th>
-                    <th>Type</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="loc : ${locations}">
-                    <td th:text="${loc.code}">A-01-01</td>
-                    <td th:text="${loc.type}">BIN</td>
-                </tr>
-                <tr th:if="${#lists.isEmpty(locations)}">
-                    <td colspan="2" class="text-center">Chưa có vị trí</td>
-                </tr>
-                </tbody>
-            </table>
+<div th:replace="fragments/sidebar :: sidebar"></div>
+
+<div class="wms-main">
+    <div class="container-fluid p-4">
+        <div class="d-flex align-items-center mb-4">
+            <a href="/warehouses" class="btn btn-sm btn-outline-secondary rounded-2 me-3">
+                <i class="bi bi-arrow-left me-1"></i>Kho
+            </a>
+            <div>
+                <h1 class="h4 fw-bold mb-0" style="color:#1a1a2e">
+                    <i class="bi bi-geo-alt me-2" style="color:#f26722"></i>Vị trí –
+                    <span th:text="${warehouse.name}">Kho</span>
+                </h1>
+                <p class="text-muted small mb-0">Quản lý vị trí trong kho hàng</p>
+            </div>
         </div>
-        <div class="col-md-4">
-            <h2 class="h5">Thêm vị trí</h2>
-            <form th:action="@{'/warehouses/' + ${warehouse.id} + '/locations'}" th:object="${createForm}" method="post">
-                <div class="mb-3">
-                    <label for="code" class="form-label">Mã vị trí</label>
-                    <input id="code" type="text" class="form-control" th:field="*{code}">
+
+        <div class="row g-4">
+            <div class="col-md-8">
+                <div class="card border-0 shadow-sm rounded-3">
+                    <div class="card-body p-0">
+                        <table class="table table-hover mb-0">
+                            <thead style="background:#f8fafc;">
+                            <tr>
+                                <th class="px-4 py-3 text-uppercase small text-muted fw-semibold border-0" style="font-size:.72rem;letter-spacing:.06em">Mã vị trí</th>
+                                <th class="px-4 py-3 text-uppercase small text-muted fw-semibold border-0" style="font-size:.72rem;letter-spacing:.06em">Loại</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="loc : ${locations}">
+                                <td class="px-4 py-3 fw-semibold" th:text="${loc.code}">A-01-01</td>
+                                <td class="px-4 py-3">
+                                    <span class="badge rounded-pill px-3 py-2" style="background:#f0fdf4;color:#15803d;font-size:.72rem" th:text="${loc.type}">BIN</span>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(locations)}">
+                                <td colspan="2" class="text-center py-5 text-muted">
+                                    <i class="bi bi-inbox d-block mb-2" style="font-size:2rem;opacity:.3"></i>
+                                    Chưa có vị trí
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label for="type" class="form-label">Loại</label>
-                    <input id="type" type="text" class="form-control" th:field="*{type}">
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-3">
+                    <div class="card-header bg-white border-0 pt-3 pb-2 px-4">
+                        <h5 class="fw-bold mb-0" style="font-size:.95rem"><i class="bi bi-plus-circle me-2" style="color:#f26722"></i>Thêm vị trí</h5>
+                    </div>
+                    <div class="card-body px-4 pb-4">
+                        <form th:action="@{'/warehouses/' + ${warehouse.id} + '/locations'}" th:object="${createForm}" method="post">
+                            <div class="mb-3">
+                                <label for="code" class="form-label small fw-semibold">Mã vị trí</label>
+                                <input id="code" type="text" class="form-control rounded-2" th:field="*{code}" placeholder="VD: A-01-01">
+                            </div>
+                            <div class="mb-4">
+                                <label for="type" class="form-label small fw-semibold">Loại</label>
+                                <input id="type" type="text" class="form-control rounded-2" th:field="*{type}" placeholder="VD: BIN">
+                            </div>
+                            <button type="submit" class="btn w-100 fw-semibold text-white rounded-2" style="background:#f26722;border:none">
+                                <i class="bi bi-save me-1"></i>Lưu vị trí
+                            </button>
+                        </form>
+                    </div>
                 </div>
-                <button type="submit" class="btn btn-primary">Lưu vị trí</button>
-            </form>
+            </div>
         </div>
     </div>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
