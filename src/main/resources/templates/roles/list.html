@@ -1,79 +1,802 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
-    <title>Roles & Permissions</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roles – WMS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+
+        /* Top bar */
+        .page-topbar {
+            background: #fff;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+        }
+
+        .page-topbar h1 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin: 0;
+            color: #0f172a;
+        }
+
+        .page-topbar p {
+            font-size: 0.78rem;
+            color: #64748b;
+            margin: 0;
+        }
+
+        .btn-header-action {
+            background: #0f172a;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            padding: 0.48rem 1.1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.22);
+            transition: background 0.18s, transform 0.15s;
+        }
+
+        .btn-header-action:hover {
+            background: #1e293b;
+            color: #fff;
+            transform: translateY(-1px);
+        }
+
+        /* Main layout */
+        .main-content {
+            padding: 1.5rem 2rem;
+        }
+
+        .roles-grid {
+            display: grid;
+            grid-template-columns: 1fr 370px;
+            gap: 1.25rem;
+        }
+
+        @media (max-width: 1024px) {
+            .roles-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Toolbar */
+        .toolbar {
+            display: flex;
+            gap: 0.65rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .search-wrap {
+            position: relative;
+            flex: 1;
+            min-width: 180px;
+        }
+
+        .search-wrap .bi-search {
+            position: absolute;
+            left: 11px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 0.9rem;
+            pointer-events: none;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.48rem 0.75rem 0.48rem 2.1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            background: #fff;
+            color: #1e293b;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: #0f172a;
+            box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.1);
+        }
+
+        /* Table card */
+        .table-card {
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .table {
+            margin: 0;
+        }
+
+        .table thead th {
+            background: #f8fafc;
+            color: #64748b;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            border-bottom: 1px solid #e2e8f0;
+            border-top: none;
+            padding: 0.7rem 1rem;
+            white-space: nowrap;
+        }
+
+        .table tbody td {
+            padding: 0.9rem 1rem;
+            vertical-align: middle;
+            border-color: #f1f5f9;
+            font-size: 0.875rem;
+        }
+
+        .table tbody tr {
+            transition: background 0.12s;
+        }
+
+        .table tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Role icon */
+        .role-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 9px;
+            background: linear-gradient(135deg, #475569, #0f172a);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .role-info {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+        }
+
+        .role-name {
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: #0f172a;
+        }
+
+        .role-id {
+            font-size: 0.73rem;
+            color: #94a3b8;
+        }
+
+        /* Code badge */
+        .badge-code {
+            background: #f1f5f9;
+            color: #334155;
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 0.28em 0.72em;
+            border-radius: 6px;
+            letter-spacing: 0.04em;
+            font-family: 'Courier New', monospace;
+            display: inline-block;
+        }
+
+        /* Permission pills */
+        .perm-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .perm-pill {
+            background: #eff6ff;
+            color: #1d4ed8;
+            font-size: 0.67rem;
+            font-weight: 600;
+            padding: 0.2em 0.6em;
+            border-radius: 999px;
+            letter-spacing: 0.03em;
+            white-space: nowrap;
+        }
+
+        .perm-pill-empty {
+            font-size: 0.78rem;
+            color: #94a3b8;
+            font-style: italic;
+        }
+
+        .btn-show-more {
+            font-size: 0.67rem;
+            font-weight: 700;
+            padding: 0.2em 0.65em;
+            border-radius: 999px;
+            border: 1px dashed #93c5fd;
+            background: #eff6ff;
+            color: #2563eb;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background 0.15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            vertical-align: middle;
+        }
+
+        .btn-show-more:hover {
+            background: #dbeafe;
+        }
+
+        .perm-pill.hidden {
+            display: none;
+        }
+
+        /* Table footer */
+        .table-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.7rem 1rem;
+            border-top: 1px solid #f1f5f9;
+            background: #fafbfc;
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+
+        /* Sidebar panel cards */
+        .side-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .panel-card {
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .panel-card-header {
+            padding: 0.9rem 1.2rem 0.75rem;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .panel-card-header .ph-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .ph-create {
+            background: #f0fdf4;
+            color: #16a34a;
+        }
+
+        .ph-assign {
+            background: #eff6ff;
+            color: #2563eb;
+        }
+
+        .panel-card-header h6 {
+            font-weight: 700;
+            font-size: 0.88rem;
+            margin: 0;
+            color: #0f172a;
+        }
+
+        .panel-card-body {
+            padding: 1.1rem 1.2rem;
+        }
+
+        /* Form controls inside panel */
+        .form-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.3rem;
+        }
+
+        .form-control,
+        .form-select {
+            border-radius: 8px;
+            border: 1px solid #d1d5db;
+            font-size: 0.875rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #0f172a;
+            box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.1);
+        }
+
+        .btn-panel-submit {
+            width: 100%;
+            background: #0f172a;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            padding: 0.55rem 1rem;
+            transition: background 0.18s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-panel-submit:hover {
+            background: #1e293b;
+        }
+
+        .btn-assign-submit {
+            width: 100%;
+            background: #2563eb;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            padding: 0.55rem 1rem;
+            transition: background 0.18s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-assign-submit:hover {
+            background: #1d4ed8;
+        }
+
+        /* Permissions multiselect */
+        .perm-multiselect {
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            overflow: hidden;
+            max-height: 220px;
+            overflow-y: auto;
+        }
+
+        .perm-multiselect::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .perm-multiselect::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 99px;
+        }
+
+        .form-select[multiple] {
+            border-radius: 8px;
+            font-size: 0.82rem;
+            height: 200px;
+            padding: 0.35rem;
+        }
+
+        .form-select[multiple] option {
+            padding: 0.35rem 0.6rem;
+            border-radius: 5px;
+            margin: 1px 0;
+            cursor: pointer;
+        }
+
+        .form-select[multiple] option:checked {
+            background: #1d4ed8;
+            color: #fff;
+        }
+
+        /* Stats */
+        .stat-row {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.25rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            flex: 1;
+            min-width: 130px;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 0.9rem 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+
+        .stat-card:hover {
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .stat-icon-wrap {
+            width: 38px;
+            height: 38px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .si-dark {
+            background: #f1f5f9;
+            color: #334155;
+        }
+
+        .si-blue {
+            background: #eff6ff;
+            color: #2563eb;
+        }
+
+        .si-green {
+            background: #f0fdf4;
+            color: #16a34a;
+        }
+
+        .stat-label {
+            font-size: 0.71rem;
+            color: #64748b;
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .stat-value {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #0f172a;
+            line-height: 1;
+        }
+
+        /* Alerts */
+        .alert {
+            border-radius: 10px;
+            font-size: 0.875rem;
+        }
+
+        /* Empty state */
+        .empty-state {
+            padding: 3rem 1rem;
+            text-align: center;
+            color: #94a3b8;
+        }
+
+        .empty-state .ei {
+            font-size: 2.4rem;
+            color: #cbd5e1;
+            margin-bottom: 0.7rem;
+        }
+    </style>
 </head>
+
 <body>
-<div th:replace="fragments/navbar :: navbar"></div>
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-md-7">
-            <h1 class="mb-3">Roles</h1>
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th>Code</th>
-                    <th>Name</th>
-                    <th>Permissions</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="r : ${roles}">
-                    <td th:text="${r.code}">ADMIN</td>
-                    <td th:text="${r.name}">Administrator</td>
-                    <td>
-                        <span class="badge text-bg-secondary me-1" th:each="p : ${r.permissions}" th:text="${p.code}">PERM</span>
-                    </td>
-                </tr>
-                <tr th:if="${#lists.isEmpty(roles)}">
-                    <td colspan="3" class="text-center">Chưa có role</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="col-md-5">
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h2 class="h5">Tạo role</h2>
-                    <form th:action="@{/roles}" th:object="${createForm}" method="post">
-                        <div class="mb-3">
-                            <label for="code" class="form-label">Mã</label>
-                            <input id="code" type="text" class="form-control" th:field="*{code}">
-                        </div>
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Tên</label>
-                            <input id="name" type="text" class="form-control" th:field="*{name}">
-                        </div>
-                        <button type="submit" class="btn btn-primary">Lưu role</button>
-                    </form>
-                </div>
+    <div th:replace="fragments/sidebar :: sidebar"></div>
+
+    <div class="wms-main">
+
+        <!-- Page top bar -->
+        <div class="page-topbar">
+            <div>
+                <h1><i class="bi bi-shield-check me-2" style="color:#0f172a"></i>Role Management</h1>
+                <p>Define roles and assign permissions to control access across the system</p>
             </div>
-            <div class="card">
-                <div class="card-body">
-                    <h2 class="h5">Gán quyền cho role</h2>
-                    <form th:action="@{/roles/assign-permissions}" th:object="${assignForm}" method="post">
-                        <div class="mb-3">
-                            <label for="roleId" class="form-label">Role</label>
-                            <select id="roleId" class="form-select" th:field="*{roleId}">
-                                <option th:each="r : ${roles}" th:value="${r.id}" th:text="${r.code}">ADMIN</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Quyền</label>
-                            <select multiple class="form-select" th:field="*{permissionIds}" size="8">
-                                <option th:each="p : ${permissions}" th:value="${p.id}" th:text="${p.code}">PERM</option>
-                            </select>
-                            <div class="form-text">Giữ Ctrl/Cmd để chọn nhiều</div>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Cập nhật quyền</button>
-                    </form>
-                </div>
+            <div class="d-flex gap-2">
+                <button class="btn-header-action" type="button"
+                    onclick="document.getElementById('createSection').scrollIntoView({behavior:'smooth'})">
+                    <i class="bi bi-plus-lg"></i> New Role
+                </button>
             </div>
         </div>
-    </div>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+        <div class="main-content">
+
+            <!-- Flash Alerts -->
+            <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                <span th:text="${errorMessage}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show mb-3" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i>
+                <span th:text="${successMessage}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <div class="roles-grid">
+
+                <!-- LEFT: Roles Table -->
+                <div>
+                    <!-- Toolbar -->
+                    <div class="toolbar">
+                        <div class="search-wrap">
+                            <i class="bi bi-search"></i>
+                            <input type="text" class="search-input" id="searchInput"
+                                placeholder="Search by role name or code...">
+                        </div>
+                    </div>
+
+                    <div class="table-card">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th style="width:42px">#</th>
+                                    <th>ROLE</th>
+                                    <th>CODE</th>
+                                    <th>PERMISSIONS</th>
+                                </tr>
+                            </thead>
+                            <tbody id="rolesBody">
+                                <tr th:each="r, stat : ${roles}" th:attr="data-name=${r.name}, data-code=${r.code}">
+                                    <td class="text-muted" style="font-size:0.82rem" th:text="${stat.count}">1</td>
+                                    <td>
+                                        <div class="role-info">
+                                            <div class="role-icon">
+                                                <i class="bi bi-shield"></i>
+                                            </div>
+                                            <div>
+                                                <div class="role-name" th:text="${r.name}">Role Name</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge-code" th:text="${r.code}">CODE</span>
+                                    </td>
+                                    <td>
+                                        <div class="perm-pills" th:if="${!#lists.isEmpty(r.permissions)}">
+                                            <span class="perm-pill" th:each="p, pStat : ${r.permissions}"
+                                                th:text="${p.code}" th:attr="data-idx=${pStat.index}">PERM</span>
+                                            <!-- +N more toggle button (rendered via JS) -->
+                                        </div>
+                                        <span class="perm-pill-empty" th:if="${#lists.isEmpty(r.permissions)}">
+                                            No permissions assigned
+                                        </span>
+                                    </td>
+                                </tr>
+                                <!-- Empty state -->
+                                <tr th:if="${#lists.isEmpty(roles)}">
+                                    <td colspan="4">
+                                        <div class="empty-state">
+                                            <div class="ei"><i class="bi bi-shield"></i></div>
+                                            <p style="color:#475569;font-weight:600;margin-bottom:4px">No roles yet</p>
+                                            <small>Create your first role using the form on the right</small>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!-- No search results -->
+                                <tr id="noResultRow" style="display:none">
+                                    <td colspan="4">
+                                        <div class="empty-state">
+                                            <div class="ei"><i class="bi bi-search"></i></div>
+                                            <p style="color:#475569;font-weight:600;margin-bottom:4px">No matching roles
+                                            </p>
+                                            <small>Try a different keyword</small>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="table-footer">
+                            <span id="tableCount" th:text="${roles.size()} + ' role(s) total'">0 role(s) total</span>
+                        </div>
+                    </div>
+
+                    <!-- Stat Cards (below table) -->
+                    <div class="stat-row">
+                        <div class="stat-card">
+                            <div class="stat-icon-wrap si-dark"><i class="bi bi-shield-check"></i></div>
+                            <div>
+                                <div class="stat-label">TOTAL ROLES</div>
+                                <div class="stat-value" th:text="${roles.size()}">0</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon-wrap si-blue"><i class="bi bi-key-fill"></i></div>
+                            <div>
+                                <div class="stat-label">TOTAL PERMISSIONS</div>
+                                <div class="stat-value" th:text="${permissions.size()}">0</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon-wrap si-green"><i class="bi bi-check2-circle"></i></div>
+                            <div>
+                                <div class="stat-label">ROLES WITH PERMS</div>
+                                <div class="stat-value" id="rolesWithPerms">0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT: Side Panels -->
+                <div class="side-panel" id="createSection">
+
+                    <!-- Create Role -->
+                    <div class="panel-card">
+                        <div class="panel-card-header">
+                            <div class="ph-icon ph-create"><i class="bi bi-plus-circle-fill"></i></div>
+                            <h6>Create New Role</h6>
+                        </div>
+                        <div class="panel-card-body">
+                            <form th:action="@{/roles}" th:object="${createForm}" method="post">
+                                <div class="mb-3">
+                                    <label for="code" class="form-label">
+                                        <i class="bi bi-upc me-1"></i>Code
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <input id="code" type="text" class="form-control" th:field="*{code}"
+                                        placeholder="e.g. ADMIN, MANAGER..." style="text-transform:uppercase">
+                                    <div class="form-text">Unique short identifier</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">
+                                        <i class="bi bi-shield me-1"></i>Name
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <input id="name" type="text" class="form-control" th:field="*{name}"
+                                        placeholder="e.g. Administrator, Manager...">
+                                </div>
+                                <button type="submit" class="btn-panel-submit">
+                                    <i class="bi bi-save"></i>Save Role
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Assign Permissions -->
+                    <div class="panel-card">
+                        <div class="panel-card-header">
+                            <div class="ph-icon ph-assign"><i class="bi bi-key-fill"></i></div>
+                            <h6>Assign Permissions to Role</h6>
+                        </div>
+                        <div class="panel-card-body">
+                            <form th:action="@{/roles/assign-permissions}" th:object="${assignForm}" method="post">
+                                <div class="mb-3">
+                                    <label for="roleId" class="form-label">
+                                        <i class="bi bi-shield me-1"></i>Role
+                                    </label>
+                                    <select id="roleId" class="form-select" th:field="*{roleId}">
+                                        <option value="">— Select role —</option>
+                                        <option th:each="r : ${roles}" th:value="${r.id}"
+                                            th:text="${r.code + ' – ' + r.name}">ROLE</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">
+                                        <i class="bi bi-key me-1"></i>Permissions
+                                    </label>
+                                    <select multiple class="form-select" th:field="*{permissionIds}">
+                                        <option th:each="p : ${permissions}" th:value="${p.id}" th:text="${p.code}">PERM
+                                        </option>
+                                    </select>
+                                    <div class="form-text mt-1">
+                                        Hold <kbd>Ctrl</kbd> / <kbd>⌘</kbd> to select multiple
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn-assign-submit">
+                                    <i class="bi bi-check2-circle"></i>Update Permissions
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                </div><!-- /.side-panel -->
+
+            </div><!-- /.roles-grid -->
+
+        </div>
+    </div><!-- /.wms-main -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        /* ── Stat: roles with at least 1 permission ── */
+        (function () {
+            var rows = document.querySelectorAll('#rolesBody tr[data-name]');
+            var count = 0;
+            rows.forEach(function (row) {
+                var pills = row.querySelectorAll('.perm-pill');
+                if (pills.length > 0) count++;
+            });
+            document.getElementById('rolesWithPerms').textContent = count;
+        })();
+
+        /* ── Live search ── */
+        var searchInput = document.getElementById('searchInput');
+        var noResultRow = document.getElementById('noResultRow');
+        var tableCount = document.getElementById('tableCount');
+
+        searchInput.addEventListener('input', function () {
+            var q = this.value.toLowerCase();
+            var rows = document.querySelectorAll('#rolesBody tr[data-name]');
+            var visible = 0;
+            rows.forEach(function (row) {
+                var match = !q || row.dataset.name.toLowerCase().includes(q)
+                    || row.dataset.code.toLowerCase().includes(q);
+                row.style.display = match ? '' : 'none';
+                if (match) visible++;
+            });
+            noResultRow.style.display = (visible === 0 && rows.length > 0) ? '' : 'none';
+            tableCount.textContent = visible + ' role(s) found';
+        });
+
+        /* ── Permissions: show first 5, hide rest with +N more ── */
+        (function initPermPills() {
+            document.querySelectorAll('.perm-pills').forEach(function (container) {
+                var pills = container.querySelectorAll('.perm-pill');
+                if (pills.length <= 5) return;          // no truncation needed
+
+                var extra = pills.length - 5;
+
+                // Hide pills beyond index 4
+                pills.forEach(function (pill, i) {
+                    if (i >= 5) pill.classList.add('hidden');
+                });
+
+                // Create +N more button
+                var btn = document.createElement('button');
+                btn.className = 'btn-show-more';
+                btn.innerHTML = '<i class="bi bi-chevron-down" style="font-size:0.6rem"></i>+' + extra + ' more';
+                var expanded = false;
+
+                btn.addEventListener('click', function () {
+                    expanded = !expanded;
+                    pills.forEach(function (pill, i) {
+                        if (i >= 5) pill.classList.toggle('hidden', !expanded);
+                    });
+                    btn.innerHTML = expanded
+                        ? '<i class="bi bi-chevron-up" style="font-size:0.6rem"></i>less'
+                        : '<i class="bi bi-chevron-down" style="font-size:0.6rem"></i>+' + extra + ' more';
+                });
+
+                container.appendChild(btn);
+            });
+        })();
+    </script>
 </body>
+
 </html>

@@ -2,32 +2,532 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Danh mục</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh mục – WMS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        body { background-color: #f8fafc; color: #1e293b; }
+
+        /* Top bar */
+        .page-topbar {
+            background: #fff;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+        }
+        .page-topbar h1 { font-size: 1.15rem; font-weight: 700; margin: 0; color: #0f172a; }
+        .page-topbar p  { font-size: 0.78rem; color: #64748b; margin: 0; }
+        .btn-add-cat {
+            background: #f26722; color: #fff; border: none;
+            border-radius: 8px; font-weight: 600; font-size: 0.85rem;
+            padding: 0.48rem 1.1rem;
+            display: inline-flex; align-items: center; gap: 6px;
+            box-shadow: 0 2px 8px rgba(242,103,34,0.28);
+            transition: background 0.18s, transform 0.15s;
+        }
+        .btn-add-cat:hover { background: #d95a15; color: #fff; transform: translateY(-1px); }
+
+        /* Main */
+        .main-content { padding: 1.5rem 2rem; }
+
+        /* Toolbar */
+        .toolbar {
+            display: flex; gap: 0.65rem;
+            margin-bottom: 1rem; flex-wrap: wrap; align-items: center;
+        }
+        .search-wrap { position: relative; flex: 1; min-width: 180px; }
+        .search-wrap .bi-search {
+            position: absolute; left: 11px; top: 50%;
+            transform: translateY(-50%); color: #94a3b8; font-size: 0.9rem; pointer-events:none;
+        }
+        .search-input {
+            width: 100%; padding: 0.48rem 0.75rem 0.48rem 2.1rem;
+            border: 1px solid #e2e8f0; border-radius: 8px;
+            font-size: 0.875rem; background: #fff; color: #1e293b; outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .search-input:focus { border-color: #f26722; box-shadow: 0 0 0 3px rgba(242,103,34,0.12); }
+        .filter-select {
+            padding: 0.45rem 1.9rem 0.45rem 0.75rem;
+            border: 1px solid #e2e8f0; border-radius: 8px;
+            font-size: 0.83rem; font-weight: 500; color: #374151;
+            background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%2394a3b8' d='M6 8L0 0h12z'/%3E%3C/svg%3E") no-repeat right 10px center;
+            appearance: none; -webkit-appearance: none; outline: none; cursor: pointer;
+        }
+        .filter-select:focus { border-color: #f26722; box-shadow: 0 0 0 3px rgba(242,103,34,0.12); }
+
+        /* Table card */
+        .table-card {
+            background: #fff; border-radius: 12px;
+            border: 1px solid #e2e8f0; overflow: hidden;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+        }
+        .table { margin: 0; }
+        .table thead th {
+            background: #f8fafc; color: #64748b;
+            font-size: 0.72rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.06em;
+            border-bottom: 1px solid #e2e8f0; border-top: none;
+            padding: 0.7rem 1rem; white-space: nowrap;
+        }
+        .table tbody td {
+            padding: 0.8rem 1rem; vertical-align: middle;
+            border-color: #f1f5f9; font-size: 0.875rem;
+        }
+        .table tbody tr { transition: background 0.12s; }
+        .table tbody tr:hover { background: #f8fafc; }
+        .table tbody tr:last-child td { border-bottom: none; }
+
+        /* Category icon badge */
+        .cat-icon {
+            width: 36px; height: 36px; border-radius: 9px;
+            background: linear-gradient(135deg, #ff9a5c, #f26722);
+            display: inline-flex; align-items: center; justify-content: center;
+            color: #fff; font-size: 1rem; flex-shrink: 0;
+        }
+        .cat-info { display: flex; align-items: center; gap: 0.6rem; }
+        .cat-name { font-weight: 600; font-size: 0.875rem; color: #0f172a; }
+        .cat-sub  { font-size: 0.73rem; color: #94a3b8; }
+
+        /* Code badge */
+        .badge-code {
+            background: #fff7ed; color: #c2410c;
+            font-size: 0.72rem; font-weight: 700;
+            padding: 0.28em 0.72em; border-radius: 6px;
+            letter-spacing: 0.04em; font-family: 'Courier New', monospace;
+            display: inline-block;
+        }
+
+        /* Parent badge */
+        .badge-parent {
+            background: #f0fdf4; color: #15803d;
+            font-size: 0.72rem; font-weight: 600;
+            padding: 0.25em 0.65em; border-radius: 999px;
+        }
+        .badge-no-parent {
+            background: #f1f5f9; color: #94a3b8;
+            font-size: 0.72rem; font-weight: 500;
+            padding: 0.25em 0.65em; border-radius: 999px;
+        }
+
+        /* Action btns */
+        .btn-act {
+            width: 30px; height: 30px; border-radius: 6px;
+            border: 1px solid #e2e8f0; background: #fff; color: #64748b;
+            display: inline-flex; align-items: center; justify-content: center;
+            font-size: 0.83rem; transition: all 0.15s; cursor: pointer;
+        }
+        .btn-act:hover       { background: #f1f5f9; color: #1e293b; border-color: #cbd5e1; }
+        .btn-act.red:hover   { background: #fee2e2; color: #b91c1c; border-color: #fca5a5; }
+
+        /* Empty */
+        .empty-state { padding: 3rem 1rem; text-align: center; color: #94a3b8; }
+        .empty-state .ei { font-size: 2.6rem; color: #cbd5e1; margin-bottom: 0.7rem; }
+
+        /* Table footer */
+        .table-footer {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0.7rem 1rem; border-top: 1px solid #f1f5f9;
+            background: #fafbfc; font-size: 0.8rem; color: #64748b;
+        }
+
+        /* Stats */
+        .stat-row { display:flex; gap:1rem; margin-top:1.5rem; flex-wrap:wrap; }
+        .stat-card {
+            flex:1; min-width:150px; background:#fff;
+            border:1px solid #e2e8f0; border-radius:12px;
+            padding:1rem 1.2rem; display:flex; align-items:center; gap:0.85rem;
+            box-shadow:0 1px 4px rgba(0,0,0,0.04); transition:box-shadow 0.2s, transform 0.2s;
+        }
+        .stat-card:hover { box-shadow:0 4px 16px rgba(0,0,0,0.08); transform:translateY(-2px); }
+        .stat-icon-wrap {
+            width:42px; height:42px; border-radius:10px;
+            display:flex; align-items:center; justify-content:center;
+            font-size:1.25rem; flex-shrink:0;
+        }
+        .si-orange { background:#fff7ed; color:#f26722; }
+        .si-green  { background:#f0fdf4; color:#16a34a; }
+        .si-blue   { background:#eff6ff; color:#2563eb; }
+        .stat-label { font-size:0.73rem; color:#64748b; font-weight:500; margin-bottom:2px; }
+        .stat-value { font-size:1.45rem; font-weight:700; color:#0f172a; line-height:1; }
+
+        /* Modal */
+        .modal-content { border:none; border-radius:14px; overflow:hidden; }
+        .modal-header {
+            background: linear-gradient(135deg,#c44e11,#f26722);
+            color:#fff; padding:1.1rem 1.4rem; border:none;
+        }
+        .modal-title { font-weight:700; font-size:0.98rem; }
+        .modal-header .btn-close { filter:brightness(0) invert(1); opacity:0.85; }
+        .modal-body  { padding:1.4rem; }
+        .modal-footer{ border-top:1px solid #f1f5f9; padding:0.9rem 1.4rem; }
+        .form-label  { font-size:0.82rem; font-weight:600; color:#374151; margin-bottom:0.3rem; }
+        .form-control, .form-select {
+            border-radius:8px; border:1px solid #d1d5db;
+            font-size:0.875rem; transition:border-color 0.2s, box-shadow 0.2s;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color:#f26722; box-shadow:0 0 0 3px rgba(242,103,34,0.13);
+        }
+        .btn-save {
+            background:#f26722; color:#fff; border:none;
+            border-radius:8px; font-weight:600; font-size:0.875rem;
+            padding:0.5rem 1.3rem; transition:background 0.18s;
+        }
+        .btn-save:hover { background:#d95a15; color:#fff; }
+        .btn-cancel2 {
+            background:#f1f5f9; color:#374151; border:none;
+            border-radius:8px; font-weight:600; font-size:0.875rem; padding:0.5rem 1.1rem;
+        }
+        .btn-cancel2:hover { background:#e2e8f0; }
+    </style>
 </head>
 <body>
-<div th:replace="fragments/navbar :: navbar"></div>
-<div class="container mt-4">
-    <h1 class="mb-4">Danh mục</h1>
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th>Mã</th>
-            <th>Tên</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="c : ${categories}">
-            <td th:text="${c.code}">CAT</td>
-            <td th:text="${c.name}">Danh mục</td>
-        </tr>
-        <tr th:if="${#lists.isEmpty(categories)}">
-            <td colspan="2" class="text-center">Chưa có danh mục</td>
-        </tr>
-        </tbody>
-    </table>
+<div th:replace="fragments/sidebar :: sidebar"></div>
+
+<div class="wms-main">
+
+    <!-- Page top bar -->
+    <div class="page-topbar">
+        <div>
+            <h1><i class="bi bi-tags-fill me-2" style="color:#f26722"></i>Category Management</h1>
+            <p>Manage product categories and hierarchies</p>
+        </div>
+        <button class="btn-add-cat"
+                data-bs-toggle="modal"
+                data-bs-target="#addCatModal"
+                type="button">
+            <i class="bi bi-plus-lg"></i> Add Category
+        </button>
+    </div>
+
+    <div class="main-content">
+
+        <!-- Alerts -->
+        <div th:if="${errorMessage}"
+             class="alert alert-danger alert-dismissible fade show mb-3 rounded-3" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <span th:text="${errorMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <div th:if="${successMessage}"
+             class="alert alert-success alert-dismissible fade show mb-3 rounded-3" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            <span th:text="${successMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Toolbar: Search + Filter -->
+        <div class="toolbar">
+            <div class="search-wrap">
+                <i class="bi bi-search"></i>
+                <input type="text" class="search-input" id="searchInput"
+                       placeholder="Search by name or code...">
+            </div>
+            <select class="filter-select" id="typeFilter">
+                <option value="">All Types</option>
+                <option value="root">Root only</option>
+                <option value="sub">Sub only</option>
+            </select>
+        </div>
+
+        <!-- Categories Table -->
+        <div class="table-card">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th style="width:42px">#</th>
+                    <th>CATEGORY</th>
+                    <th>CODE</th>
+                    <th>PARENT</th>
+                    <th style="width:80px">ACTIONS</th>
+                </tr>
+                </thead>
+                <tbody id="catsBody">
+                <tr th:each="c, stat : ${categories}"
+                    th:attr="data-name=${c.name}, data-code=${c.code}, data-type=${c.parentId == null ? 'root' : 'sub'}">
+                    <td class="text-muted" style="font-size:0.82rem"
+                        th:text="${stat.count}">1</td>
+                    <td>
+                        <div class="cat-info">
+                            <div class="cat-icon">
+                                <i class="bi bi-tag-fill"></i>
+                            </div>
+                            <div>
+                                <div class="cat-name" th:text="${c.name}">Category Name</div>
+                                <div class="cat-sub" th:text="'ID: ' + ${c.id}">ID</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="badge-code" th:text="${c.code}">CODE</span>
+                    </td>
+                    <td>
+                        <span th:if="${c.parentId != null}" class="badge-parent">
+                            <i class="bi bi-diagram-2 me-1"></i>
+                            <span th:text="${c.parentId}">parent</span>
+                        </span>
+                        <span th:if="${c.parentId == null}" class="badge-no-parent">
+                            Root category
+                        </span>
+                    </td>
+                    <td>
+                        <div class="d-flex gap-1 align-items-center">
+                            <button class="btn-act" type="button" title="Edit"
+                                    th:attr="data-cid=${c.id}, data-cname=${c.name}, data-ccode=${c.code}"
+                                    onclick="openEditModal(this)">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <!-- Delete -->
+                            <form th:action="@{/categories/{id}/delete(id=${c.id})}" method="post"
+                                  style="margin:0;display:inline"
+                                  th:attr="data-cname=${c.name}">
+                                <button type="button" class="btn-act red" title="Delete"
+                                        onclick="confirmDelete(this.closest('form'))">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                <!-- Empty state -->
+                <tr th:if="${#lists.isEmpty(categories)}">
+                    <td colspan="5">
+                        <div class="empty-state">
+                            <div class="ei"><i class="bi bi-tags"></i></div>
+                            <p style="color:#475569;font-weight:600;margin-bottom:4px">No categories yet</p>
+                            <small>Click <strong>Add Category</strong> to create the first one</small>
+                        </div>
+                    </td>
+                </tr>
+                <!-- No search results (JS-controlled) -->
+                <tr id="noResultRow" style="display:none">
+                    <td colspan="5">
+                        <div class="empty-state">
+                            <div class="ei"><i class="bi bi-search"></i></div>
+                            <p style="color:#475569;font-weight:600;margin-bottom:4px">No matching categories</p>
+                            <small>Try a different keyword</small>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <!-- Footer -->
+            <div class="table-footer">
+                <span id="tableCount"
+                      th:text="${categories.size()} + ' category(ies) total'">0 category(ies) total</span>
+                <div class="page-pills d-flex gap-1">
+                    <button class="btn btn-sm" style="border-radius:6px;border:1px solid #e2e8f0;background:#fff;font-size:0.8rem;font-weight:500;" type="button">1</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stat Cards -->
+        <div class="stat-row">
+            <div class="stat-card">
+                <div class="stat-icon-wrap si-orange"><i class="bi bi-tags-fill"></i></div>
+                <div>
+                    <div class="stat-label">TOTAL CATEGORIES</div>
+                    <div class="stat-value" th:text="${categories.size()}">0</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon-wrap si-green"><i class="bi bi-diagram-3-fill"></i></div>
+                <div>
+                    <div class="stat-label">ROOT CATEGORIES</div>
+                    <div class="stat-value" id="rootCount">0</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon-wrap si-blue"><i class="bi bi-diagram-2-fill"></i></div>
+                <div>
+                    <div class="stat-label">SUB-CATEGORIES</div>
+                    <div class="stat-value" id="subCount">0</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div><!-- /.wms-main -->
+
+<!-- ===== Add Category Modal ===== -->
+<div class="modal fade" id="addCatModal" tabindex="-1"
+     aria-labelledby="addCatModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addCatModalLabel">
+                    <i class="bi bi-tag-fill me-2"></i>Add New Category
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <form th:action="@{/categories}" method="post">
+                <div class="modal-body">
+                    <!-- Code -->
+                    <div class="mb-3">
+                        <label for="cat-code" class="form-label">
+                            <i class="bi bi-upc me-1 text-warning"></i>
+                            Code <span class="text-danger">*</span>
+                        </label>
+                        <input id="cat-code" type="text" class="form-control"
+                               name="code"
+                               placeholder="e.g. ELEC, FOOD..." required
+                               style="text-transform:uppercase">
+                        <div class="form-text">Unique short identifier (uppercase recommended)</div>
+                    </div>
+                    <!-- Name -->
+                    <div class="mb-3">
+                        <label for="cat-name" class="form-label">
+                            <i class="bi bi-tag me-1 text-warning"></i>
+                            Name <span class="text-danger">*</span>
+                        </label>
+                        <input id="cat-name" type="text" class="form-control"
+                               name="name"
+                               placeholder="Category display name..." required>
+                    </div>
+                    <!-- Parent (optional) -->
+                    <div class="mb-1">
+                        <label for="cat-parent" class="form-label">
+                            <i class="bi bi-diagram-2 me-1 text-success"></i>
+                            Parent Category <span class="text-muted">(optional)</span>
+                        </label>
+                        <select id="cat-parent" class="form-select" name="parentId">
+                            <option value="">— None (root category) —</option>
+                            <option th:each="c : ${categories}"
+                                    th:value="${c.id}"
+                                    th:text="${c.code + ' – ' + c.name}">Category</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel2"
+                            data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-save">
+                        <i class="bi bi-save me-1"></i>Save Category
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
+
+<!-- ===== Edit Category Modal ===== -->
+<div class="modal fade" id="editCatModal" tabindex="-1"
+     aria-labelledby="editCatModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editCatModalLabel">
+                    <i class="bi bi-pencil-square me-2"></i>Edit Category
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <form id="editCatForm" method="post">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="bi bi-upc me-1 text-warning"></i>Code
+                        </label>
+                        <input type="text" class="form-control" id="editCode" name="code" required
+                               style="text-transform:uppercase">
+                    </div>
+                    <div class="mb-1">
+                        <label class="form-label">
+                            <i class="bi bi-tag me-1 text-warning"></i>Name
+                        </label>
+                        <input type="text" class="form-control" id="editName" name="name" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel2"
+                            data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-save">
+                        <i class="bi bi-save me-1"></i>Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    /* ── Stat counts ── */
+    (function computeStats() {
+        var rows = document.querySelectorAll('#catsBody tr[data-name]');
+        var root = 0, sub = 0;
+        // We use a data attribute trick: rows with a parentId cell showing "Root category" count as root
+        rows.forEach(function(row) {
+            var parentCell = row.cells[3]; // 4th column = PARENT
+            if (parentCell && parentCell.textContent.trim().includes('Root category')) {
+                root++;
+            } else {
+                sub++;
+            }
+        });
+        document.getElementById('rootCount').textContent = root;
+        document.getElementById('subCount').textContent  = sub;
+    })();
+
+    /* ── Live search + type filter ── */
+    var searchInput = document.getElementById('searchInput');
+    var typeFilter  = document.getElementById('typeFilter');
+    var noResultRow = document.getElementById('noResultRow');
+    var tableCount  = document.getElementById('tableCount');
+
+    function applyFilter() {
+        var q    = searchInput.value.toLowerCase();
+        var type = typeFilter.value;          // '' | 'root' | 'sub'
+        var rows = document.querySelectorAll('#catsBody tr[data-name]');
+        var visible = 0;
+        rows.forEach(function(row) {
+            var matchName = !q    || row.dataset.name.toLowerCase().includes(q)
+                                  || row.dataset.code.toLowerCase().includes(q);
+            var matchType = !type || row.dataset.type === type;
+            if (matchName && matchType) {
+                row.style.display = '';
+                visible++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+        noResultRow.style.display = (visible === 0 && rows.length > 0) ? '' : 'none';
+        tableCount.textContent    = visible + ' category(ies) found';
+    }
+
+    searchInput.addEventListener('input',  applyFilter);
+    typeFilter .addEventListener('change', applyFilter);
+
+    /* ── Edit Modal ── */
+    function openEditModal(btn) {
+        var cid   = btn.getAttribute('data-cid');
+        var cname = btn.getAttribute('data-cname');
+        var ccode = btn.getAttribute('data-ccode');
+
+        document.getElementById('editCatForm').action = '/categories/' + cid + '/update';
+        document.getElementById('editName').value = cname;
+        document.getElementById('editCode').value = ccode;
+
+        new bootstrap.Modal(document.getElementById('editCatModal')).show();
+    }
+
+    /* ── Confirm Delete ── */
+    function confirmDelete(form) {
+        var cname = form.getAttribute('data-cname');
+        if (confirm('Xóa danh mục "' + cname + '"?\nHành động này không thể hoàn tác.')) {
+            form.submit();
+        }
+    }
+</script>
 </body>
 </html>
-

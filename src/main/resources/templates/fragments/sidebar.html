@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+
+    <div th:fragment="sidebar">
+        <!-- ===== Sidebar Styles ===== -->
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+            :root {
+                --sidebar-w: 240px;
+                --sidebar-bg: #ffffff;
+                --sidebar-border: #f0f0f4;
+                --text-primary: #1a1a2e;
+                --text-secondary: #8a8aa0;
+                --accent: #f26722;
+                --accent-light: #fff3ec;
+                --hover-bg: #f7f7fb;
+                --active-bg: #fff3ec;
+                --active-text: #f26722;
+            }
+
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+
+            body {
+                font-family: 'Inter', sans-serif;
+                background: #f4f5f9;
+                display: flex;
+                min-height: 100vh;
+            }
+
+            /* ── Sidebar ── */
+            .wms-sidebar {
+                width: var(--sidebar-w);
+                min-height: 100vh;
+                background: var(--sidebar-bg);
+                border-right: 1px solid var(--sidebar-border);
+                display: flex;
+                flex-direction: column;
+                position: fixed;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                z-index: 1000;
+                box-shadow: 2px 0 12px rgba(0, 0, 0, 0.04);
+            }
+
+            /* ── Brand / Logo ── */
+            .wms-brand {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 24px 20px 20px;
+                border-bottom: 1px solid var(--sidebar-border);
+                text-decoration: none;
+            }
+
+            .wms-brand-icon {
+                width: 40px;
+                height: 40px;
+                background: linear-gradient(135deg, #f26722, #ff8c42);
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.25rem;
+                color: #fff;
+                box-shadow: 0 4px 12px rgba(242, 103, 34, 0.35);
+                flex-shrink: 0;
+            }
+
+
+            .wms-brand-name {
+                font-size: 0.95rem;
+                font-weight: 700;
+                color: var(--text-primary);
+                line-height: 1.2;
+            }
+
+            .wms-brand-role {
+                font-size: 0.72rem;
+                color: var(--text-secondary);
+                font-weight: 500;
+            }
+
+            /* ── Nav ── */
+            .wms-nav {
+                flex: 1;
+                padding: 16px 12px;
+                overflow-y: auto;
+            }
+
+            .wms-nav-label {
+                font-size: 0.65rem;
+                font-weight: 700;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+                color: var(--text-secondary);
+                padding: 4px 8px 8px;
+                margin-top: 8px;
+            }
+
+            .wms-nav-item {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 10px 12px;
+                border-radius: 9px;
+                text-decoration: none;
+                color: #4a4a68;
+                font-size: 0.875rem;
+                font-weight: 500;
+                transition: background 0.15s, color 0.15s, transform 0.12s;
+                margin-bottom: 2px;
+                position: relative;
+            }
+
+            .wms-nav-item:hover {
+                background: var(--hover-bg);
+                color: var(--text-primary);
+                transform: translateX(2px);
+            }
+
+            .wms-nav-item.active {
+                background: var(--active-bg);
+                color: var(--active-text);
+                font-weight: 600;
+            }
+
+            .wms-nav-item.active::before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 20%;
+                bottom: 20%;
+                width: 3px;
+                background: var(--accent);
+                border-radius: 0 3px 3px 0;
+            }
+
+            .wms-nav-icon {
+                width: 20px;
+                height: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1rem;
+                flex-shrink: 0;
+                opacity: 0.7;
+                transition: opacity 0.15s;
+            }
+
+            .wms-nav-item.active .wms-nav-icon,
+            .wms-nav-item:hover .wms-nav-icon {
+                opacity: 1;
+            }
+
+            /* ── User footer ── */
+            .wms-user-footer {
+                padding: 14px 16px;
+                border-top: 1px solid var(--sidebar-border);
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .wms-user-avatar {
+                width: 36px;
+                height: 36px;
+                border-radius: 50%;
+                background: linear-gradient(135deg, #667eea, #764ba2);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #fff;
+                font-weight: 700;
+                font-size: 0.85rem;
+                flex-shrink: 0;
+            }
+
+            .wms-user-info {
+                flex: 1;
+                min-width: 0;
+            }
+
+            .wms-user-name {
+                font-size: 0.82rem;
+                font-weight: 600;
+                color: var(--text-primary);
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .wms-user-role {
+                font-size: 0.7rem;
+                color: var(--text-secondary);
+            }
+
+            .wms-logout-btn {
+                width: 30px;
+                height: 30px;
+                border-radius: 7px;
+                border: 1px solid #ededf5;
+                background: #fff;
+                color: #8a8aa0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.9rem;
+                text-decoration: none;
+                cursor: pointer;
+                transition: background 0.15s, color 0.15s, border-color 0.15s;
+                flex-shrink: 0;
+            }
+
+            .wms-logout-btn:hover {
+                background: #fee2e2;
+                color: #dc2626;
+                border-color: #fca5a5;
+            }
+
+            .wms-login-btn {
+                width: 30px;
+                height: 30px;
+                border-radius: 7px;
+                border: 1px solid #ededf5;
+                background: #fff;
+                color: #8a8aa0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.9rem;
+                text-decoration: none;
+                cursor: pointer;
+                transition: all 0.15s;
+                flex-shrink: 0;
+            }
+
+            .wms-login-btn:hover {
+                background: #dbeafe;
+                color: #2563eb;
+                border-color: #93c5fd;
+            }
+
+            /* ── Main content offset ── */
+            .wms-main {
+                margin-left: var(--sidebar-w);
+                flex: 1;
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+            }
+        </style>
+
+        <!-- ===== Sidebar HTML ===== -->
+        <aside class="wms-sidebar">
+
+            <!-- Brand -->
+            <a class="wms-brand" href="/warehouses">
+                <div class="wms-brand-icon">
+                    <i class="bi bi-box-seam-fill"></i>
+                </div>
+                <div class="wms-brand-text">
+                    <div class="wms-brand-name">Storage Solutions</div>
+                    <div class="wms-brand-role">Facility Admin</div>
+                </div>
+            </a>
+
+            <!-- Nav -->
+            <nav class="wms-nav">
+
+                <div class="wms-nav-label">Main Menu</div>
+
+                <a class="wms-nav-item" href="#" onclick="return false"
+                    style="opacity:0.45; cursor:not-allowed; pointer-events:all;" title="Coming soon">
+                    <span class="wms-nav-icon"><i class="bi bi-bar-chart"></i></span>
+                    Dashboard
+                </a>
+
+                <a class="wms-nav-item"
+                    th:classappend="${currentUri != null and currentUri.startsWith('/locations')} ? 'active'"
+                    href="/warehouses">
+                    <span class="wms-nav-icon"><i class="bi bi-house-door"></i></span>
+                    Warehouse Management
+                </a>
+
+                <a class="wms-nav-item"
+                    th:classappend="${currentUri != null and currentUri.startsWith('/products')} ? 'active'"
+                    href="/products">
+                    <span class="wms-nav-icon"><i class="bi bi-box-seam"></i></span>
+                    Inventory
+                </a>
+
+                <a class="wms-nav-item" href="#" onclick="return false"
+                    style="opacity:0.45; cursor:not-allowed; pointer-events:all;" title="Coming soon">
+                    <span class="wms-nav-icon"><i class="bi bi-shop"></i></span>
+                    Supplier
+                </a>
+
+                <a class="wms-nav-item" href="#" onclick="return false"
+                    style="opacity:0.45; cursor:not-allowed; pointer-events:all;" title="Coming soon">
+                    <span class="wms-nav-icon"><i class="bi bi-journal"></i></span>
+                    Inventory Inbound / Outbound
+                </a>
+
+                <div class="wms-nav-label">Management</div>
+
+                <a class="wms-nav-item"
+                    th:classappend="${currentUri != null and currentUri.startsWith('/categories')} ? 'active'"
+                    href="/categories">
+                    <span class="wms-nav-icon"><i class="bi bi-tags"></i></span>
+                    Categories
+                </a>
+
+                <a class="wms-nav-item"
+                    th:classappend="${currentUri != null and currentUri.startsWith('/uoms')} ? 'active'" href="/uoms">
+                    <span class="wms-nav-icon"><i class="bi bi-rulers"></i></span>
+                    UOMs
+                </a>
+
+                <a class="wms-nav-item"
+                    th:classappend="${currentUri != null and currentUri.startsWith('/users')} ? 'active'" href="/users">
+                    <span class="wms-nav-icon"><i class="bi bi-people"></i></span>
+                    Users
+                </a>
+
+                <div class="wms-nav-label">System</div>
+
+                <a class="wms-nav-item" href="#" onclick="return false"
+                    style="opacity:0.45; cursor:not-allowed; pointer-events:all;" title="Coming soon">
+                    <span class="wms-nav-icon"><i class="bi bi-clipboard"></i></span>
+                    Reports
+                </a>
+
+                <a class="wms-nav-item"
+                    th:classappend="${currentUri != null and currentUri.startsWith('/roles')} ? 'active'" href="/roles">
+                    <span class="wms-nav-icon"><i class="bi bi-shield-check"></i></span>
+                    Roles
+                </a>
+
+                <a class="wms-nav-item"
+                    th:classappend="${currentUri != null and currentUri.startsWith('/permissions')} ? 'active'"
+                    href="/permissions">
+                    <span class="wms-nav-icon"><i class="bi bi-key"></i></span>
+                    Permissions
+                </a>
+
+            </nav>
+
+            <!-- User footer -->
+            <div class="wms-user-footer">
+                <!-- Logged in -->
+                <th:block th:if="${session.AUTH_USERNAME != null}">
+                    <div class="wms-user-avatar"
+                        th:text="${#strings.toUpperCase(#strings.substring(session.AUTH_USERNAME, 0, 1))}">A</div>
+                    <div class="wms-user-info">
+                        <div class="wms-user-name" th:text="${session.AUTH_USERNAME}">Admin</div>
+                        <div class="wms-user-role">Administrator</div>
+                    </div>
+                    <a class="wms-logout-btn" href="/logout" title="Đăng xuất">
+                        <i class="bi bi-box-arrow-right"></i>
+                    </a>
+                </th:block>
+                <!-- Guest -->
+                <th:block th:if="${session.AUTH_USERNAME == null}">
+                    <div class="wms-user-avatar" style="background: linear-gradient(135deg,#94a3b8,#64748b)">
+                        <i class="bi bi-person" style="font-size:1rem"></i>
+                    </div>
+                    <div class="wms-user-info">
+                        <div class="wms-user-name">Guest</div>
+                        <div class="wms-user-role">Not logged in</div>
+                    </div>
+                    <a class="wms-login-btn" href="/login" title="Đăng nhập">
+                        <i class="bi bi-box-arrow-in-right"></i>
+                    </a>
+                </th:block>
+            </div>
+
+        </aside>
+    </div>
+
+</body>
+
+</html>
