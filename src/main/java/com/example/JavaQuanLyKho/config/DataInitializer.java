@@ -127,27 +127,81 @@ public class DataInitializer {
             pProductLock.setName("Khóa / Mở khóa sản phẩm");
             Permission savedProductLock = permissionRepository.save(pProductLock);
 
+            // ─── Category ────────────────────────────────────────────────────
+            Permission pCategoryCreate = new Permission();
+            pCategoryCreate.setCode("CATEGORY_CREATE");
+            pCategoryCreate.setModule("MASTER_DATA");
+            pCategoryCreate.setName("Tạo danh mục");
+            Permission savedCategoryCreate = permissionRepository.save(pCategoryCreate);
+
+            Permission pCategoryUpdate = new Permission();
+            pCategoryUpdate.setCode("CATEGORY_UPDATE");
+            pCategoryUpdate.setModule("MASTER_DATA");
+            pCategoryUpdate.setName("Cập nhật danh mục");
+            Permission savedCategoryUpdate = permissionRepository.save(pCategoryUpdate);
+
+            Permission pCategoryDelete = new Permission();
+            pCategoryDelete.setCode("CATEGORY_DELETE");
+            pCategoryDelete.setModule("MASTER_DATA");
+            pCategoryDelete.setName("Xóa danh mục");
+            Permission savedCategoryDelete = permissionRepository.save(pCategoryDelete);
+
+            // ─── UOM ─────────────────────────────────────────────────────────
+            Permission pUomCreate = new Permission();
+            pUomCreate.setCode("UOM_CREATE");
+            pUomCreate.setModule("MASTER_DATA");
+            pUomCreate.setName("Tạo đơn vị tính");
+            Permission savedUomCreate = permissionRepository.save(pUomCreate);
+
+            Permission pUomUpdate = new Permission();
+            pUomUpdate.setCode("UOM_UPDATE");
+            pUomUpdate.setModule("MASTER_DATA");
+            pUomUpdate.setName("Cập nhật đơn vị tính");
+            Permission savedUomUpdate = permissionRepository.save(pUomUpdate);
+
+            Permission pUomDelete = new Permission();
+            pUomDelete.setCode("UOM_DELETE");
+            pUomDelete.setModule("MASTER_DATA");
+            pUomDelete.setName("Xóa đơn vị tính");
+            Permission savedUomDelete = permissionRepository.save(pUomDelete);
+
+            // ─── Supplier ────────────────────────────────────────────────────
+            Permission pSupplierView = new Permission();
+            pSupplierView.setCode("SUPPLIER_VIEW");
+            pSupplierView.setModule("MASTER_DATA");
+            pSupplierView.setName("Xem nhà cung cấp");
+            Permission savedSupplierView = permissionRepository.save(pSupplierView);
+
+            Permission pSupplierCreate = new Permission();
+            pSupplierCreate.setCode("SUPPLIER_CREATE");
+            pSupplierCreate.setModule("MASTER_DATA");
+            pSupplierCreate.setName("Tạo nhà cung cấp");
+            Permission savedSupplierCreate = permissionRepository.save(pSupplierCreate);
+
+            Permission pSupplierUpdate = new Permission();
+            pSupplierUpdate.setCode("SUPPLIER_UPDATE");
+            pSupplierUpdate.setModule("MASTER_DATA");
+            pSupplierUpdate.setName("Cập nhật nhà cung cấp");
+            Permission savedSupplierUpdate = permissionRepository.save(pSupplierUpdate);
+
+            Permission pSupplierDelete = new Permission();
+            pSupplierDelete.setCode("SUPPLIER_DELETE");
+            pSupplierDelete.setModule("MASTER_DATA");
+            pSupplierDelete.setName("Xóa nhà cung cấp");
+            Permission savedSupplierDelete = permissionRepository.save(pSupplierDelete);
+
             Role adminRole = new Role();
             adminRole.setCode("ADMIN");
             adminRole.setName("Administrator");
             Set<Permission> adminPermissions = new HashSet<>(List.of(
                     savedWarehouseView,
-                    savedUomView,
-                    savedCategoryView,
-                    savedProductView,
-                    savedProductCreate,
-                    savedProductUpdate,
-                    savedProductDelete,
-                    savedProductLock,
-                    savedLocationView,
-                    savedLocationCreate,
-                    savedRoleView,
-                    savedRoleCreate,
-                    savedRoleUpdate,
-                    savedUserView,
-                    savedUserCreate,
-                    savedUserUpdate,
-                    savedUserLock
+                    savedUomView, savedUomCreate, savedUomUpdate, savedUomDelete,
+                    savedCategoryView, savedCategoryCreate, savedCategoryUpdate, savedCategoryDelete,
+                    savedProductView, savedProductCreate, savedProductUpdate, savedProductDelete, savedProductLock,
+                    savedLocationView, savedLocationCreate,
+                    savedRoleView, savedRoleCreate, savedRoleUpdate,
+                    savedUserView, savedUserCreate, savedUserUpdate, savedUserLock,
+                    savedSupplierView, savedSupplierCreate, savedSupplierUpdate, savedSupplierDelete
             ));
             adminRole.setPermissions(adminPermissions);
             Role savedAdminRole = roleRepository.save(adminRole);

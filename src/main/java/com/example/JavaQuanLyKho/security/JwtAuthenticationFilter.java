@@ -5,6 +5,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -30,9 +31,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+        String token = null;
+
+        // 1. Ưu tiên đọc từ Authorization header (REST API)
         String header = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (header != null && header.startsWith("Bearer ")) {
-            String token = header.substring(7);
+            token = header.substring(7);
+        }
+
+        // 2. Fallback: đọc từ Session (Thymeleaf / browser)
+        if (token == null) {
+            HttpSession session = request.getSession(false);
+            if (session != null) {
+                Object sessionToken = session.getAttribute("AUTH_TOKEN");
+                if (sessionToken instanceof String) {
+                    token = (String) sessionToken;
+                }
+            }
+        }
+
+        if (token != null) {
             try {
                 Claims claims = jwtService.parseToken(token);
                 String username = claims.getSubject();
@@ -44,6 +62,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.clearContext();
             }
         }
+
         filterChain.doFilter(request, response);
     }
 
