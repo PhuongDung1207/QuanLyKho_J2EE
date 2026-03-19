@@ -13,8 +13,8 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "inbound_receipts")
-public class InboundReceipt {
+@Table(name = "outbound_issues")
+public class OutboundIssue {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -30,12 +30,12 @@ public class InboundReceipt {
     @Column(name = "warehouse_id", nullable = false)
     private UUID warehouseId;
 
-    @Column(name = "supplier_id")
-    private UUID supplierId;
+    @Column(name = "customer_id")
+    private UUID customerId;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 32)
-    private InboundReceiptStatus status = InboundReceiptStatus.DRAFT;
+    private OutboundIssueStatus status = OutboundIssueStatus.DRAFT;
 
     @Column(name = "created_by")
     private UUID createdBy;
@@ -84,19 +84,19 @@ public class InboundReceipt {
         this.warehouseId = warehouseId;
     }
 
-    public UUID getSupplierId() {
-        return supplierId;
+    public UUID getCustomerId() {
+        return customerId;
     }
 
-    public void setSupplierId(UUID supplierId) {
-        this.supplierId = supplierId;
+    public void setCustomerId(UUID customerId) {
+        this.customerId = customerId;
     }
 
-    public InboundReceiptStatus getStatus() {
+    public OutboundIssueStatus getStatus() {
         return status;
     }
 
-    public void setStatus(InboundReceiptStatus status) {
+    public void setStatus(OutboundIssueStatus status) {
         this.status = status;
     }
 

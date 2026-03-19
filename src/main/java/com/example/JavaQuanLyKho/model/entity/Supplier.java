@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Entity
@@ -24,23 +25,26 @@ public class Supplier {
     @Column(name = "name", nullable = false, length = 255)
     private String name;
 
-    @Column(name = "category", length = 128)
-    private String category;
+    @Column(name = "contact_name", length = 255)
+    private String contactName;
 
-    @Column(name = "phone", length = 50)
-    private String phone;
+    @Column(name = "contact_email", length = 255)
+    private String contactEmail;
 
-    @Column(name = "email", length = 150)
-    private String email;
+    @Column(name = "contact_phone", length = 64)
+    private String contactPhone;
 
-    @Column(name = "address", columnDefinition = "TEXT")
+    @Column(name = "address", length = 1000)
     private String address;
 
-    @Column(name = "bank_account", length = 255)
-    private String bankAccount;
-
-    @Column(name = "status", nullable = false, length = 20)
+    @Column(name = "status", nullable = false, length = 32)
     private String status = "ACTIVE";
+
+    @Column(name = "created_at", nullable = false)
+    private OffsetDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private OffsetDateTime updatedAt;
 
     public UUID getId() {
         return id;
@@ -66,28 +70,28 @@ public class Supplier {
         this.name = name;
     }
 
-    public String getCategory() {
-        return category;
+    public String getContactName() {
+        return contactName;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setContactName(String contactName) {
+        this.contactName = contactName;
     }
 
-    public String getPhone() {
-        return phone;
+    public String getContactEmail() {
+        return contactEmail;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setContactEmail(String contactEmail) {
+        this.contactEmail = contactEmail;
     }
 
-    public String getEmail() {
-        return email;
+    public String getContactPhone() {
+        return contactPhone;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setContactPhone(String contactPhone) {
+        this.contactPhone = contactPhone;
     }
 
     public String getAddress() {
@@ -98,19 +102,27 @@ public class Supplier {
         this.address = address;
     }
 
-    public String getBankAccount() {
-        return bankAccount;
-    }
-
-    public void setBankAccount(String bankAccount) {
-        this.bankAccount = bankAccount;
-    }
-
     public String getStatus() {
         return status;
     }
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public OffsetDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(OffsetDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public OffsetDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(OffsetDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

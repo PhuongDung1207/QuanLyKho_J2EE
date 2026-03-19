@@ -13,8 +13,8 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "inbound_receipts")
-public class InboundReceipt {
+@Table(name = "transfers")
+public class Transfer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -24,18 +24,15 @@ public class InboundReceipt {
     @Column(name = "code", nullable = false, unique = true, length = 64)
     private String code;
 
-    @Column(name = "type", nullable = false, length = 64)
-    private String type;
+    @Column(name = "from_warehouse_id", nullable = false)
+    private UUID fromWarehouseId;
 
-    @Column(name = "warehouse_id", nullable = false)
-    private UUID warehouseId;
-
-    @Column(name = "supplier_id")
-    private UUID supplierId;
+    @Column(name = "to_warehouse_id", nullable = false)
+    private UUID toWarehouseId;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 32)
-    private InboundReceiptStatus status = InboundReceiptStatus.DRAFT;
+    private TransferStatus status = TransferStatus.DRAFT;
 
     @Column(name = "created_by")
     private UUID createdBy;
@@ -48,6 +45,9 @@ public class InboundReceipt {
 
     @Column(name = "approved_at")
     private OffsetDateTime approvedAt;
+
+    @Column(name = "issued_at")
+    private OffsetDateTime issuedAt;
 
     @Column(name = "completed_at")
     private OffsetDateTime completedAt;
@@ -68,35 +68,27 @@ public class InboundReceipt {
         this.code = code;
     }
 
-    public String getType() {
-        return type;
+    public UUID getFromWarehouseId() {
+        return fromWarehouseId;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setFromWarehouseId(UUID fromWarehouseId) {
+        this.fromWarehouseId = fromWarehouseId;
     }
 
-    public UUID getWarehouseId() {
-        return warehouseId;
+    public UUID getToWarehouseId() {
+        return toWarehouseId;
     }
 
-    public void setWarehouseId(UUID warehouseId) {
-        this.warehouseId = warehouseId;
+    public void setToWarehouseId(UUID toWarehouseId) {
+        this.toWarehouseId = toWarehouseId;
     }
 
-    public UUID getSupplierId() {
-        return supplierId;
-    }
-
-    public void setSupplierId(UUID supplierId) {
-        this.supplierId = supplierId;
-    }
-
-    public InboundReceiptStatus getStatus() {
+    public TransferStatus getStatus() {
         return status;
     }
 
-    public void setStatus(InboundReceiptStatus status) {
+    public void setStatus(TransferStatus status) {
         this.status = status;
     }
 
@@ -130,6 +122,14 @@ public class InboundReceipt {
 
     public void setApprovedAt(OffsetDateTime approvedAt) {
         this.approvedAt = approvedAt;
+    }
+
+    public OffsetDateTime getIssuedAt() {
+        return issuedAt;
+    }
+
+    public void setIssuedAt(OffsetDateTime issuedAt) {
+        this.issuedAt = issuedAt;
     }
 
     public OffsetDateTime getCompletedAt() {

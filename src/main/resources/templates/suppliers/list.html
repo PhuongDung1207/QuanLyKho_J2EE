@@ -1,506 +1,638 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Supplier Management – WMS</title>
+    <title>Suppliers - WMS</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
-        * { font-family: 'Inter', sans-serif; }
-        body { background-color: #f8fafc; color: #1e293b; }
+        * {
+            font-family: 'Inter', sans-serif;
+        }
 
-        /* Top bar */
+        body {
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+
         .page-topbar {
-            background: #fff; border-bottom: 1px solid #e2e8f0;
-            padding: 1rem 2rem; display: flex; align-items: center;
-            justify-content: space-between; box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            background: #fff;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
         }
-        .page-topbar h1 { font-size: 1.15rem; font-weight: 700; margin: 0; color: #0f172a; }
-        .page-topbar p  { font-size: 0.78rem; color: #64748b; margin: 0; }
-        .btn-add-item {
-            background: #f26722; color: #fff; border: none;
-            border-radius: 8px; font-weight: 600; font-size: 0.85rem;
-            padding: 0.48rem 1.1rem; display: inline-flex; align-items: center; gap: 6px;
-            box-shadow: 0 2px 8px rgba(242,103,34,0.28); transition: background 0.18s, transform 0.15s;
+
+        .page-topbar h1 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin: 0;
+            color: #0f172a;
         }
-        .btn-add-item:hover { background: #d95a15; color: #fff; transform: translateY(-1px); }
 
-        /* Main */
-        .main-content { padding: 1.5rem 2rem; }
+        .page-topbar p {
+            font-size: 0.78rem;
+            color: #64748b;
+            margin: 0;
+        }
 
-        /* Toolbar */
-        .toolbar { display: flex; gap: 0.65rem; margin-bottom: 1rem; flex-wrap: wrap; align-items: center; }
-        .search-wrap { position: relative; flex: 1; min-width: 180px; }
+        .btn-add-supplier {
+            background: #0ea5e9;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            padding: 0.48rem 1.1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 8px rgba(14, 165, 233, 0.28);
+            transition: background 0.18s, transform 0.15s;
+        }
+
+        .btn-add-supplier:hover {
+            background: #0284c7;
+            color: #fff;
+            transform: translateY(-1px);
+        }
+
+        .main-content {
+            padding: 1.5rem 2rem;
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 0.65rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .search-wrap {
+            position: relative;
+            flex: 1;
+            min-width: 180px;
+        }
+
         .search-wrap .bi-search {
-            position: absolute; left: 11px; top: 50%;
-            transform: translateY(-50%); color: #94a3b8; font-size: 0.9rem; pointer-events:none;
+            position: absolute;
+            left: 11px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 0.9rem;
+            pointer-events: none;
         }
+
         .search-input {
-            width: 100%; padding: 0.48rem 0.75rem 0.48rem 2.1rem;
-            border: 1px solid #e2e8f0; border-radius: 8px;
-            font-size: 0.875rem; background: #fff; color: #1e293b; outline: none;
+            width: 100%;
+            padding: 0.48rem 0.75rem 0.48rem 2.1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            background: #fff;
+            color: #1e293b;
+            outline: none;
             transition: border-color 0.2s, box-shadow 0.2s;
         }
-        .search-input:focus { border-color: #f26722; box-shadow: 0 0 0 3px rgba(242,103,34,0.12); }
-        .filter-select {
-            padding: 0.48rem 2rem 0.48rem 0.75rem;
-            border: 1px solid #e2e8f0; border-radius: 8px;
-            font-size: 0.875rem; background: #fff; color: #1e293b; outline: none;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-        .filter-select:focus { border-color: #f26722; box-shadow: 0 0 0 3px rgba(242,103,34,0.12); }
 
-        /* Stat Cards */
-        .stat-card {
-            background: #fff; border-radius: 12px;
-            border: 1px solid #e2e8f0; padding: 1.2rem 1.5rem;
-            box-shadow: 0 1px 6px rgba(0,0,0,0.02); height: 100%;
+        .search-input:focus {
+            border-color: #0ea5e9;
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.12);
         }
-        .stat-icon {
-            width: 42px; height: 42px; border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.3rem; margin-bottom: 0.1rem;
-        }
-        .stat-title { font-size: 0.8rem; color: #64748b; font-weight: 600; }
-        .stat-val { font-size: 1.7rem; font-weight: 700; color: #0f172a; margin: 0; }
-        .stat-change { font-size: 0.75rem; font-weight: 600; display: inline-flex; align-items: center; gap: 3px; }
 
-        /* Table card */
         .table-card {
-            background: #fff; border-radius: 12px;
-            border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
         }
-        .table { margin: 0; }
+
+        .table {
+            margin: 0;
+        }
+
         .table thead th {
-            background: #f8fafc; color: #64748b; font-size: 0.72rem; font-weight: 700;
-            text-transform: uppercase; letter-spacing: 0.06em;
-            border-bottom: 1px solid #e2e8f0; border-top: none;
-            padding: 0.7rem 1rem; white-space: nowrap;
-        }
-        .table tbody td { padding: 0.8rem 1rem; vertical-align: middle; border-color: #f1f5f9; font-size: 0.875rem; }
-        .table tbody tr { transition: background 0.12s; }
-        .table tbody tr:hover { background: #f8fafc; }
-        .table tbody tr.clickable-row { cursor: pointer; }
-        .table tbody tr:last-child td { border-bottom: none; }
-
-        /* Icon badge */
-        .item-icon {
-            width: 36px; height: 36px; border-radius: 9px;
-            display: inline-flex; align-items: center; justify-content: center;
-            color: #fff; font-size: 1rem; flex-shrink: 0; font-weight: 600;
-        }
-        .item-info { display: flex; align-items: center; gap: 0.6rem; }
-        .item-name { font-weight: 600; font-size: 0.875rem; color: #0f172a; }
-        .item-sub  { font-size: 0.73rem; color: #94a3b8; }
-
-        /* Code/Status Badges */
-        .badge-status {
-            padding: 0.28em 0.72em; border-radius: 6px; font-weight: 600; font-size: 0.72rem;
-            display: inline-flex; align-items: center; gap: 4px;
-        }
-        .badge-status.active { background: #dcfce7; color: #166534; }
-        .badge-status.inactive { background: #f1f5f9; color: #475569; }
-        .badge-status.review { background: #fef3c7; color: #b45309; }
-        .badge-cat {
-            background: #eff6ff; color: #1d4ed8; font-size: 0.72rem; font-weight: 600;
-            padding: 0.28em 0.72em; border-radius: 6px; display: inline-block;
+            background: #f8fafc;
+            color: #64748b;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            border-bottom: 1px solid #e2e8f0;
+            border-top: none;
+            padding: 0.7rem 1rem;
+            white-space: nowrap;
         }
 
-        /* Empty state */
-        .empty-state { padding: 3rem 1rem; text-align: center; color: #94a3b8; }
-        .empty-state .ei { font-size: 2.6rem; color: #cbd5e1; margin-bottom: 0.7rem; }
-
-        /* Table footer */
-        .table-footer {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0.7rem 1rem; border-top: 1px solid #f1f5f9;
-            background: #fafbfc; font-size: 0.8rem; color: #64748b;
+        .table tbody td {
+            padding: 0.8rem 1rem;
+            vertical-align: middle;
+            border-color: #f1f5f9;
+            font-size: 0.875rem;
         }
 
-        /* Action btns */
+        .table tbody tr {
+            transition: background 0.12s;
+        }
+
+        .table tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .badge-code {
+            background: #e0f2fe;
+            color: #0369a1;
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 0.28em 0.72em;
+            border-radius: 6px;
+            letter-spacing: 0.04em;
+            font-family: 'Courier New', monospace;
+            display: inline-block;
+        }
+
+        .status-pill {
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 0.24em 0.7em;
+            border-radius: 999px;
+            border: 1px solid transparent;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-active {
+            background: #f0fdf4;
+            color: #15803d;
+            border-color: #bbf7d0;
+        }
+
+        .status-inactive {
+            background: #f1f5f9;
+            color: #64748b;
+            border-color: #cbd5e1;
+        }
+
+        .status-review {
+            background: #fffbeb;
+            color: #b45309;
+            border-color: #fde68a;
+        }
+
+        .status-default {
+            background: #f8fafc;
+            color: #475569;
+            border-color: #e2e8f0;
+        }
+
         .btn-act {
-            width: 30px; height: 30px; border-radius: 6px;
-            border: 1px solid #e2e8f0; background: #fff; color: #64748b;
-            display: inline-flex; align-items: center; justify-content: center;
-            font-size: 0.83rem; transition: all 0.15s; cursor: pointer;
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            color: #64748b;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.83rem;
+            transition: all 0.15s;
+            cursor: pointer;
         }
-        .btn-act:hover { background: #f1f5f9; color: #1e293b; border-color: #cbd5e1; }
-        .btn-act.red:hover { background: #fee2e2; color: #b91c1c; border-color: #fca5a5; }
 
-        /* Modal */
-        .modal-content { border:none; border-radius:14px; overflow:hidden; }
-        .modal-header { background: linear-gradient(135deg,#c44e11,#f26722); color:#fff; padding:1.1rem 1.4rem; border:none; }
-        .modal-title { font-weight:700; font-size:0.98rem; }
-        .modal-header .btn-close { filter:brightness(0) invert(1); opacity:0.85; }
-        .modal-body  { padding:1.4rem; }
-        .modal-footer{ border-top:1px solid #f1f5f9; padding:0.9rem 1.4rem; }
-        .form-label  { font-size:0.82rem; font-weight:600; color:#374151; margin-bottom:0.3rem; }
-        .form-control, .form-select {
-            border-radius:8px; border:1px solid #d1d5db; font-size:0.875rem; transition:border-color 0.2s, box-shadow 0.2s;
+        .btn-act:hover {
+            background: #f1f5f9;
+            color: #1e293b;
+            border-color: #cbd5e1;
         }
-        .form-control:focus, .form-select:focus { border-color:#f26722; box-shadow:0 0 0 3px rgba(242,103,34,0.13); }
-        .btn-save { background:#f26722; color:#fff; border:none; border-radius:8px; font-weight:600; font-size:0.875rem; padding:0.5rem 1.3rem; transition:background 0.18s; }
-        .btn-save:hover { background:#d95a15; color:#fff; }
-        .btn-cancel2 { background:#f1f5f9; color:#374151; border:none; border-radius:8px; font-weight:600; font-size:0.875rem; padding:0.5rem 1.1rem; }
-        .btn-cancel2:hover { background:#e2e8f0; }
+
+        .btn-act.red:hover {
+            background: #fee2e2;
+            color: #b91c1c;
+            border-color: #fca5a5;
+        }
+
+        .table-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.7rem 1rem;
+            border-top: 1px solid #f1f5f9;
+            background: #fafbfc;
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+
+        .empty-state {
+            padding: 3rem 1rem;
+            text-align: center;
+            color: #94a3b8;
+        }
+
+        .empty-state .ei {
+            font-size: 2.6rem;
+            color: #cbd5e1;
+            margin-bottom: 0.7rem;
+        }
+
+        .stat-row {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            flex: 1;
+            min-width: 150px;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1rem 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+        }
+
+        .stat-icon-wrap {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .si-blue {
+            background: #e0f2fe;
+            color: #0284c7;
+        }
+
+        .si-green {
+            background: #f0fdf4;
+            color: #16a34a;
+        }
+
+        .si-slate {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .stat-label {
+            font-size: 0.73rem;
+            color: #64748b;
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .stat-value {
+            font-size: 1.45rem;
+            font-weight: 700;
+            color: #0f172a;
+            line-height: 1;
+        }
+
+        .modal-content {
+            border: none;
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #0284c7, #0ea5e9);
+            color: #fff;
+            padding: 1.1rem 1.4rem;
+            border: none;
+        }
+
+        .modal-title {
+            font-weight: 700;
+            font-size: 0.98rem;
+        }
+
+        .modal-header .btn-close {
+            filter: brightness(0) invert(1);
+            opacity: 0.85;
+        }
+
+        .modal-body {
+            padding: 1.4rem;
+        }
+
+        .modal-footer {
+            border-top: 1px solid #f1f5f9;
+            padding: 0.9rem 1.4rem;
+        }
+
+        .form-label {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.3rem;
+        }
+
+        .form-control,
+        .form-select {
+            border-radius: 8px;
+            border: 1px solid #d1d5db;
+            font-size: 0.875rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #0ea5e9;
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.13);
+        }
+
+        .btn-save {
+            background: #0ea5e9;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            padding: 0.5rem 1.3rem;
+        }
+
+        .btn-save:hover {
+            background: #0284c7;
+            color: #fff;
+        }
+
+        .btn-cancel2 {
+            background: #f1f5f9;
+            color: #374151;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            padding: 0.5rem 1.1rem;
+        }
+
+        .btn-cancel2:hover {
+            background: #e2e8f0;
+        }
     </style>
 </head>
+
 <body>
 <div th:replace="fragments/sidebar :: sidebar"></div>
 
 <div class="wms-main">
-    
-    <!-- Page top bar -->
     <div class="page-topbar">
         <div>
-            <h1><i class="bi bi-truck me-2" style="color:#f26722"></i>Supplier Management</h1>
-            <p>Manage and monitor facility vendors, service providers, and procurement contracts.</p>
+            <h1><i class="bi bi-shop-window me-2" style="color:#0ea5e9"></i>Supplier Management</h1>
+            <p>Manage supplier records and contact information</p>
         </div>
-        <button class="btn-add-item" type="button" data-bs-toggle="modal" data-bs-target="#addSupplierModal">
+        <button class="btn-add-supplier" data-bs-toggle="modal" data-bs-target="#addSupplierModal" type="button">
             <i class="bi bi-plus-lg"></i> Add Supplier
         </button>
     </div>
 
     <div class="main-content">
-
-        <!-- 4 Stat Cards -->
-        <div class="row g-3 mb-4">
-            <div class="col-md-3">
-                <div class="stat-card">
-                    <div class="d-flex justify-content-between">
-                        <div class="stat-title">Total Suppliers</div>
-                        <div class="stat-icon" style="background: #fff3ed; color: #ea580c;">
-                            <i class="bi bi-person-badge"></i>
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-end gap-2 mt-1">
-                        <div class="stat-val">128</div>
-                        <div class="stat-change text-success mb-1"><i class="bi bi-arrow-up-right"></i> 5%</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="stat-card">
-                    <div class="d-flex justify-content-between">
-                        <div class="stat-title">Active Contracts</div>
-                        <div class="stat-icon" style="background: #eff6ff; color: #3b82f6;">
-                            <i class="bi bi-file-earmark-text"></i>
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-end gap-2 mt-1">
-                        <div class="stat-val">42</div>
-                        <div class="stat-change text-success mb-1"><i class="bi bi-arrow-up-right"></i> 2%</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="stat-card">
-                    <div class="d-flex justify-content-between">
-                        <div class="stat-title">Pending Deliveries</div>
-                        <div class="stat-icon" style="background: #fffbeb; color: #f59e0b;">
-                            <i class="bi bi-box-seam"></i>
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-end gap-2 mt-1">
-                        <div class="stat-val">15</div>
-                        <div class="stat-change text-danger mb-1"><i class="bi bi-arrow-down-right"></i> 3%</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="stat-card">
-                    <div class="d-flex justify-content-between">
-                        <div class="stat-title">Monthly Spend</div>
-                        <div class="stat-icon" style="background: #ecfdf5; color: #10b981;">
-                            <i class="bi bi-cash-stack"></i>
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-end gap-2 mt-1">
-                        <div class="stat-val">$12.4k</div>
-                        <div class="stat-change text-success mb-1"><i class="bi bi-arrow-up-right"></i> 8%</div>
-                    </div>
-                </div>
-            </div>
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show mb-3 rounded-3" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <span th:text="${errorMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show mb-3 rounded-3" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            <span th:text="${successMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
 
-        <!-- Toolbar: Search & Filters -->
         <div class="toolbar">
             <div class="search-wrap">
                 <i class="bi bi-search"></i>
-                <input type="text" class="search-input" id="searchInput" placeholder="Search suppliers by name or contact...">
+                <input type="text" class="search-input" id="searchInput"
+                       placeholder="Search by name, code, contact, email, phone...">
             </div>
-            <select class="form-select filter-select" style="width: 160px;">
-                <option value="">All Categories</option>
-                <option value="Packaging">Packaging</option>
-                <option value="Maintenance">Maintenance</option>
-                <option value="Security">Security</option>
-                <option value="IT Services">IT Services</option>
-            </select>
-            <select class="form-select filter-select" style="width: 140px;">
-                <option value="">All Status</option>
-                <option value="Active">Active</option>
-                <option value="Under Review">Under Review</option>
-                <option value="Inactive">Inactive</option>
-            </select>
         </div>
 
-        <!-- Suppliers Table -->
         <div class="table-card">
             <table class="table">
                 <thead>
                 <tr>
                     <th style="width:42px">#</th>
+                    <th>CODE</th>
                     <th>SUPPLIER NAME</th>
-                    <th>CATEGORY</th>
+                    <th>CONTACT</th>
                     <th>STATUS</th>
-                    <th>LAST ORDER</th>
-                    <th style="width:140px; text-align: right;">ACTIONS</th>
+                    <th style="width:90px">ACTIONS</th>
                 </tr>
                 </thead>
                 <tbody id="suppliersBody">
-                <tr data-name="PackBetter Solutions" class="clickable-row" onclick="window.location.href='/suppliers/view/1'">
-                    <td class="text-muted" style="font-size:0.82rem">1</td>
+                <tr th:each="s, stat : ${suppliers}"
+                    th:attr="data-name=${s.name},data-code=${s.code},data-contact=${s.contactName},data-email=${s.contactEmail},data-phone=${s.contactPhone},data-status=${s.status}">
+                    <td class="text-muted" style="font-size:0.82rem" th:text="${stat.count}">1</td>
+                    <td><span class="badge-code" th:text="${s.code}">SUP001</span></td>
                     <td>
-                        <div class="item-info">
-                            <div class="item-icon" style="background: linear-gradient(135deg, #f26722, #ea580c);">
-                                PB
-                            </div>
-                            <div>
-                                <div class="item-name">PackBetter Solutions</div>
-                                <div class="item-sub">ID: SUP-10023</div>
-                            </div>
-                        </div>
+                        <div class="fw-semibold text-dark" th:text="${s.name}">Supplier Name</div>
+                        <div class="small text-muted" th:text="${s.address != null ? s.address : '-'}">Address</div>
                     </td>
                     <td>
-                        <span class="badge-cat">Packaging</span>
-                    </td>
-
-                    <td>
-                        <span class="badge-status active"><i class="bi bi-circle-fill" style="font-size: 5px;"></i> Active</span>
-                    </td>
-                    <td class="text-muted fw-medium" style="font-size:0.85rem">
-                        Oct 12, 2023
+                        <div class="fw-semibold text-dark" th:text="${s.contactName != null ? s.contactName : '-'}">Contact</div>
+                        <div class="small text-muted" th:text="${s.contactEmail != null ? s.contactEmail : '-'}">Email</div>
+                        <div class="small text-muted" th:text="${s.contactPhone != null ? s.contactPhone : '-'}">Phone</div>
                     </td>
                     <td>
-                        <div class="d-flex gap-1 justify-content-end">
-                            <button class="btn-act" type="button" title="Email" onclick="event.stopPropagation();"><i class="bi bi-envelope"></i></button>
-                            <button class="btn-act text-primary" type="button" title="View/Edit" onclick="event.stopPropagation();"><i class="bi bi-pencil"></i></button>
-                            <form th:action="@{/suppliers/1/lock}" method="post" class="m-0 p-0 d-inline" onclick="event.stopPropagation();">
-                                <button type="submit" class="btn-act text-warning" title="Khóa" onclick="return confirm('Khóa nhà cung cấp này?');">
-                                    <i class="bi bi-lock"></i>
+                        <span class="status-pill"
+                              th:classappend="${s.status == 'ACTIVE'} ? ' status-active' : (${s.status == 'INACTIVE'} ? ' status-inactive' : (${s.status == 'UNDER_REVIEW'} ? ' status-review' : ' status-default'))">
+                            <i class="bi bi-circle-fill" style="font-size:6px;"></i>
+                            <span th:text="${s.status != null ? s.status : 'UNKNOWN'}">ACTIVE</span>
+                        </span>
+                    </td>
+                    <td>
+                        <div class="d-flex gap-1 align-items-center">
+                            <button class="btn-act" type="button" title="Edit"
+                                    th:attr="data-sid=${s.id},data-code=${s.code},data-name=${s.name},data-contact=${s.contactName},data-email=${s.contactEmail},data-phone=${s.contactPhone},data-address=${s.address},data-status=${s.status}"
+                                    onclick="openEditModal(this)">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <form th:action="@{/suppliers/{id}/delete(id=${s.id})}" method="post"
+                                  style="margin:0;display:inline" th:attr="data-sname=${s.name}">
+                                <button type="button" class="btn-act red" title="Delete"
+                                        onclick="confirmDelete(this.closest('form'))">
+                                    <i class="bi bi-trash"></i>
                                 </button>
                             </form>
-                            <button class="btn-act red text-danger" type="button" title="Delete" onclick="event.stopPropagation();"><i class="bi bi-trash"></i></button>
                         </div>
                     </td>
                 </tr>
-
-                <tr data-name="Midstate Maintenance" class="clickable-row" onclick="window.location.href='/suppliers/view/2'">
-                    <td class="text-muted" style="font-size:0.82rem">2</td>
-                    <td>
-                        <div class="item-info">
-                            <div class="item-icon" style="background: linear-gradient(135deg, #3b82f6, #2563eb);">
-                                MM
-                            </div>
-                            <div>
-                                <div class="item-name">Midstate Maintenance</div>
-                                <div class="item-sub">ID: SUP-10025</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <span class="badge-cat" style="background: #f1f5f9; color: #475569;">Maintenance</span>
-                    </td>
-
-                    <td>
-                        <span class="badge-status review"><i class="bi bi-circle-fill" style="font-size: 5px;"></i> Under Review</span>
-                    </td>
-                    <td class="text-muted fw-medium" style="font-size:0.85rem">
-                        Sep 28, 2023
-                    </td>
-                    <td>
-                        <div class="d-flex gap-1 justify-content-end">
-                            <button class="btn-act" type="button" title="Email" onclick="event.stopPropagation();"><i class="bi bi-envelope"></i></button>
-                            <button class="btn-act text-primary" type="button" title="View/Edit" onclick="event.stopPropagation();"><i class="bi bi-pencil"></i></button>
-                            <form th:action="@{/suppliers/2/lock}" method="post" class="m-0 p-0 d-inline" onclick="event.stopPropagation();">
-                                <button type="submit" class="btn-act text-warning" title="Mở khóa" onclick="return confirm('Mở khóa nhà cung cấp này?');">
-                                    <i class="bi bi-unlock"></i>
-                                </button>
-                            </form>
-                            <button class="btn-act red text-danger" type="button" title="Delete" onclick="event.stopPropagation();"><i class="bi bi-trash"></i></button>
+                <tr th:if="${#lists.isEmpty(suppliers)}">
+                    <td colspan="6">
+                        <div class="empty-state">
+                            <div class="ei"><i class="bi bi-shop"></i></div>
+                            <p style="color:#475569;font-weight:600;margin-bottom:4px">No suppliers yet</p>
+                            <small>Click <strong>Add Supplier</strong> to create the first one</small>
                         </div>
                     </td>
                 </tr>
-
-                <tr data-name="Guardian Security" class="clickable-row" onclick="window.location.href='/suppliers/view/3'">
-                    <td class="text-muted" style="font-size:0.82rem">3</td>
-                    <td>
-                        <div class="item-info">
-                            <div class="item-icon" style="background: linear-gradient(135deg, #10b981, #059669);">
-                                GS
-                            </div>
-                            <div>
-                                <div class="item-name">Guardian Security</div>
-                                <div class="item-sub">ID: SUP-10029</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <span class="badge-cat" style="background: #fdf4ff; color: #c026d3;">Security</span>
-                    </td>
-
-                    <td>
-                        <span class="badge-status active"><i class="bi bi-circle-fill" style="font-size: 5px;"></i> Active</span>
-                    </td>
-                    <td class="text-muted fw-medium" style="font-size:0.85rem">
-                        Oct 05, 2023
-                    </td>
-                    <td>
-                        <div class="d-flex gap-1 justify-content-end">
-                            <button class="btn-act" type="button" title="Email" onclick="event.stopPropagation();"><i class="bi bi-envelope"></i></button>
-                            <button class="btn-act text-primary" type="button" title="View/Edit" onclick="event.stopPropagation();"><i class="bi bi-pencil"></i></button>
-                            <form th:action="@{/suppliers/3/lock}" method="post" class="m-0 p-0 d-inline" onclick="event.stopPropagation();">
-                                <button type="submit" class="btn-act text-warning" title="Khóa" onclick="return confirm('Khóa nhà cung cấp này?');">
-                                    <i class="bi bi-lock"></i>
-                                </button>
-                            </form>
-                            <button class="btn-act red text-danger" type="button" title="Delete" onclick="event.stopPropagation();"><i class="bi bi-trash"></i></button>
-                        </div>
-                    </td>
-                </tr>
-
-                <tr data-name="TechNet Infrastructures" class="clickable-row" onclick="window.location.href='/suppliers/view/4'">
-                    <td class="text-muted" style="font-size:0.82rem">4</td>
-                    <td>
-                        <div class="item-info">
-                            <div class="item-icon" style="background: linear-gradient(135deg, #f43f5e, #e11d48);">
-                                TI
-                            </div>
-                            <div>
-                                <div class="item-name">TechNet Infrastructures</div>
-                                <div class="item-sub">ID: SUP-10034</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <span class="badge-cat" style="background: #fff1f2; color: #e11d48;">IT Services</span>
-                    </td>
-
-                    <td>
-                        <span class="badge-status inactive"><i class="bi bi-circle-fill" style="font-size: 5px;"></i> Inactive</span>
-                    </td>
-                    <td class="text-muted fw-medium" style="font-size:0.85rem">
-                        Aug 15, 2023
-                    </td>
-                    <td>
-                        <div class="d-flex gap-1 justify-content-end">
-                            <button class="btn-act" type="button" title="Email" onclick="event.stopPropagation();"><i class="bi bi-envelope"></i></button>
-                            <button class="btn-act text-primary" type="button" title="View/Edit" onclick="event.stopPropagation();"><i class="bi bi-pencil"></i></button>
-                            <form th:action="@{/suppliers/4/lock}" method="post" class="m-0 p-0 d-inline" onclick="event.stopPropagation();">
-                                <button type="submit" class="btn-act text-warning" title="Mở khóa" onclick="return confirm('Mở khóa nhà cung cấp này?');">
-                                    <i class="bi bi-unlock"></i>
-                                </button>
-                            </form>
-                            <button class="btn-act red text-danger" type="button" title="Delete" onclick="event.stopPropagation();"><i class="bi bi-trash"></i></button>
-                        </div>
-                    </td>
-                </tr>
-                
-                <!-- No search results (JS-controlled) -->
                 <tr id="noResultRow" style="display:none">
                     <td colspan="6">
                         <div class="empty-state">
                             <div class="ei"><i class="bi bi-search"></i></div>
-                            <p style="color:#475569;font-weight:600;margin-bottom:4px">No suppliers found</p>
-                            <small>Try a different keyword or filter</small>
+                            <p style="color:#475569;font-weight:600;margin-bottom:4px">No matching suppliers</p>
+                            <small>Try a different keyword</small>
                         </div>
                     </td>
                 </tr>
                 </tbody>
             </table>
 
-            <!-- Footer -->
             <div class="table-footer">
-                <span id="tableCount">Showing: 4 suppliers</span>
-                <div class="page-pills d-flex gap-1">
-                    <button class="btn btn-sm" style="border-radius:6px;border:1px solid #e2e8f0;background:#fff;font-size:0.8rem;font-weight:500;" type="button"><i class="bi bi-chevron-left"></i></button>
-                    <button class="btn btn-sm" style="border-radius:6px;border:none;background:#f26722;color:#fff;font-size:0.8rem;font-weight:600;" type="button">1</button>
-                    <button class="btn btn-sm" style="border-radius:6px;border:1px solid transparent;background:transparent;color:#475569;font-size:0.8rem;font-weight:500;" type="button">2</button>
-                    <button class="btn btn-sm" style="border-radius:6px;border:1px solid #e2e8f0;background:#fff;font-size:0.8rem;font-weight:500;" type="button"><i class="bi bi-chevron-right"></i></button>
-                </div>
+                <span id="tableCount" th:text="${suppliers.size()} + ' supplier(s) total'">0 supplier(s) total</span>
             </div>
         </div>
 
+        <div class="stat-row">
+            <div class="stat-card">
+                <div class="stat-icon-wrap si-blue"><i class="bi bi-shop-window"></i></div>
+                <div>
+                    <div class="stat-label">TOTAL SUPPLIERS</div>
+                    <div class="stat-value" id="totalCount" th:text="${suppliers.size()}">0</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon-wrap si-green"><i class="bi bi-check2-circle"></i></div>
+                <div>
+                    <div class="stat-label">ACTIVE</div>
+                    <div class="stat-value" id="activeCount">0</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon-wrap si-slate"><i class="bi bi-slash-circle"></i></div>
+                <div>
+                    <div class="stat-label">INACTIVE</div>
+                    <div class="stat-value" id="inactiveCount">0</div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
-<!-- ===== Add Supplier Modal ===== -->
 <div class="modal fade" id="addSupplierModal" tabindex="-1" aria-labelledby="addSupplierModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="addSupplierModalLabel">
-                    <i class="bi bi-person-plus-fill me-2"></i>Add New Supplier
+                    <i class="bi bi-shop-window me-2"></i>Add Supplier
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <!-- Dummy Form -> action to somewhere usually POST -->
             <form th:action="@{/suppliers}" method="post">
                 <div class="modal-body">
-                    <h6 class="mb-3" style="color:#f26722; font-weight:700;"><i class="bi bi-buildings"></i> Identity Information</h6>
-                    <div class="row g-3 mb-4">
-                        <div class="col-md-6">
-                            <label for="code" class="form-label">Supplier Code <span class="text-danger">*</span></label>
-                            <input id="code" name="code" type="text" class="form-control" placeholder="E.g., SUP01" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="name" class="form-label">Supplier Name <span class="text-danger">*</span></label>
-                            <input id="name" name="name" type="text" class="form-control" placeholder="E.g., PackBetter Solutions..." required>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="category" class="form-label">Service Category</label>
-                            <select id="category" name="category" class="form-select">
-                                <option value="">-- Select Category --</option>
-                                <option value="Packaging">Packaging</option>
-                                <option value="Maintenance">Maintenance</option>
-                                <option value="Security">Security</option>
-                                <option value="IT Services">IT Services</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <h6 class="mb-3" style="color:#f26722; font-weight:700;"><i class="bi bi-telephone"></i> Contact Information</h6>
-                    <div class="row g-3 mb-4">
-                        <div class="col-md-6">
-                            <label for="phone" class="form-label">Phone Number <span class="text-danger">*</span></label>
-                            <input id="phone" name="phone" type="text" class="form-control" placeholder="0901 xxx xxx" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="email" class="form-label">Contact Email</label>
-                            <input id="email" name="email" type="email" class="form-control" placeholder="email@example.com">
-                        </div>
-                        <div class="col-md-12">
-                            <label for="address" class="form-label">Address</label>
-                            <input id="address" name="address" type="text" class="form-control" placeholder="Street, Ward, District, City...">
-                        </div>
-                    </div>
-
-                    <h6 class="mb-3" style="color:#f26722; font-weight:700;"><i class="bi bi-bank"></i> Transaction Details</h6>
                     <div class="row g-3">
-                        <div class="col-md-6">
-                            <label for="bankAccount" class="form-label">Bank Account Number</label>
-                            <input id="bankAccount" name="bankAccount" type="text" class="form-control" placeholder="Account details and Bank Name">
+                        <div class="col-md-4">
+                            <label class="form-label">Code <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="code" placeholder="SUP001" required>
+                        </div>
+                        <div class="col-md-8">
+                            <label class="form-label">Supplier Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="name" placeholder="Supplier legal name" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Contact Person</label>
+                            <input type="text" class="form-control" name="contactName" placeholder="Primary contact">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Contact Email</label>
+                            <input type="email" class="form-control" name="contactEmail" placeholder="contact@example.com">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Contact Phone</label>
+                            <input type="text" class="form-control" name="contactPhone" placeholder="+84...">
+                        </div>
+                        <div class="col-md-8">
+                            <label class="form-label">Address</label>
+                            <input type="text" class="form-control" name="address" placeholder="Address">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Status</label>
+                            <select class="form-select" name="status">
+                                <option value="ACTIVE">ACTIVE</option>
+                                <option value="UNDER_REVIEW">UNDER_REVIEW</option>
+                                <option value="INACTIVE">INACTIVE</option>
+                            </select>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn-cancel2" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn-save">
-                        <i class="bi bi-save me-1"></i>Save Information
-                    </button>
+                    <button type="submit" class="btn-save"><i class="bi bi-save me-1"></i>Save Supplier</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editSupplierModal" tabindex="-1" aria-labelledby="editSupplierModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editSupplierModalLabel">
+                    <i class="bi bi-pencil-square me-2"></i>Edit Supplier
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="editSupplierForm" method="post">
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Code <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="editCode" name="code" required>
+                        </div>
+                        <div class="col-md-8">
+                            <label class="form-label">Supplier Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="editName" name="name" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Contact Person</label>
+                            <input type="text" class="form-control" id="editContactName" name="contactName">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Contact Email</label>
+                            <input type="email" class="form-control" id="editContactEmail" name="contactEmail">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Contact Phone</label>
+                            <input type="text" class="form-control" id="editContactPhone" name="contactPhone">
+                        </div>
+                        <div class="col-md-8">
+                            <label class="form-label">Address</label>
+                            <input type="text" class="form-control" id="editAddress" name="address">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Status</label>
+                            <select class="form-select" id="editStatus" name="status">
+                                <option value="ACTIVE">ACTIVE</option>
+                                <option value="UNDER_REVIEW">UNDER_REVIEW</option>
+                                <option value="INACTIVE">INACTIVE</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel2" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-save"><i class="bi bi-save me-1"></i>Save Changes</button>
                 </div>
             </form>
         </div>
@@ -509,37 +641,81 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    /* Live search filter */
     var searchInput = document.getElementById('searchInput');
     var noResultRow = document.getElementById('noResultRow');
-    var tableCount  = document.getElementById('tableCount');
+    var tableCount = document.getElementById('tableCount');
+    var activeCount = document.getElementById('activeCount');
+    var inactiveCount = document.getElementById('inactiveCount');
 
-    function applyFilter() {
-        var q    = searchInput.value.toLowerCase();
+    function safe(v) {
+        return v === null || v === undefined || v === 'null' ? '' : v;
+    }
+
+    function refreshStats() {
         var rows = document.querySelectorAll('#suppliersBody tr[data-name]');
-        var visible = 0;
-        rows.forEach(function(row) {
-            var name = row.dataset.name ? row.dataset.name.toLowerCase() : '';
-            var match = !q || name.includes(q);
-                           
-            if (match) {
-                row.style.display = '';
-                visible++;
-            } else {
-                row.style.display = 'none';
+        var active = 0;
+        var inactive = 0;
+        rows.forEach(function (row) {
+            if (row.style.display === 'none') {
+                return;
+            }
+            var status = (row.dataset.status || '').toUpperCase();
+            if (status === 'ACTIVE') {
+                active++;
+            } else if (status === 'INACTIVE') {
+                inactive++;
             }
         });
-        if (noResultRow) {
-            noResultRow.style.display = (visible === 0 && rows.length > 0) ? '' : 'none';
-        }
-        if (tableCount) {
-            tableCount.textContent = 'Showing: ' + visible + ' supplier(s)';
+        activeCount.textContent = active;
+        inactiveCount.textContent = inactive;
+    }
+
+    function applyFilter() {
+        var q = searchInput.value.toLowerCase();
+        var rows = document.querySelectorAll('#suppliersBody tr[data-name]');
+        var visible = 0;
+        rows.forEach(function (row) {
+            var text = ((row.dataset.name || '') + ' ' +
+                (row.dataset.code || '') + ' ' +
+                (row.dataset.contact || '') + ' ' +
+                (row.dataset.email || '') + ' ' +
+                (row.dataset.phone || '')).toLowerCase();
+            var match = !q || text.includes(q);
+            row.style.display = match ? '' : 'none';
+            if (match) {
+                visible++;
+            }
+        });
+        noResultRow.style.display = (visible === 0 && rows.length > 0) ? '' : 'none';
+        tableCount.textContent = visible + ' supplier(s) found';
+        refreshStats();
+    }
+
+    function openEditModal(btn) {
+        var sid = btn.getAttribute('data-sid');
+        document.getElementById('editSupplierForm').action = '/suppliers/' + sid + '/update';
+        document.getElementById('editCode').value = safe(btn.getAttribute('data-code'));
+        document.getElementById('editName').value = safe(btn.getAttribute('data-name'));
+        document.getElementById('editContactName').value = safe(btn.getAttribute('data-contact'));
+        document.getElementById('editContactEmail').value = safe(btn.getAttribute('data-email'));
+        document.getElementById('editContactPhone').value = safe(btn.getAttribute('data-phone'));
+        document.getElementById('editAddress').value = safe(btn.getAttribute('data-address'));
+        document.getElementById('editStatus').value = safe(btn.getAttribute('data-status')) || 'ACTIVE';
+        new bootstrap.Modal(document.getElementById('editSupplierModal')).show();
+    }
+
+    function confirmDelete(form) {
+        var sname = form.getAttribute('data-sname');
+        if (confirm('Delete supplier "' + sname + '"?\nThis action cannot be undone.')) {
+            form.submit();
         }
     }
 
     if (searchInput) {
         searchInput.addEventListener('input', applyFilter);
     }
+    refreshStats();
 </script>
 </body>
+
 </html>
