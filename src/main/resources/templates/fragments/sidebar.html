@@ -284,10 +284,17 @@
                 </a>
 
                 <a class="wms-nav-item"
-                    th:classappend="${currentUri != null and currentUri.startsWith('/locations')} ? 'active'"
+                    th:classappend="${currentUri != null and currentUri.startsWith('/warehouses')} ? 'active'"
                     href="/warehouses">
                     <span class="wms-nav-icon"><i class="bi bi-house-door"></i></span>
                     Warehouse Management
+                </a>
+
+                <a class="wms-nav-item"
+                    th:classappend="${currentUri != null and currentUri.startsWith('/locations')} ? 'active'"
+                    href="/locations">
+                    <span class="wms-nav-icon"><i class="bi bi-house-door"></i></span>
+                    Section Management
                 </a>
 
                 <a class="wms-nav-item"
@@ -297,16 +304,18 @@
                     Inventory
                 </a>
 
-                <a class="wms-nav-item" href="#" onclick="return false"
-                    style="opacity:0.45; cursor:not-allowed; pointer-events:all;" title="Coming soon">
+                <a class="wms-nav-item"
+                    th:classappend="${currentUri != null and currentUri.startsWith('/suppliers')} ? 'active'"
+                    href="/suppliers">
                     <span class="wms-nav-icon"><i class="bi bi-shop"></i></span>
                     Supplier
                 </a>
 
-                <a class="wms-nav-item" href="#" onclick="return false"
-                    style="opacity:0.45; cursor:not-allowed; pointer-events:all;" title="Coming soon">
-                    <span class="wms-nav-icon"><i class="bi bi-journal"></i></span>
-                    Inventory Inbound / Outbound
+                <a class="wms-nav-item"
+                    th:classappend="${currentUri != null and currentUri.startsWith('/dispatch')} ? 'active'"
+                    href="/dispatch">
+                    <span class="wms-nav-icon"><i class="bi bi-truck"></i></span>
+                    Dispatch
                 </a>
 
                 <div class="wms-nav-label">Management</div>

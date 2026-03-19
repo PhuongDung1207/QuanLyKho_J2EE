@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tạo Phiếu Nhập/Xuất – WMS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        .table-borderless th, .table-borderless td {
+            border: none !important;
+        }
+        .form-control:focus, .form-select:focus {
+            box-shadow: none;
+            border-color: #f26722 !important;
+        }
+        input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="fragments/sidebar :: sidebar"></div>
+
+<div class="wms-main">
+    <div class="container-fluid p-4" style="max-width: 1000px; margin: 0 auto;">
+        <!-- Header -->
+        <div class="mb-4">
+            <h1 class="h4 fw-bold mb-1" style="color:#1a1a2e">Tạo Phiếu Nhập / Xuất</h1>
+            <p class="text-muted small mb-0">Điền thông tin chi tiết để tạo phiếu mới cho hệ thống quản lý kho</p>
+        </div>
+
+        <form action="#" method="post">
+            <!-- Card 1: General Info -->
+            <div class="card border-0 shadow-sm rounded-3 mb-4">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-4" style="font-size: 1rem; color: #1a1a2e;">
+                        <i class="bi bi-info-circle-fill me-2" style="color:#f26722"></i>Thông tin chung
+                    </h5>
+                    
+                    <div class="row g-4">
+                        <div class="col-md-3">
+                            <label class="form-label small fw-bold text-muted mb-2">Loại phiếu</label>
+                            <div class="d-flex bg-light p-1 rounded-2">
+                                <input type="radio" class="btn-check" name="receiptType" id="typeInbound" value="INBOUND" checked>
+                                <label class="btn btn-sm flex-fill fw-semibold rounded-2" for="typeInbound" style="color: #f26722; background: white; border: none; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">Nhập kho</label>
+                                
+                                <input type="radio" class="btn-check" name="receiptType" id="typeOutbound" value="OUTBOUND">
+                                <label class="btn btn-sm flex-fill fw-semibold text-muted rounded-2 border-0" for="typeOutbound">Xuất kho</label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small fw-bold text-muted mb-2">Kho hàng / Bộ phận</label>
+                            <select class="form-select border-0 bg-light text-muted form-select-sm py-2 rounded-2 fw-medium">
+                                <option value="">Chọn kho hàng</option>
+                                <option value="1">Kho Tổng HN</option>
+                                <option value="2">Kho Miền Trung</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small fw-bold text-muted mb-2">Ngày tạo</label>
+                            <input type="date" class="form-control border-0 bg-light form-control-sm py-2 rounded-2 text-muted fw-medium" value="2023-11-20">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small fw-bold text-muted mb-2">Người phụ trách</label>
+                            <select class="form-select border-0 bg-light text-muted form-select-sm py-2 rounded-2 fw-medium">
+                                <option value="">Chọn nhân sự</option>
+                                <option value="1">Admin User</option>
+                                <option value="2">John Doe</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Item List -->
+            <div class="card border-0 shadow-sm rounded-3 mb-4">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="fw-bold mb-0" style="font-size: 1rem; color: #1a1a2e;">
+                            <i class="bi bi-view-list me-2" style="color:#f26722"></i>Danh sách vật tư
+                        </h5>
+                        <button type="button" class="btn btn-sm fw-bold rounded-pill px-3" style="background:#fff3ec; color:#f26722; border: none;">
+                            <i class="bi bi-plus-circle-fill me-1"></i> Thêm vật tư
+                        </button>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-borderless align-middle mb-0">
+                            <thead class="border-bottom">
+                                <tr>
+                                    <th class="px-0 py-2 text-uppercase small text-muted fw-bold w-50" style="font-size:.7rem;letter-spacing:.05em">Tên vật tư / Sản phẩm</th>
+                                    <th class="px-2 py-2 text-uppercase small text-muted fw-bold" style="font-size:.7rem;letter-spacing:.05em; width: 12%;">Số lượng</th>
+                                    <th class="px-2 py-2 text-uppercase small text-muted fw-bold" style="font-size:.7rem;letter-spacing:.05em; width: 15%;">Đơn vị</th>
+                                    <th class="px-2 py-2 text-uppercase small text-muted fw-bold" style="font-size:.7rem;letter-spacing:.05em">Ghi chú</th>
+                                    <th class="px-0 py-2 text-end" style="width: 40px;"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Item 1 -->
+                                <tr class="border-bottom">
+                                    <td class="px-0 py-3">
+                                        <div class="fw-bold" style="color:#1a1a2e; font-size: 0.9rem;">Sơn lót Dulux cao cấp 5L</div>
+                                    </td>
+                                    <td class="px-2 py-3">
+                                        <input type="number" class="form-control form-control-sm bg-light border-0 py-2 text-center fw-bold text-dark rounded-2" value="20">
+                                    </td>
+                                    <td class="px-2 py-3">
+                                        <select class="form-select form-select-sm bg-light border-0 py-2 text-dark font-weight-bold rounded-2 fw-bold">
+                                            <option value="">Hộp</option>
+                                            <option value="">Thùng</option>
+                                            <option value="">Chiếc</option>
+                                        </select>
+                                    </td>
+                                    <td class="px-2 py-3">
+                                        <input type="text" class="form-control form-control-sm bg-transparent border-0 py-2 text-muted fw-medium" value="Màu trắng sứ - Mã 30GY">
+                                    </td>
+                                    <td class="px-0 py-3 text-end">
+                                        <button type="button" class="btn btn-sm text-muted p-1 rounded-2 bg-light border-0" title="Xóa"><i class="bi bi-trash-fill" style="color: #94a3b8"></i></button>
+                                    </td>
+                                </tr>
+                                <!-- Item 2 -->
+                                <tr>
+                                    <td class="px-0 py-3">
+                                        <div class="fw-bold" style="color:#1a1a2e; font-size: 0.9rem;">Cọ lăn sơn chuyên dụng</div>
+                                    </td>
+                                    <td class="px-2 py-3">
+                                        <input type="number" class="form-control form-control-sm bg-light border-0 py-2 text-center fw-bold text-dark rounded-2" value="50">
+                                    </td>
+                                    <td class="px-2 py-3">
+                                        <select class="form-select form-select-sm bg-light border-0 py-2 text-dark font-weight-bold rounded-2 fw-bold">
+                                            <option value="">Cái</option>
+                                            <option value="">Bộ</option>
+                                        </select>
+                                    </td>
+                                    <td class="px-2 py-3">
+                                        <input type="text" class="form-control form-control-sm bg-transparent border-0 py-2 text-muted fw-medium" placeholder="Ghi chú sản phẩm...">
+                                    </td>
+                                    <td class="px-0 py-3 text-end">
+                                        <button type="button" class="btn btn-sm text-muted p-1 rounded-2 bg-light border-0" title="Xóa"><i class="bi bi-trash-fill" style="color: #94a3b8"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3: Notes -->
+            <div class="card border-0 shadow-sm rounded-3 mb-4">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-3" style="font-size: 1rem; color: #1a1a2e;">
+                        <i class="bi bi-distribute-horizontal me-2" style="color:#f26722"></i>Ghi chú chung
+                    </h5>
+                    <textarea class="form-control bg-light border-0 p-3 rounded-2 text-muted fw-medium" rows="3" placeholder="Nhập ghi chú chung cho toàn bộ phiếu (VD: Lý do lập phiếu, số hợp đồng, tình trạng hàng hóa...)"></textarea>
+                </div>
+            </div>
+
+            <!-- Footer Buttons -->
+            <div class="d-flex justify-content-between align-items-center pt-2 pb-5">
+                <div class="text-muted small fst-italic fw-medium">
+                    * Vui lòng kiểm tra kỹ thông tin trước khi lưu phiếu.
+                </div>
+                <div class="d-flex gap-2">
+                    <a href="/dispatch" class="btn btn-light border-0 text-muted fw-bold rounded-2 px-4 py-2" style="background: #e2e8f0; color: #475569 !important;">Hủy bỏ</a>
+                    <button type="submit" class="btn text-white fw-bold rounded-2 px-4 py-2" style="background:#f26722; border: none; box-shadow: 0 4px 12px rgba(242, 103, 34, 0.2);">
+                        <i class="bi bi-save-fill me-2"></i>Lưu Phiếu
+                    </button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Radio button styling toggle
+    document.querySelectorAll('input[name="receiptType"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            document.querySelectorAll('label[for^="type"]').forEach(label => {
+                label.style.background = 'transparent';
+                label.style.color = '#6c757d';
+                label.style.boxShadow = 'none';
+            });
+            if(this.checked) {
+                const label = document.querySelector(`label[for="${this.id}"]`);
+                label.style.background = 'white';
+                label.style.color = '#f26722';
+                label.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
+            }
+        });
+    });
+</script>
+</body>
+</html>

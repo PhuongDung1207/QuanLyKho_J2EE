@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supplier Management – WMS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        .icon-box {
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            font-size: 1.3rem;
+        }
+        .avatar-box {
+            width: 46px;
+            height: 46px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 1.15rem;
+            font-weight: 700;
+        }
+        .badge-soft {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="fragments/sidebar :: sidebar"></div>
+
+<div class="wms-main">
+    <div class="container-fluid p-4" style="max-width: 1300px;">
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="h3 fw-bold mb-1" style="color:#1a1a2e">Supplier Management</h1>
+                <p class="text-muted small mb-0 mt-1" style="font-size: 0.9rem;">Manage and monitor facility vendors, service providers, and procurement contracts.</p>
+            </div>
+            <div>
+                <button class="btn text-white fw-bold rounded-3 px-4 py-2" style="background:#ea580c; border: none; box-shadow: 0 4px 12px rgba(234, 88, 12, 0.2);">
+                    <i class="bi bi-plus me-1 fs-5 align-middle"></i> Add New Supplier
+                </button>
+            </div>
+        </div>
+
+        <!-- 4 Stat Cards -->
+        <div class="row g-4 mb-4">
+            <!-- Card 1 -->
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm rounded-4 bg-white h-100 p-4">
+                    <div class="d-flex justify-content-between mb-3">
+                        <div class="text-muted small fw-semibold" style="font-size: 0.85rem;">Total Suppliers</div>
+                        <div class="icon-box" style="background: #fff3ed; color: #ea580c;">
+                            <i class="bi bi-person-badge"></i>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-end gap-3 mt-1">
+                        <h3 class="fw-bold mb-0" style="color:#1a1a2e; font-size: 2rem;">128</h3>
+                        <div class="text-success small fw-bold mb-2"><i class="bi bi-arrow-up-right me-1"></i>5%</div>
+                    </div>
+                </div>
+            </div>
+            <!-- Card 2 -->
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm rounded-4 bg-white h-100 p-4">
+                    <div class="d-flex justify-content-between mb-3">
+                        <div class="text-muted small fw-semibold" style="font-size: 0.85rem;">Active Contracts</div>
+                        <div class="icon-box" style="background: #eff6ff; color: #3b82f6;">
+                            <i class="bi bi-file-earmark-text"></i>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-end gap-3 mt-1">
+                        <h3 class="fw-bold mb-0" style="color:#1a1a2e; font-size: 2rem;">42</h3>
+                        <div class="text-success small fw-bold mb-2"><i class="bi bi-arrow-up-right me-1"></i>2%</div>
+                    </div>
+                </div>
+            </div>
+            <!-- Card 3 -->
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm rounded-4 bg-white h-100 p-4">
+                    <div class="d-flex justify-content-between mb-3">
+                        <div class="text-muted small fw-semibold" style="font-size: 0.85rem;">Pending Deliveries</div>
+                        <div class="icon-box" style="background: #fffbeb; color: #f59e0b;">
+                            <i class="bi bi-box-seam"></i>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-end gap-3 mt-1">
+                        <h3 class="fw-bold mb-0" style="color:#1a1a2e; font-size: 2rem;">15</h3>
+                        <div class="text-danger small fw-bold mb-2"><i class="bi bi-arrow-down-right me-1"></i>3%</div>
+                    </div>
+                </div>
+            </div>
+            <!-- Card 4 -->
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm rounded-4 bg-white h-100 p-4">
+                    <div class="d-flex justify-content-between mb-3">
+                        <div class="text-muted small fw-semibold" style="font-size: 0.85rem;">Monthly Spend</div>
+                        <div class="icon-box" style="background: #ecfdf5; color: #10b981;">
+                            <i class="bi bi-cash-stack"></i>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-end gap-3 mt-1">
+                        <h3 class="fw-bold mb-0" style="color:#1a1a2e; font-size: 2rem;">$12,450</h3>
+                        <div class="text-success small fw-bold mb-2"><i class="bi bi-arrow-up-right me-1"></i>8%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Filter & Table Card -->
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+            <!-- Filter Row -->
+            <div class="d-flex justify-content-between align-items-center p-4 bg-white border-bottom">
+                <div class="d-flex gap-3">
+                    <div class="input-group rounded-pill overflow-hidden bg-light border" style="width: 320px;">
+                        <span class="input-group-text bg-transparent border-0 text-muted px-3"><i class="bi bi-search"></i></span>
+                        <input type="text" class="form-control bg-transparent border-0 shadow-none ps-0 fw-medium text-muted" style="font-size: 0.9rem" placeholder="Search suppliers by name or contact...">
+                    </div>
+                    <select class="form-select bg-light border text-muted fw-semibold rounded-pill" style="width: 160px; font-size: 0.9rem">
+                        <option value="">All Categories</option>
+                        <option value="Packaging">Packaging</option>
+                        <option value="Maintenance">Maintenance</option>
+                        <option value="Security">Security</option>
+                        <option value="IT Services">IT Services</option>
+                    </select>
+                    <select class="form-select bg-light border text-muted fw-semibold rounded-pill" style="width: 140px; font-size: 0.9rem">
+                        <option value="">All Status</option>
+                        <option value="Active">Active</option>
+                        <option value="Under Review">Under Review</option>
+                        <option value="Inactive">Inactive</option>
+                    </select>
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn bg-white border rounded-3 text-muted px-3" title="Filter"><i class="bi bi-funnel"></i></button>
+                    <button class="btn bg-white border rounded-3 text-muted px-3" title="Download"><i class="bi bi-download"></i></button>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="table-responsive bg-white">
+                <table class="table table-hover align-middle mb-0">
+                    <thead style="background: #f8fafc;">
+                        <tr>
+                            <th class="px-4 py-4 text-uppercase text-muted fw-bold border-0" style="font-size: 0.75rem; letter-spacing: 0.05em">Supplier Name</th>
+                            <th class="px-4 py-4 text-uppercase text-muted fw-bold border-0" style="font-size: 0.75rem; letter-spacing: 0.05em">Category</th>
+                            <th class="px-4 py-4 text-uppercase text-muted fw-bold border-0" style="font-size: 0.75rem; letter-spacing: 0.05em">Contact Person</th>
+                            <th class="px-4 py-4 text-uppercase text-muted fw-bold border-0" style="font-size: 0.75rem; letter-spacing: 0.05em">Status</th>
+                            <th class="px-4 py-4 text-uppercase text-muted fw-bold border-0" style="font-size: 0.75rem; letter-spacing: 0.05em">Last Order Date</th>
+                            <th class="px-4 py-4 text-uppercase text-muted fw-bold border-0 text-end" style="font-size: 0.75rem; letter-spacing: 0.05em;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Row 1 -->
+                        <tr class="border-bottom">
+                            <td class="px-4 py-3">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="avatar-box" style="background: #ffedd5; color: #ea580c;">PB</div>
+                                    <div>
+                                        <div class="fw-bold" style="color: #1a1a2e; font-size: 0.95rem;">PackBetter Solutions</div>
+                                        <div class="text-muted small fw-medium mt-1">ID: SUP-10023</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-4 py-3">
+                                <span class="badge bg-light text-muted fw-bold border rounded-pill px-3 py-1" style="font-size: 0.75rem;">Packaging</span>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="fw-bold" style="color: #475569; font-size: 0.95rem;">Sarah Jenkins</div>
+                                <div class="text-muted small fw-medium mt-1">sarah@packbetter.com</div>
+                            </td>
+                            <td class="px-4 py-3">
+                                <span class="badge-soft fw-bold bg-success bg-opacity-10 text-success">
+                                    <i class="bi bi-circle-fill" style="font-size: 6px;"></i> Active
+                                </span>
+                            </td>
+                            <td class="px-4 py-3 text-muted fw-bold small" style="font-size: 0.85rem;">
+                                Oct 12, 2023
+                            </td>
+                            <td class="px-4 py-3 text-end">
+                                <button class="btn btn-sm text-muted rounded-circle btn-light border-0 me-1 p-2"><i class="bi bi-envelope fs-6"></i></button>
+                                <button class="btn btn-sm text-muted rounded-circle btn-light border-0 me-1 p-2"><i class="bi bi-pencil fs-6"></i></button>
+                                <button class="btn btn-sm text-muted rounded-circle btn-light border-0 p-2"><i class="bi bi-eye fs-6"></i></button>
+                            </td>
+                        </tr>
+                        <!-- Row 2 -->
+                        <tr class="border-bottom">
+                            <td class="px-4 py-3">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="avatar-box" style="background: #ffedd5; color: #ea580c;">MS</div>
+                                    <div>
+                                        <div class="fw-bold" style="color: #1a1a2e; font-size: 0.95rem;">Midstate Maintenance</div>
+                                        <div class="text-muted small fw-medium mt-1">ID: SUP-10025</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-4 py-3">
+                                <span class="badge bg-light text-muted fw-bold border rounded-pill px-3 py-1" style="font-size: 0.75rem;">Maintenance</span>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="fw-bold" style="color: #475569; font-size: 0.95rem;">Michael Ross</div>
+                                <div class="text-muted small fw-medium mt-1">m.ross@midstate.net</div>
+                            </td>
+                            <td class="px-4 py-3">
+                                <span class="badge-soft fw-bold bg-warning bg-opacity-10 text-warning" style="color: #d97706 !important;">
+                                    <i class="bi bi-circle-fill" style="font-size: 6px;"></i> Under Review
+                                </span>
+                            </td>
+                            <td class="px-4 py-3 text-muted fw-bold small" style="font-size: 0.85rem;">
+                                Sep 28, 2023
+                            </td>
+                            <td class="px-4 py-3 text-end">
+                                <button class="btn btn-sm text-muted rounded-circle btn-light border-0 me-1 p-2"><i class="bi bi-envelope fs-6"></i></button>
+                                <button class="btn btn-sm text-muted rounded-circle btn-light border-0 me-1 p-2"><i class="bi bi-pencil fs-6"></i></button>
+                                <button class="btn btn-sm text-muted rounded-circle btn-light border-0 p-2"><i class="bi bi-eye fs-6"></i></button>
+                            </td>
+                        </tr>
+                        <!-- Row 3 -->
+                        <tr class="border-bottom">
+                            <td class="px-4 py-3">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="avatar-box" style="background: #ffedd5; color: #ea580c;">GS</div>
+                                    <div>
+                                        <div class="fw-bold" style="color: #1a1a2e; font-size: 0.95rem;">Guardian Security</div>
+                                        <div class="text-muted small fw-medium mt-1">ID: SUP-10029</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-4 py-3">
+                                <span class="badge bg-light text-muted fw-bold border rounded-pill px-3 py-1" style="font-size: 0.75rem;">Security</span>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="fw-bold" style="color: #475569; font-size: 0.95rem;">David Miller</div>
+                                <div class="text-muted small fw-medium mt-1">d.miller@guardian.com</div>
+                            </td>
+                            <td class="px-4 py-3">
+                                <span class="badge-soft fw-bold bg-success bg-opacity-10 text-success">
+                                    <i class="bi bi-circle-fill" style="font-size: 6px;"></i> Active
+                                </span>
+                            </td>
+                            <td class="px-4 py-3 text-muted fw-bold small" style="font-size: 0.85rem;">
+                                Oct 05, 2023
+                            </td>
+                            <td class="px-4 py-3 text-end">
+                                <button class="btn btn-sm text-muted rounded-circle btn-light border-0 me-1 p-2"><i class="bi bi-envelope fs-6"></i></button>
+                                <button class="btn btn-sm text-muted rounded-circle btn-light border-0 me-1 p-2"><i class="bi bi-pencil fs-6"></i></button>
+                                <button class="btn btn-sm text-muted rounded-circle btn-light border-0 p-2"><i class="bi bi-eye fs-6"></i></button>
+                            </td>
+                        </tr>
+                        <!-- Row 4 -->
+                        <tr>
+                            <td class="px-4 py-3">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="avatar-box" style="background: #ffedd5; color: #ea580c;">TN</div>
+                                    <div>
+                                        <div class="fw-bold" style="color: #1a1a2e; font-size: 0.95rem;">TechNet Infrastructures</div>
+                                        <div class="text-muted small fw-medium mt-1">ID: SUP-10034</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-4 py-3">
+                                <span class="badge bg-light text-muted fw-bold border rounded-pill px-3 py-1" style="font-size: 0.75rem;">IT Services</span>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="fw-bold" style="color: #475569; font-size: 0.95rem;">Lisa Wang</div>
+                                <div class="text-muted small fw-medium mt-1">l.wang@technet.io</div>
+                            </td>
+                            <td class="px-4 py-3">
+                                <span class="badge-soft fw-bold bg-secondary bg-opacity-10 text-secondary">
+                                    <i class="bi bi-circle-fill" style="font-size: 6px;"></i> Inactive
+                                </span>
+                            </td>
+                            <td class="px-4 py-3 text-muted fw-bold small" style="font-size: 0.85rem;">
+                                Aug 15, 2023
+                            </td>
+                            <td class="px-4 py-3 text-end">
+                                <button class="btn btn-sm text-muted rounded-circle btn-light border-0 me-1 p-2"><i class="bi bi-envelope fs-6"></i></button>
+                                <button class="btn btn-sm text-muted rounded-circle btn-light border-0 me-1 p-2"><i class="bi bi-pencil fs-6"></i></button>
+                                <button class="btn btn-sm text-muted rounded-circle btn-light border-0 p-2"><i class="bi bi-eye fs-6"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination Footer -->
+            <div class="d-flex justify-content-between align-items-center p-4 bg-white border-top">
+                <div class="text-muted small fw-medium">Showing <span class="fw-bold text-dark">1 to 4</span> of <span class="fw-bold text-dark">128</span> suppliers</div>
+                <div class="d-flex gap-1 align-items-center">
+                    <button class="btn btn-sm bg-white border rounded-2 px-2 py-1 mx-1 text-muted fw-bold"><i class="bi bi-chevron-left"></i></button>
+                    <button class="btn btn-sm fw-bold rounded-2 px-3 mx-1 text-white border-0" style="background: #ea580c;">1</button>
+                    <button class="btn btn-sm fw-bold rounded-2 px-3 mx-1 bg-transparent border-0 text-dark">2</button>
+                    <button class="btn btn-sm fw-bold rounded-2 px-3 mx-1 bg-transparent border-0 text-dark">3</button>
+                    <span class="text-muted mx-1 fw-bold">...</span>
+                    <button class="btn btn-sm fw-bold rounded-2 px-3 mx-1 bg-transparent border-0 text-dark">12</button>
+                    <button class="btn btn-sm bg-white border rounded-2 px-2 py-1 mx-1 text-dark fw-bold"><i class="bi bi-chevron-right"></i></button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

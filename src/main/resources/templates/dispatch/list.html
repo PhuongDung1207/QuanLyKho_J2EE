@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dispatch Management – WMS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="fragments/sidebar :: sidebar"></div>
+
+<div class="wms-main">
+    <div class="container-fluid p-4">
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="h4 fw-bold mb-0" style="color:#1a1a2e">
+                    <i class="bi bi-truck me-2" style="color:#f26722"></i>Dispatch Operations
+                </h1>
+                <p class="text-muted small mb-0 mt-1">Manage and track inbound and outbound transactions</p>
+            </div>
+            <div class="d-flex gap-2">
+                <button class="btn btn-light border-0 shadow-sm fw-semibold text-muted rounded-3 px-3">
+                    <i class="bi bi-download me-1"></i> Export Excel
+                </button>
+                <button type="button" data-bs-toggle="modal" data-bs-target="#createDispatchModal" class="btn text-white fw-semibold rounded-3 px-3 border-0 d-flex align-items-center" 
+                   style="background:#f26722; box-shadow: 0 4px 12px rgba(242, 103, 34, 0.2);">
+                    <i class="bi bi-plus-circle me-2"></i> Create Dispatch
+                </button>
+            </div>
+        </div>
+
+        <!-- Filters / Stats -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm rounded-3 bg-white h-100">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="rounded-3 d-flex align-items-center justify-content-center me-3" style="width: 48px; height: 48px; background: rgba(59, 130, 246, 0.1); color: #3b82f6;">
+                            <i class="bi bi-file-earmark-text" style="font-size: 1.5rem"></i>
+                        </div>
+                        <div>
+                            <div class="text-muted small fw-semibold mb-1" style="font-size: 0.75rem; text-transform: uppercase;">Total Operations</div>
+                            <div class="h4 mb-0 fw-bold" style="color:#1a1a2e">482</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm rounded-3 bg-white h-100">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="rounded-3 d-flex align-items-center justify-content-center me-3" style="width: 48px; height: 48px; background: rgba(16, 185, 129, 0.1); color: #10b981;">
+                            <i class="bi bi-box-arrow-in-right" style="font-size: 1.5rem"></i>
+                        </div>
+                        <div>
+                            <div class="text-muted small fw-semibold mb-1" style="font-size: 0.75rem; text-transform: uppercase;">Inbound (Month)</div>
+                            <div class="h4 mb-0 fw-bold" style="color:#1a1a2e">124</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm rounded-3 bg-white h-100">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="rounded-3 d-flex align-items-center justify-content-center me-3" style="width: 48px; height: 48px; background: rgba(239, 68, 68, 0.1); color: #ef4444;">
+                            <i class="bi bi-box-arrow-right" style="font-size: 1.5rem"></i>
+                        </div>
+                        <div>
+                            <div class="text-muted small fw-semibold mb-1" style="font-size: 0.75rem; text-transform: uppercase;">Outbound (Month)</div>
+                            <div class="h4 mb-0 fw-bold" style="color:#1a1a2e">86</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm rounded-3 bg-white h-100">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="rounded-3 d-flex align-items-center justify-content-center me-3" style="width: 48px; height: 48px; background: rgba(245, 158, 11, 0.1); color: #f59e0b;">
+                            <i class="bi bi-hourglass-split" style="font-size: 1.5rem"></i>
+                        </div>
+                        <div>
+                            <div class="text-muted small fw-semibold mb-1" style="font-size: 0.75rem; text-transform: uppercase;">Pending</div>
+                            <div class="h4 mb-0 fw-bold" style="color:#1a1a2e">12</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search & Table Card -->
+        <div class="card border-0 shadow-sm rounded-3">
+            <div class="card-header bg-white border-bottom pb-3 pt-3 px-4 d-flex justify-content-between align-items-center">
+                <div class="d-flex gap-2 w-50">
+                    <div class="input-group input-group-sm rounded-2 overflow-hidden border bg-light w-75">
+                        <span class="input-group-text bg-transparent border-0"><i class="bi bi-search text-muted"></i></span>
+                        <input type="text" class="form-control bg-transparent border-0 shadow-none" placeholder="Search by code, creator...">
+                    </div>
+                </div>
+                <div class="d-flex gap-2">
+                    <select class="form-select border-1 bg-light form-select-sm text-muted fw-medium rounded-2" style="min-width: 140px;">
+                        <option value="">All Types</option>
+                        <option value="IN">Inbound</option>
+                        <option value="OUT">Outbound</option>
+                    </select>
+                    <select class="form-select border-1 bg-light form-select-sm text-muted fw-medium rounded-2" style="min-width: 150px;">
+                        <option value="">All Statuses</option>
+                        <option value="DRAFT">Draft</option>
+                        <option value="PROCESSING">Processing</option>
+                        <option value="COMPLETED">Completed</option>
+                        <option value="CANCELLED">Cancelled</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead style="background:#f8fafc;">
+                        <tr>
+                            <th class="px-4 py-3 text-uppercase small text-muted fw-semibold border-0" style="font-size:.72rem;letter-spacing:.06em">Code</th>
+                            <th class="px-4 py-3 text-uppercase small text-muted fw-semibold border-0" style="font-size:.72rem;letter-spacing:.06em">Type</th>
+                            <th class="px-4 py-3 text-uppercase small text-muted fw-semibold border-0" style="font-size:.72rem;letter-spacing:.06em">Warehouse</th>
+                            <th class="px-4 py-3 text-uppercase small text-muted fw-semibold border-0" style="font-size:.72rem;letter-spacing:.06em">Created At</th>
+                            <th class="px-4 py-3 text-uppercase small text-muted fw-semibold border-0" style="font-size:.72rem;letter-spacing:.06em">Creator</th>
+                            <th class="px-4 py-3 text-uppercase small text-muted fw-semibold border-0" style="font-size:.72rem;letter-spacing:.06em">Status</th>
+                            <th class="px-4 py-3 text-uppercase small text-muted fw-semibold border-0 text-end" style="font-size:.72rem;letter-spacing:.06em">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <!-- Mockup Data - Replace th:each here when backend is ready -->
+                        <tr>
+                            <td class="px-4 py-3 fw-bold text-primary" style="font-family: monospace; font-size: .9rem">RC-20231001-01</td>
+                            <td class="px-4 py-3">
+                                <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-1 fw-semibold">Inbound</span>
+                            </td>
+                            <td class="px-4 py-3 fw-medium" style="color:#4a5568">HN Main Warehouse</td>
+                            <td class="px-4 py-3 text-muted small">01/10/2023 08:30</td>
+                            <td class="px-4 py-3 text-muted">Admin User</td>
+                            <td class="px-4 py-3">
+                                <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-2 py-1 fw-semibold">Completed</span>
+                            </td>
+                            <td class="px-4 py-3 text-end">
+                                <button class="btn btn-sm btn-light text-muted border-0 me-1 shadow-sm rounded-2" title="View Details"><i class="bi bi-eye"></i></button>
+                                <button class="btn btn-sm btn-light text-muted border-0 shadow-sm rounded-2" title="Print"><i class="bi bi-printer"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 fw-bold text-primary" style="font-family: monospace; font-size: .9rem">DS-20231002-05</td>
+                            <td class="px-4 py-3">
+                                <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-2 py-1 fw-semibold">Outbound</span>
+                            </td>
+                            <td class="px-4 py-3 fw-medium" style="color:#4a5568">Q1 Branch Warehouse</td>
+                            <td class="px-4 py-3 text-muted small">02/10/2023 14:15</td>
+                            <td class="px-4 py-3 text-muted">John Doe</td>
+                            <td class="px-4 py-3">
+                                <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 px-2 py-1 fw-semibold">Processing</span>
+                            </td>
+                            <td class="px-4 py-3 text-end">
+                                <button class="btn btn-sm btn-light text-muted border-0 me-1 shadow-sm rounded-2" title="Edit"><i class="bi bi-pencil"></i></button>
+                                <button class="btn btn-sm btn-light text-muted border-0 me-1 shadow-sm rounded-2" title="View Details"><i class="bi bi-eye"></i></button>
+                                <button class="btn btn-sm btn-light text-muted border-0 shadow-sm rounded-2" title="Print"><i class="bi bi-printer"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 fw-bold text-primary" style="font-family: monospace; font-size: .9rem">RC-20231005-02</td>
+                            <td class="px-4 py-3">
+                                <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-1 fw-semibold">Inbound</span>
+                            </td>
+                            <td class="px-4 py-3 fw-medium" style="color:#4a5568">Central Warehouse</td>
+                            <td class="px-4 py-3 text-muted small">05/10/2023 09:45</td>
+                            <td class="px-4 py-3 text-muted">Jane Smith</td>
+                            <td class="px-4 py-3">
+                                <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25 px-2 py-1 fw-semibold">Draft</span>
+                            </td>
+                            <td class="px-4 py-3 text-end">
+                                <button class="btn btn-sm btn-light text-muted border-0 me-1 shadow-sm rounded-2" title="Edit"><i class="bi bi-pencil"></i></button>
+                                <button class="btn btn-sm btn-light text-danger border-0 shadow-sm rounded-2" title="Delete"><i class="bi bi-trash"></i></button>
+                            </td>
+                        </tr>
+                        <!-- End Mockup Data -->
+                        
+                        <!-- Empty State Example (Display when list is empty) -->
+                        <tr class="d-none">
+                            <td colspan="7" class="text-center py-5">
+                                <div class="mb-3 d-inline-flex bg-light rounded-circle align-items-center justify-content-center" style="width:64px; height:64px">
+                                    <i class="bi bi-truck text-muted" style="font-size: 1.8rem"></i>
+                                </div>
+                                <h6 class="fw-bold mb-1" style="color:#1a1a2e">No dispatches yet</h6>
+                                <p class="text-muted small mb-3">There are no inbound/outbound records in the system.</p>
+                                <button type="button" data-bs-toggle="modal" data-bs-target="#createDispatchModal" class="btn btn-sm text-white fw-medium rounded-pill px-3 shadow-sm" style="background:#f26722;">
+                                    <i class="bi bi-plus"></i> Create first dispatch
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="card-footer bg-white border-top py-3 d-flex justify-content-between align-items-center px-4">
+                <div class="small text-muted fw-medium">Showing <span class="text-dark fw-bold">1 - 3</span> of <span class="text-dark fw-bold">482</span> results</div>
+                <nav aria-label="Page navigation">
+                    <ul class="pagination pagination-sm mb-0">
+                        <li class="page-item disabled">
+                            <a class="page-link border-0 text-muted" href="#" aria-label="Previous">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+                        </li>
+                        <li class="page-item active"><a class="page-link border-0 bg-primary bg-opacity-10 text-primary fw-bold rounded-2 mx-1" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link border-0 text-muted mx-1" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link border-0 text-muted mx-1" href="#">3</a></li>
+                        <li class="page-item">
+                            <a class="page-link border-0 text-muted" href="#" aria-label="Next">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Create Dispatch Modal -->
+<div class="modal fade" id="createDispatchModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-light border-bottom-0 pb-3">
+                <h5 class="modal-title fw-bold" style="color:#1a1a2e">
+                    <i class="bi bi-truck me-2" style="color:#f26722"></i>Create Dispatch
+                </h5>
+                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <form action="#" method="post">
+                <div class="modal-body p-4 bg-white">
+                    <!-- General Info -->
+                    <h6 class="fw-bold mb-3" style="color: #1a1a2e;">
+                        <i class="bi bi-info-circle-fill me-2" style="color:#f26722"></i>General Information
+                    </h6>
+                    
+                    <div class="row g-4 mb-4 pb-4 border-bottom">
+                        <div class="col-md-3">
+                            <label class="form-label small fw-bold text-muted mb-2">Type</label>
+                            <div class="d-flex bg-light p-1 rounded-2">
+                                <input type="radio" class="btn-check" name="receiptType" id="typeInbound" value="INBOUND" checked onchange="toggleReceiptType()">
+                                <label class="btn btn-sm flex-fill fw-semibold rounded-2" for="typeInbound" style="color: #f26722; background: white; border: none; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">Inbound</label>
+                                
+                                <input type="radio" class="btn-check" name="receiptType" id="typeOutbound" value="OUTBOUND" onchange="toggleReceiptType()">
+                                <label class="btn btn-sm flex-fill fw-semibold text-muted rounded-2 border-0" for="typeOutbound" style="background: transparent;">Outbound</label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small fw-bold text-muted mb-2">Warehouse</label>
+                            <select class="form-select border-0 bg-light text-muted form-select-sm py-2 rounded-2 fw-medium shadow-none">
+                                <option value="">Select warehouse</option>
+                                <option value="1">HN Main Warehouse</option>
+                                <option value="2">Central Warehouse</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small fw-bold text-muted mb-2">Created At</label>
+                            <input type="date" class="form-control border-0 bg-light form-control-sm py-2 rounded-2 text-muted fw-medium shadow-none" value="2023-11-20">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small fw-bold text-muted mb-2">Assignee</label>
+                            <select class="form-select border-0 bg-light text-muted form-select-sm py-2 rounded-2 fw-medium shadow-none">
+                                <option value="">Select person</option>
+                                <option value="1">Admin User</option>
+                                <option value="2">John Doe</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Item List -->
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="fw-bold mb-0" style="color: #1a1a2e;">
+                            <i class="bi bi-view-list me-2" style="color:#f26722"></i>Resource List
+                        </h6>
+                        <button type="button" class="btn btn-sm fw-bold rounded-pill px-3" style="background:#fff3ec; color:#f26722; border: none;">
+                            <i class="bi bi-plus-circle-fill me-1"></i> Add Item
+                        </button>
+                    </div>
+
+                    <div class="table-responsive mb-4 pb-4 border-bottom">
+                        <table class="table table-borderless align-middle mb-0">
+                            <thead class="bg-light rounded-top">
+                                <tr>
+                                    <th class="px-3 py-2 text-uppercase small text-muted fw-bold w-50" style="font-size:.7rem;letter-spacing:.05em">Product / Resource Name</th>
+                                    <th class="px-2 py-2 text-uppercase small text-muted fw-bold text-center" style="font-size:.7rem;letter-spacing:.05em; width: 12%;">Quantity</th>
+                                    <th class="px-2 py-2 text-uppercase small text-muted fw-bold" style="font-size:.7rem;letter-spacing:.05em; width: 15%;">Unit</th>
+                                    <th class="px-2 py-2 text-uppercase small text-muted fw-bold" style="font-size:.7rem;letter-spacing:.05em">Note</th>
+                                    <th class="px-0 py-2 text-end" style="width: 40px;"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-bottom">
+                                    <td class="px-3 py-3">
+                                        <div class="fw-bold" style="color:#1a1a2e; font-size: 0.9rem;">Dulux Premium Primer 5L</div>
+                                    </td>
+                                    <td class="px-2 py-3 text-center">
+                                        <input type="number" class="form-control form-control-sm bg-light border-0 py-2 text-center text-dark fw-bold rounded-2 shadow-none" value="20">
+                                    </td>
+                                    <td class="px-2 py-3">
+                                        <select class="form-select form-select-sm bg-light border-0 py-2 text-dark fw-bold rounded-2 shadow-none">
+                                            <option value="">Box</option>
+                                            <option value="">Bucket</option>
+                                        </select>
+                                    </td>
+                                    <td class="px-2 py-3">
+                                        <input type="text" class="form-control form-control-sm bg-transparent border-0 py-2 text-muted fw-medium shadow-none" value="White color - 30GY">
+                                    </td>
+                                    <td class="px-0 py-3 text-end">
+                                        <button type="button" class="btn btn-sm text-muted p-1 rounded-2 bg-light border-0" title="Delete"><i class="bi bi-trash-fill" style="color: #94a3b8"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Notes -->
+                    <h6 class="fw-bold mb-3" style="color: #1a1a2e;">
+                        <i class="bi bi-distribute-horizontal me-2" style="color:#f26722"></i>General Notes
+                    </h6>
+                    <textarea class="form-control bg-light border-0 p-3 rounded-2 text-muted fw-medium shadow-none" rows="2" placeholder="Enter notes for this dispatch (e.g., contract number, goods status...)"></textarea>
+
+                </div>
+                
+                <div class="modal-footer bg-light border-top-0 py-3 px-4 d-flex justify-content-between align-items-center">
+                    <div class="text-muted small fst-italic fw-medium">
+                        * Please verify data carefully.
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-light shadow-sm text-muted fw-bold rounded-2 px-4" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn text-white fw-bold rounded-2 px-4 py-2" style="background:#f26722; border: none; box-shadow: 0 4px 12px rgba(242, 103, 34, 0.2);">
+                            <i class="bi bi-save-fill me-2"></i>Save
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function toggleReceiptType() {
+        const isInboundChecked = document.getElementById('typeInbound').checked;
+        const inLabel = document.querySelector('label[for="typeInbound"]');
+        const outLabel = document.querySelector('label[for="typeOutbound"]');
+        
+        if (isInboundChecked) {
+            inLabel.style.background = 'white';
+            inLabel.style.color = '#f26722';
+            inLabel.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
+            
+            outLabel.style.background = 'transparent';
+            outLabel.style.color = '#6c757d';
+            outLabel.style.boxShadow = 'none';
+        } else {
+            outLabel.style.background = 'white';
+            outLabel.style.color = '#f26722';
+            outLabel.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
+            
+            inLabel.style.background = 'transparent';
+            inLabel.style.color = '#6c757d';
+            inLabel.style.boxShadow = 'none';
+        }
+    }
+</script>
+</body>
+</html>

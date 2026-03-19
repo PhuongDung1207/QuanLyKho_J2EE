@@ -49,6 +49,9 @@ public class SecurityConfig {
                         .requestMatchers("/uoms/**").permitAll()
                         .requestMatchers("/categories/**").permitAll()
                         .requestMatchers("/products/**").permitAll()
+                        .requestMatchers("/dispatch/**").permitAll()
+                        .requestMatchers("/suppliers/**").permitAll()
+                        .requestMatchers("/locations/**").permitAll()
                         // Users - Thymeleaf views
                         .requestMatchers(HttpMethod.GET, "/users").hasAuthority("USER_VIEW")
                         .requestMatchers(HttpMethod.POST, "/users").hasAuthority("USER_CREATE")
