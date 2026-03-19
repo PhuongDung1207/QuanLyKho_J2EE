@@ -49,7 +49,7 @@ public class SecurityConfig {
                         .requestMatchers("/uoms/**").permitAll()
                         .requestMatchers("/categories/**").permitAll()
                         .requestMatchers("/products/**").permitAll()
-                        .requestMatchers("/dispatch/**").permitAll()
+                        .requestMatchers("/transactions/**").permitAll()
                         .requestMatchers("/suppliers/**").permitAll()
                         .requestMatchers("/locations/**").permitAll()
                         // Users - Thymeleaf views

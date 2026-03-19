@@ -181,6 +181,12 @@ public class DataInitializer {
             pSupplierDelete.setName("Xóa nhà cung cấp");
             Permission savedSupplierDelete = permissionRepository.save(pSupplierDelete);
 
+            Permission pSupplierLock = new Permission();
+            pSupplierLock.setCode("SUPPLIER_LOCK");
+            pSupplierLock.setModule("MASTER_DATA");
+            pSupplierLock.setName("Khóa / Mở khóa nhà cung cấp");
+            Permission savedSupplierLock = permissionRepository.save(pSupplierLock);
+
             // ─── ROLES ───────────────────────────────────────────────────────
             Permission pRoleView = new Permission();
             pRoleView.setCode("ROLE_VIEW");
@@ -288,23 +294,24 @@ public class DataInitializer {
             Permission savedOutboundDecline = permissionRepository.save(pOutboundDecline);
 
             // ─── INVENTORY ───────────────────────────────────────────────────
-            Permission pInventoryCreate = new Permission();
-            pInventoryCreate.setCode("INVENTORY_CREATE");
-            pInventoryCreate.setModule("INVENTORY");
-            pInventoryCreate.setName("Tạo kiểm kê");
-            Permission savedInventoryCreate = permissionRepository.save(pInventoryCreate);
+            Permission pInventoryView = new Permission();
+            pInventoryView.setCode("INVENTORY_VIEW");
+            pInventoryView.setModule("INVENTORY");
+            pInventoryView.setName("Xem danh sách tồn kho tổng quát");
+            Permission savedInventoryView = permissionRepository.save(pInventoryView);
 
-            Permission pInventoryUpdate = new Permission();
-            pInventoryUpdate.setCode("INVENTORY_UPDATE");
-            pInventoryUpdate.setModule("INVENTORY");
-            pInventoryUpdate.setName("Cập nhật kiểm kê");
-            Permission savedInventoryUpdate = permissionRepository.save(pInventoryUpdate);
+            Permission pInventoryDetail = new Permission();
+            pInventoryDetail.setCode("INVENTORY_DETAIL");
+            pInventoryDetail.setModule("INVENTORY");
+            pInventoryDetail.setName("Xem chi tiết số lượng tại từng Section/Location");
+            Permission savedInventoryDetail = permissionRepository.save(pInventoryDetail);
 
-            Permission pInventoryDelete = new Permission();
-            pInventoryDelete.setCode("INVENTORY_DELETE");
-            pInventoryDelete.setModule("INVENTORY");
-            pInventoryDelete.setName("Xóa kiểm kê");
-            Permission savedInventoryDelete = permissionRepository.save(pInventoryDelete);
+            // ─── REPORTS ─────────────────────────────────────────────────────
+            Permission pReportView = new Permission();
+            pReportView.setCode("REPORT_VIEW");
+            pReportView.setModule("REPORTS");
+            pReportView.setName("Xem báo cáo");
+            Permission savedReportView = permissionRepository.save(pReportView);
 
             Role adminRole = new Role();
             adminRole.setCode("ADMIN");
@@ -317,10 +324,10 @@ public class DataInitializer {
                     savedLocationView, savedLocationCreate, savedLocationUpdate, savedLocationDelete,
                     savedRoleView, savedRoleCreate, savedRoleUpdate,
                     savedUserView, savedUserCreate, savedUserUpdate, savedUserLock,
-                    savedSupplierView, savedSupplierCreate, savedSupplierUpdate, savedSupplierDelete,
+                    savedSupplierView, savedSupplierCreate, savedSupplierUpdate, savedSupplierDelete, savedSupplierLock,
                     savedInboundCreate, savedInboundUpdate, savedInboundDelete, savedInboundApprove, savedInboundDecline,
                     savedOutboundCreate, savedOutboundUpdate, savedOutboundDelete, savedOutboundApprove, savedOutboundDecline,
-                    savedInventoryCreate, savedInventoryUpdate, savedInventoryDelete
+                    savedInventoryView, savedInventoryDetail, savedReportView
             ));
             adminRole.setPermissions(adminPermissions);
             Role savedAdminRole = roleRepository.save(adminRole);

@@ -26,6 +26,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public Product findById(UUID id) {
+        return productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found: " + id));
+    }
+
+    @Override
     @Transactional
     public Product create(Product product) {
         if (productRepository.existsBySku(product.getSku())) {

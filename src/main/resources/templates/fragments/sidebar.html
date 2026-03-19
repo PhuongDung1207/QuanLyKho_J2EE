@@ -284,24 +284,32 @@
                 </a>
 
                 <a class="wms-nav-item"
+                    th:classappend="${currentUri != null and currentUri.startsWith('/inventory')} ? 'active'"
+                    href="/inventory">
+                    <span class="wms-nav-icon"><i class="bi bi-box-seam"></i></span>
+                    Inventory
+                </a>
+
+                <a class="wms-nav-item"
+                    th:classappend="${currentUri != null and currentUri.startsWith('/transactions')} ? 'active'"
+                    href="/transactions">
+                    <span class="wms-nav-icon"><i class="bi bi-truck"></i></span>
+                    Transactions
+                </a>
+
+                <div class="wms-nav-label">Management</div>
+                <a class="wms-nav-item"
                     th:classappend="${currentUri != null and currentUri.startsWith('/warehouses')} ? 'active'"
                     href="/warehouses">
                     <span class="wms-nav-icon"><i class="bi bi-house-door"></i></span>
-                    Warehouse Management
+                    Warehouses
                 </a>
 
                 <a class="wms-nav-item"
                     th:classappend="${currentUri != null and currentUri.startsWith('/locations')} ? 'active'"
                     href="/locations">
                     <span class="wms-nav-icon"><i class="bi bi-house-door"></i></span>
-                    Section Management
-                </a>
-
-                <a class="wms-nav-item"
-                    th:classappend="${currentUri != null and currentUri.startsWith('/products')} ? 'active'"
-                    href="/products">
-                    <span class="wms-nav-icon"><i class="bi bi-box-seam"></i></span>
-                    Inventory
+                    Sections
                 </a>
 
                 <a class="wms-nav-item"
@@ -312,13 +320,11 @@
                 </a>
 
                 <a class="wms-nav-item"
-                    th:classappend="${currentUri != null and currentUri.startsWith('/dispatch')} ? 'active'"
-                    href="/dispatch">
-                    <span class="wms-nav-icon"><i class="bi bi-truck"></i></span>
-                    Dispatch
+                    th:classappend="${currentUri != null and currentUri.startsWith('/products')} ? 'active'"
+                    href="/products">
+                    <span class="wms-nav-icon"><i class="bi bi-box-seam"></i></span>
+                    Products
                 </a>
-
-                <div class="wms-nav-label">Management</div>
 
                 <a class="wms-nav-item"
                     th:classappend="${currentUri != null and currentUri.startsWith('/categories')} ? 'active'"
@@ -333,18 +339,18 @@
                     UOMs
                 </a>
 
-                <a class="wms-nav-item"
-                    th:classappend="${currentUri != null and currentUri.startsWith('/users')} ? 'active'" href="/users">
-                    <span class="wms-nav-icon"><i class="bi bi-people"></i></span>
-                    Users
-                </a>
-
-                <div class="wms-nav-label">System</div>
-
                 <a class="wms-nav-item" href="#" onclick="return false"
                     style="opacity:0.45; cursor:not-allowed; pointer-events:all;" title="Coming soon">
                     <span class="wms-nav-icon"><i class="bi bi-clipboard"></i></span>
                     Reports
+                </a>
+
+                <div class="wms-nav-label">System</div>
+
+                <a class="wms-nav-item"
+                    th:classappend="${currentUri != null and currentUri.startsWith('/users')} ? 'active'" href="/users">
+                    <span class="wms-nav-icon"><i class="bi bi-people"></i></span>
+                    Users
                 </a>
 
                 <a class="wms-nav-item"
