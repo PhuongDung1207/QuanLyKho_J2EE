@@ -21,5 +21,9 @@ public interface OutboundService {
 
     OutboundIssue approve(UUID issueId, String actorUsername);
 
+    OutboundIssue reject(UUID issueId);
+
     OutboundIssue complete(UUID issueId);
+
+    void delete(UUID issueId);
 }

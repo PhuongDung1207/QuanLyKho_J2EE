@@ -258,17 +258,29 @@
         }
 
         .cap-bar {
-            height: 5px;
+            height: 6px;
             border-radius: 3px;
             background: #e2e8f0;
-            margin-top: 3px;
-            min-width: 70px;
+            margin-top: 4px;
+            min-width: 80px;
+            overflow: hidden;
         }
 
         .cap-fill {
             height: 100%;
             border-radius: 3px;
-            background: #0369a1;
+            transition: width 0.4s ease;
+        }
+
+        .cap-fill.low   { background: linear-gradient(90deg, #22c55e, #16a34a); }
+        .cap-fill.mid   { background: linear-gradient(90deg, #f59e0b, #d97706); }
+        .cap-fill.high  { background: linear-gradient(90deg, #f97316, #ea580c); }
+        .cap-fill.full  { background: linear-gradient(90deg, #ef4444, #b91c1c); }
+
+        .cap-pct {
+            font-size: 0.7rem;
+            font-weight: 700;
+            margin-top: 2px;
         }
 
         /* ── Action buttons ── */
@@ -620,9 +632,31 @@
                                 </span>
                             </td>
                             <td>
-                                <div class="cap-label" th:text="${w.capacity != null ? w.capacity : '—'}">—</div>
-                                <div class="cap-bar" th:if="${w.capacity != null}">
-                                    <div class="cap-fill" style="width:55%"></div>
+                                <!-- Có capacity: hiển thị stock / capacity + thanh tiến độ + % -->
+                                <div th:if="${w.capacity != null}"
+                                     th:with="stock=${warehouseStockMap[w.id]}, pct=${warehouseStockPctMap[w.id]}">
+                                    <div class="cap-label">
+                                        <span th:text="${#numbers.formatDecimal(stock, 1, 'POINT', 0, 'COMMA')}">0</span>
+                                        <span style="color:#94a3b8;font-weight:400"> / </span>
+                                        <span th:text="${#numbers.formatDecimal(w.capacity, 1, 'POINT', 0, 'COMMA')}">0</span>
+                                    </div>
+                                    <div class="cap-bar">
+                                        <div class="cap-fill"
+                                             th:classappend="${pct >= 90 ? 'full' : (pct >= 70 ? 'high' : (pct >= 40 ? 'mid' : 'low'))}"
+                                             th:style="'width:' + ${pct} + '%'"></div>
+                                    </div>
+                                    <div class="cap-pct"
+                                         th:style="${pct >= 90 ? 'color:#b91c1c' : (pct >= 70 ? 'color:#ea580c' : (pct >= 40 ? 'color:#d97706' : 'color:#16a34a'))}"
+                                         th:text="${pct} + '%'">0%</div>
+                                </div>
+                                <!-- Không có capacity: hiện số lượng nếu > 0, ngược lại hiện — -->
+                                <div th:if="${w.capacity == null}"
+                                     th:with="stock=${warehouseStockMap[w.id]}">
+                                    <span th:if="${stock != null and stock.compareTo(T(java.math.BigDecimal).ZERO) > 0}"
+                                          class="cap-label"
+                                          th:text="${#numbers.formatDecimal(stock, 1, 'POINT', 0, 'COMMA')} + ' units'">0 units</span>
+                                    <span th:if="${stock == null or stock.compareTo(T(java.math.BigDecimal).ZERO) == 0}"
+                                          style="color:#cbd5e1;font-size:0.82rem">—</span>
                                 </div>
                             </td>
                             <td>

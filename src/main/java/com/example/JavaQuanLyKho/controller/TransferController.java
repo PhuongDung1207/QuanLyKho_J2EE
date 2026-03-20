@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -55,6 +56,12 @@ public class TransferController {
                 .body(toResponse(created));
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteTransfer(@PathVariable("id") UUID id) {
+        transferService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @PostMapping("/{id}/approve")
     public ResponseEntity<TransferDtos.Response> approveTransfer(
             @PathVariable("id") UUID id,
@@ -62,6 +69,11 @@ public class TransferController {
     ) {
         String username = authentication != null ? authentication.getName() : null;
         return ResponseEntity.ok(toResponse(transferService.approve(id, username)));
+    }
+
+    @PostMapping("/{id}/reject")
+    public ResponseEntity<TransferDtos.Response> rejectTransfer(@PathVariable("id") UUID id) {
+        return ResponseEntity.ok(toResponse(transferService.reject(id)));
     }
 
     @PostMapping("/{id}/issue")

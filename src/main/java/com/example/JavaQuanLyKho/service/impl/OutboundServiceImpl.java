@@ -124,6 +124,20 @@ public class OutboundServiceImpl implements OutboundService {
 
     @Override
     @Transactional
+    public OutboundIssue reject(UUID issueId) {
+        OutboundIssue issue = getRequiredIssue(issueId);
+        OutboundIssueStatus current = issue.getStatus();
+        if (current != OutboundIssueStatus.DRAFT
+                && current != OutboundIssueStatus.SUBMITTED
+                && current != OutboundIssueStatus.APPROVED) {
+            throw new InvalidStateTransitionException("Outbound issue can only be rejected from DRAFT/SUBMITTED/APPROVED");
+        }
+        issue.setStatus(OutboundIssueStatus.CANCELLED);
+        return outboundIssueRepository.save(issue);
+    }
+
+    @Override
+    @Transactional
     public OutboundIssue complete(UUID issueId) {
         OutboundIssue issue = getRequiredIssue(issueId);
         if (issue.getStatus() != OutboundIssueStatus.APPROVED) {
@@ -162,6 +176,17 @@ public class OutboundServiceImpl implements OutboundService {
         issue.setStatus(OutboundIssueStatus.COMPLETED);
         issue.setCompletedAt(OffsetDateTime.now());
         return outboundIssueRepository.save(issue);
+    }
+
+    @Override
+    @Transactional
+    public void delete(UUID issueId) {
+        OutboundIssue issue = getRequiredIssue(issueId);
+        if (issue.getStatus() != OutboundIssueStatus.DRAFT) {
+            throw new InvalidStateTransitionException("Only DRAFT outbound issue can be deleted");
+        }
+        outboundIssueLineRepository.deleteByIssueId(issueId);
+        outboundIssueRepository.delete(issue);
     }
 
     private void validateCreateRequest(OutboundDtos.CreateRequest request) {

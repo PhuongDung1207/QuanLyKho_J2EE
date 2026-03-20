@@ -113,6 +113,18 @@ public class TransferServiceImpl implements TransferService {
 
     @Override
     @Transactional
+    public Transfer reject(UUID transferId) {
+        Transfer transfer = getRequiredTransfer(transferId);
+        TransferStatus current = transfer.getStatus();
+        if (current != TransferStatus.DRAFT && current != TransferStatus.APPROVED) {
+            throw new InvalidStateTransitionException("Transfer can only be rejected from DRAFT/APPROVED");
+        }
+        transfer.setStatus(TransferStatus.CANCELLED);
+        return transferRepository.save(transfer);
+    }
+
+    @Override
+    @Transactional
     public Transfer issue(UUID transferId) {
         Transfer transfer = getRequiredTransfer(transferId);
         if (transfer.getStatus() != TransferStatus.APPROVED) {
@@ -182,6 +194,17 @@ public class TransferServiceImpl implements TransferService {
         transfer.setStatus(TransferStatus.COMPLETED);
         transfer.setCompletedAt(OffsetDateTime.now());
         return transferRepository.save(transfer);
+    }
+
+    @Override
+    @Transactional
+    public void delete(UUID transferId) {
+        Transfer transfer = getRequiredTransfer(transferId);
+        if (transfer.getStatus() != TransferStatus.DRAFT) {
+            throw new InvalidStateTransitionException("Only DRAFT transfer can be deleted");
+        }
+        transferLineRepository.deleteByTransferId(transferId);
+        transferRepository.delete(transfer);
     }
 
     private void validateCreateRequest(TransferDtos.CreateRequest request) {

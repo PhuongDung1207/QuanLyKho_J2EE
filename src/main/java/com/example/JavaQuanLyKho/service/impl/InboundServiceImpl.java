@@ -128,6 +128,20 @@ public class InboundServiceImpl implements InboundService {
 
     @Override
     @Transactional
+    public InboundReceipt reject(UUID receiptId) {
+        InboundReceipt receipt = getRequiredReceipt(receiptId);
+        InboundReceiptStatus current = receipt.getStatus();
+        if (current != InboundReceiptStatus.DRAFT
+                && current != InboundReceiptStatus.SUBMITTED
+                && current != InboundReceiptStatus.APPROVED) {
+            throw new InvalidStateTransitionException("Inbound receipt can only be rejected from DRAFT/SUBMITTED/APPROVED");
+        }
+        receipt.setStatus(InboundReceiptStatus.CANCELLED);
+        return inboundReceiptRepository.save(receipt);
+    }
+
+    @Override
+    @Transactional
     public InboundReceipt receive(UUID receiptId) {
         InboundReceipt receipt = getRequiredReceipt(receiptId);
         if (receipt.getStatus() != InboundReceiptStatus.APPROVED) {
@@ -155,6 +169,17 @@ public class InboundServiceImpl implements InboundService {
         receipt.setStatus(InboundReceiptStatus.COMPLETED);
         receipt.setCompletedAt(OffsetDateTime.now());
         return inboundReceiptRepository.save(receipt);
+    }
+
+    @Override
+    @Transactional
+    public void delete(UUID receiptId) {
+        InboundReceipt receipt = getRequiredReceipt(receiptId);
+        if (receipt.getStatus() != InboundReceiptStatus.DRAFT) {
+            throw new InvalidStateTransitionException("Only DRAFT inbound receipt can be deleted");
+        }
+        inboundReceiptLineRepository.deleteByReceiptId(receiptId);
+        inboundReceiptRepository.delete(receipt);
     }
 
     private void validateCreateRequest(InboundDtos.CreateRequest request) {

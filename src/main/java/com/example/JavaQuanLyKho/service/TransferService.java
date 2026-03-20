@@ -19,7 +19,11 @@ public interface TransferService {
 
     Transfer approve(UUID transferId, String actorUsername);
 
+    Transfer reject(UUID transferId);
+
     Transfer issue(UUID transferId);
 
     Transfer receive(UUID transferId);
+
+    void delete(UUID transferId);
 }

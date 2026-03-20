@@ -21,5 +21,9 @@ public interface InboundService {
 
     InboundReceipt approve(UUID receiptId, String actorUsername);
 
+    InboundReceipt reject(UUID receiptId);
+
     InboundReceipt receive(UUID receiptId);
+
+    void delete(UUID receiptId);
 }

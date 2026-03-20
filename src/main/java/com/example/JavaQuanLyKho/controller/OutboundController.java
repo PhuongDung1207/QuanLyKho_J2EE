@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -55,6 +56,12 @@ public class OutboundController {
                 .body(toResponse(created));
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteOutbound(@PathVariable("id") UUID id) {
+        outboundService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @PostMapping("/{id}/submit")
     public ResponseEntity<OutboundDtos.Response> submitOutbound(@PathVariable("id") UUID id) {
         return ResponseEntity.ok(toResponse(outboundService.submit(id)));
@@ -67,6 +74,11 @@ public class OutboundController {
     ) {
         String username = authentication != null ? authentication.getName() : null;
         return ResponseEntity.ok(toResponse(outboundService.approve(id, username)));
+    }
+
+    @PostMapping("/{id}/reject")
+    public ResponseEntity<OutboundDtos.Response> rejectOutbound(@PathVariable("id") UUID id) {
+        return ResponseEntity.ok(toResponse(outboundService.reject(id)));
     }
 
     @PostMapping("/{id}/complete")
