@@ -10,6 +10,8 @@ public interface ProductService {
 
     Page<Product> findAll(Pageable pageable);
 
+    Product findById(UUID id);
+
     Product create(Product product);
 
     Product update(UUID id, Product product);

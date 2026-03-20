@@ -20,7 +20,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Controller
@@ -50,6 +52,24 @@ public class WarehouseViewController {
         model.addAttribute("warehouses",   warehouses);
         model.addAttribute("allLocations", collectAllLocations(warehouses));
         model.addAttribute("createForm",   new WarehouseDtos.CreateRequest());
+
+        // Tính currentStock và % tồn kho cho từng warehouse
+        Map<UUID, BigDecimal> stockMap  = new HashMap<>();
+        Map<UUID, Integer>    pctMap    = new HashMap<>();
+        for (Warehouse w : warehouses) {
+            BigDecimal stock = warehouseService.calculateCurrentStock(w.getId());
+            stockMap.put(w.getId(), stock);
+            if (w.getCapacity() != null && w.getCapacity().compareTo(BigDecimal.ZERO) > 0) {
+                int pct = stock.multiply(BigDecimal.valueOf(100))
+                               .divide(w.getCapacity(), 0, java.math.RoundingMode.HALF_UP)
+                               .intValue();
+                pctMap.put(w.getId(), Math.min(pct, 100));
+            } else {
+                pctMap.put(w.getId(), -1); // không có capacity
+            }
+        }
+        model.addAttribute("warehouseStockMap", stockMap);
+        model.addAttribute("warehouseStockPctMap", pctMap);
     }
 
     /* ── GET /warehouses ── */

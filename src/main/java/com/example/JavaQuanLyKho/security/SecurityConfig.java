@@ -1,7 +1,9 @@
 package com.example.JavaQuanLyKho.security;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -12,6 +14,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import java.nio.charset.StandardCharsets;
+import java.time.OffsetDateTime;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @Configuration
 @EnableMethodSecurity
@@ -38,10 +45,42 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter, CustomUserDetailsService customUserDetailsService) throws Exception {
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http,
+            JwtAuthenticationFilter jwtAuthenticationFilter,
+            CustomUserDetailsService customUserDetailsService
+    ) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            if (request.getRequestURI().startsWith("/api/")) {
+                                writeApiError(
+                                        response,
+                                        HttpStatus.UNAUTHORIZED,
+                                        "UNAUTHENTICATED",
+                                        "Authentication required",
+                                        request.getRequestURI()
+                                );
+                                return;
+                            }
+                            response.sendRedirect("/login");
+                        })
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            if (request.getRequestURI().startsWith("/api/")) {
+                                writeApiError(
+                                        response,
+                                        HttpStatus.FORBIDDEN,
+                                        "FORBIDDEN",
+                                        "You do not have permission to perform this action",
+                                        request.getRequestURI()
+                                );
+                                return;
+                            }
+                            response.sendError(HttpServletResponse.SC_FORBIDDEN);
+                        })
+                )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers("/actuator/health").permitAll()
@@ -49,6 +88,8 @@ public class SecurityConfig {
                         .requestMatchers("/uoms/**").permitAll()
                         .requestMatchers("/categories/**").permitAll()
                         .requestMatchers("/products/**").permitAll()
+                        .requestMatchers("/dispatch/**").permitAll()
+                        .requestMatchers("/locations/**").permitAll()
                         // Users - Thymeleaf views
                         .requestMatchers(HttpMethod.GET, "/users").hasAuthority("USER_VIEW")
                         .requestMatchers(HttpMethod.POST, "/users").hasAuthority("USER_CREATE")
@@ -56,6 +97,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/users/{id}/lock").hasAuthority("USER_LOCK")
                         .requestMatchers("/permissions/**").permitAll()
                         .requestMatchers("/login", "/logout").permitAll()
+                        // Suppliers - Thymeleaf views
+                        .requestMatchers(HttpMethod.GET, "/suppliers").hasAuthority("SUPPLIER_VIEW")
+                        .requestMatchers(HttpMethod.POST, "/suppliers").hasAuthority("SUPPLIER_CREATE")
+                        .requestMatchers(HttpMethod.POST, "/suppliers/{id}/update").hasAuthority("SUPPLIER_UPDATE")
+                        .requestMatchers(HttpMethod.POST, "/suppliers/{id}/delete").hasAuthority("SUPPLIER_DELETE")
                         // Roles - Thymeleaf views
                         .requestMatchers(HttpMethod.GET, "/roles").hasAuthority("ROLE_VIEW")
                         .requestMatchers(HttpMethod.POST, "/roles").hasAuthority("ROLE_CREATE")
@@ -67,6 +113,27 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/api/v1/products/**").hasAuthority("PRODUCT_UPDATE")
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/products/**").hasAuthority("PRODUCT_DELETE")
                         .requestMatchers(HttpMethod.POST, "/api/v1/products/*/lock").hasAuthority("PRODUCT_LOCK")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/inventory/balances").hasAnyAuthority("INVENTORY_CREATE", "INVENTORY_UPDATE", "INVENTORY_DELETE")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/inventory/low-stock").hasAnyAuthority("INVENTORY_CREATE", "INVENTORY_UPDATE", "INVENTORY_DELETE")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/inbounds/**").hasAnyAuthority("INBOUND_RECEIPT_CREATE", "INBOUND_RECEIPT_UPDATE", "INBOUND_RECEIPT_APPROVE", "INBOUND_RECEIPT_DELETE")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/inbounds").hasAuthority("INBOUND_RECEIPT_CREATE")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/inbounds/*/submit").hasAuthority("INBOUND_RECEIPT_UPDATE")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/inbounds/*/approve").hasAuthority("INBOUND_RECEIPT_APPROVE")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/inbounds/*/receive").hasAnyAuthority("INBOUND_RECEIPT_UPDATE", "INBOUND_RECEIPT_APPROVE")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/outbounds/**").hasAnyAuthority("OUTBOUND_RECEIPT_CREATE", "OUTBOUND_RECEIPT_UPDATE", "OUTBOUND_RECEIPT_APPROVE", "OUTBOUND_RECEIPT_DELETE")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/outbounds").hasAuthority("OUTBOUND_RECEIPT_CREATE")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/outbounds/*/submit").hasAuthority("OUTBOUND_RECEIPT_UPDATE")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/outbounds/*/approve").hasAuthority("OUTBOUND_RECEIPT_APPROVE")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/outbounds/*/complete").hasAnyAuthority("OUTBOUND_RECEIPT_UPDATE", "OUTBOUND_RECEIPT_APPROVE")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/transfers/**").hasAnyAuthority("OUTBOUND_RECEIPT_CREATE", "OUTBOUND_RECEIPT_UPDATE", "OUTBOUND_RECEIPT_APPROVE", "INBOUND_RECEIPT_CREATE", "INBOUND_RECEIPT_UPDATE", "INBOUND_RECEIPT_APPROVE")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/transfers").hasAuthority("OUTBOUND_RECEIPT_CREATE")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/transfers/*/approve").hasAuthority("OUTBOUND_RECEIPT_APPROVE")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/transfers/*/issue").hasAuthority("OUTBOUND_RECEIPT_UPDATE")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/transfers/*/receive").hasAuthority("INBOUND_RECEIPT_UPDATE")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/suppliers/**").hasAuthority("SUPPLIER_VIEW")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/suppliers").hasAuthority("SUPPLIER_CREATE")
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/suppliers/**").hasAuthority("SUPPLIER_UPDATE")
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/suppliers/**").hasAuthority("SUPPLIER_DELETE")
                         .requestMatchers(HttpMethod.GET, "/api/v1/warehouses/*/locations/**").hasAuthority("LOCATION_VIEW")
                         .requestMatchers(HttpMethod.POST, "/api/v1/warehouses/*/locations/**").hasAuthority("LOCATION_CREATE")
                         .anyRequest().authenticated()
@@ -74,5 +141,46 @@ public class SecurityConfig {
                 .userDetailsService(customUserDetailsService)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
+    }
+
+    private static void writeApiError(
+            HttpServletResponse response,
+            HttpStatus status,
+            String code,
+            String message,
+            String path
+    ) throws java.io.IOException {
+        response.setStatus(status.value());
+        response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+        response.setContentType("application/json");
+
+        Map<String, String> body = new LinkedHashMap<>();
+        body.put("timestamp", OffsetDateTime.now().toString());
+        body.put("status", String.valueOf(status.value()));
+        body.put("error", status.getReasonPhrase());
+        body.put("code", code);
+        body.put("message", message);
+        body.put("path", path);
+
+        String json = "{"
+                + "\"timestamp\":\"" + escapeJson(body.get("timestamp")) + "\","
+                + "\"status\":" + body.get("status") + ","
+                + "\"error\":\"" + escapeJson(body.get("error")) + "\","
+                + "\"code\":\"" + escapeJson(body.get("code")) + "\","
+                + "\"message\":\"" + escapeJson(body.get("message")) + "\","
+                + "\"path\":\"" + escapeJson(body.get("path")) + "\""
+                + "}";
+        response.getWriter().write(json);
+    }
+
+    private static String escapeJson(String value) {
+        if (value == null) {
+            return "";
+        }
+        String escaped = value.replace("\\", "\\\\");
+        escaped = escaped.replace("\"", "\\\"");
+        escaped = escaped.replace("\n", "\\n");
+        escaped = escaped.replace("\r", "\\r");
+        return escaped.replace("\t", "\\t");
     }
 }

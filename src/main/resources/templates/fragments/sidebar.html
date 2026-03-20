@@ -10,6 +10,7 @@
 
             :root {
                 --sidebar-w: 240px;
+                --sidebar-collapsed-w: 76px;
                 --sidebar-bg: #ffffff;
                 --sidebar-border: #f0f0f4;
                 --text-primary: #1a1a2e;
@@ -48,6 +49,52 @@
                 bottom: 0;
                 z-index: 1000;
                 box-shadow: 2px 0 12px rgba(0, 0, 0, 0.04);
+                transition: width 0.22s ease;
+                overflow: visible;
+            }
+
+            .wms-sidebar-edge-zone {
+                position: absolute;
+                top: 0;
+                right: -30px;
+                bottom: 0;
+                width: 30px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 1002;
+            }
+
+            .wms-sidebar-toggle {
+                width: 26px;
+                height: 56px;
+                border-radius: 999px;
+                border: 1px solid #e2e8f0;
+                background: #ffffff;
+                color: #64748b;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.88rem;
+                box-shadow: 0 8px 18px rgba(15, 23, 42, 0.12);
+                cursor: pointer;
+                opacity: 0;
+                pointer-events: none;
+                transform: translateX(6px);
+                transition: opacity 0.16s ease, transform 0.16s ease, color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+            }
+
+            .wms-sidebar-edge-zone:hover .wms-sidebar-toggle,
+            .wms-sidebar-toggle:focus-visible {
+                opacity: 1;
+                pointer-events: auto;
+                transform: translateX(0);
+            }
+
+            .wms-sidebar-toggle:hover {
+                color: var(--active-text);
+                border-color: #fed7aa;
+                background: #fff7ed;
             }
 
             /* ── Brand / Logo ── */
@@ -255,11 +302,59 @@
                 min-height: 100vh;
                 display: flex;
                 flex-direction: column;
+                transition: margin-left 0.22s ease;
+            }
+
+            body.wms-sidebar-collapsed .wms-sidebar {
+                width: var(--sidebar-collapsed-w);
+            }
+
+            body.wms-sidebar-collapsed .wms-main {
+                margin-left: var(--sidebar-collapsed-w);
+            }
+
+            body.wms-sidebar-collapsed .wms-brand {
+                justify-content: center;
+                padding: 20px 0;
+            }
+
+            body.wms-sidebar-collapsed .wms-brand-text,
+            body.wms-sidebar-collapsed .wms-nav-label,
+            body.wms-sidebar-collapsed .wms-user-info {
+                display: none;
+            }
+
+            body.wms-sidebar-collapsed .wms-nav {
+                padding: 16px 8px;
+            }
+
+            body.wms-sidebar-collapsed .wms-nav-item {
+                justify-content: center;
+                padding: 10px 8px;
+                gap: 0;
+                font-size: 0;
+                transform: none;
+            }
+
+            body.wms-sidebar-collapsed .wms-nav-item:hover {
+                transform: none;
+            }
+
+            body.wms-sidebar-collapsed .wms-user-footer {
+                justify-content: center;
+                padding: 12px 8px;
+                gap: 8px;
             }
         </style>
 
         <!-- ===== Sidebar HTML ===== -->
         <aside class="wms-sidebar">
+            <div class="wms-sidebar-edge-zone">
+                <button class="wms-sidebar-toggle" id="wmsSidebarToggle" type="button" aria-label="Thu gon sidebar"
+                    title="Thu gon sidebar">
+                    <i class="bi bi-chevron-left"></i>
+                </button>
+            </div>
 
             <!-- Brand -->
             <a class="wms-brand" href="/warehouses">
@@ -284,32 +379,47 @@
                 </a>
 
                 <a class="wms-nav-item"
-                    th:classappend="${currentUri != null and currentUri.startsWith('/locations')} ? 'active'"
+                    th:classappend="${currentUri != null and currentUri.startsWith('/inventory')} ? 'active'"
+                    href="/inventory">
+                    <span class="wms-nav-icon"><i class="bi bi-box-seam"></i></span>
+                    Inventory
+                </a>
+
+                <a class="wms-nav-item"
+                    th:classappend="${currentUri != null and currentUri.startsWith('/transactions')} ? 'active'"
+                    href="/transactions">
+                    <span class="wms-nav-icon"><i class="bi bi-truck"></i></span>
+                    Transactions
+                </a>
+
+                <div class="wms-nav-label">Management</div>
+                <a class="wms-nav-item"
+                    th:classappend="${currentUri != null and currentUri.startsWith('/warehouses')} ? 'active'"
                     href="/warehouses">
                     <span class="wms-nav-icon"><i class="bi bi-house-door"></i></span>
-                    Warehouse Management
+                    Warehouses
+                </a>
+
+                <a class="wms-nav-item"
+                    th:classappend="${currentUri != null and currentUri.startsWith('/locations')} ? 'active'"
+                    href="/locations">
+                    <span class="wms-nav-icon"><i class="bi bi-house-door"></i></span>
+                    Sections
+                </a>
+
+                <a class="wms-nav-item"
+                    th:classappend="${currentUri != null and currentUri.startsWith('/suppliers')} ? 'active'"
+                    href="/suppliers">
+                    <span class="wms-nav-icon"><i class="bi bi-shop"></i></span>
+                    Supplier
                 </a>
 
                 <a class="wms-nav-item"
                     th:classappend="${currentUri != null and currentUri.startsWith('/products')} ? 'active'"
                     href="/products">
                     <span class="wms-nav-icon"><i class="bi bi-box-seam"></i></span>
-                    Inventory
+                    Products
                 </a>
-
-                <a class="wms-nav-item" href="#" onclick="return false"
-                    style="opacity:0.45; cursor:not-allowed; pointer-events:all;" title="Coming soon">
-                    <span class="wms-nav-icon"><i class="bi bi-shop"></i></span>
-                    Supplier
-                </a>
-
-                <a class="wms-nav-item" href="#" onclick="return false"
-                    style="opacity:0.45; cursor:not-allowed; pointer-events:all;" title="Coming soon">
-                    <span class="wms-nav-icon"><i class="bi bi-journal"></i></span>
-                    Inventory Inbound / Outbound
-                </a>
-
-                <div class="wms-nav-label">Management</div>
 
                 <a class="wms-nav-item"
                     th:classappend="${currentUri != null and currentUri.startsWith('/categories')} ? 'active'"
@@ -324,18 +434,18 @@
                     UOMs
                 </a>
 
-                <a class="wms-nav-item"
-                    th:classappend="${currentUri != null and currentUri.startsWith('/users')} ? 'active'" href="/users">
-                    <span class="wms-nav-icon"><i class="bi bi-people"></i></span>
-                    Users
-                </a>
-
-                <div class="wms-nav-label">System</div>
-
                 <a class="wms-nav-item" href="#" onclick="return false"
                     style="opacity:0.45; cursor:not-allowed; pointer-events:all;" title="Coming soon">
                     <span class="wms-nav-icon"><i class="bi bi-clipboard"></i></span>
                     Reports
+                </a>
+
+                <div class="wms-nav-label">System</div>
+
+                <a class="wms-nav-item"
+                    th:classappend="${currentUri != null and currentUri.startsWith('/users')} ? 'active'" href="/users">
+                    <span class="wms-nav-icon"><i class="bi bi-people"></i></span>
+                    Users
                 </a>
 
                 <a class="wms-nav-item"
@@ -383,6 +493,82 @@
             </div>
 
         </aside>
+
+        <script>
+            (function () {
+                const storageKey = 'wms-sidebar-collapsed';
+                const bodyEl = document.body;
+                const sidebarEl = document.querySelector('.wms-sidebar');
+                const toggleBtn = document.getElementById('wmsSidebarToggle');
+
+                if (!bodyEl || !sidebarEl || !toggleBtn) return;
+
+                const iconEl = toggleBtn.querySelector('i');
+                const navItems = sidebarEl.querySelectorAll('.wms-nav-item');
+
+                navItems.forEach((item) => {
+                    const title = item.getAttribute('title');
+                    if (title !== null) {
+                        item.dataset.originalTitle = title;
+                    }
+                    const label = item.textContent.replace(/\s+/g, ' ').trim();
+                    if (label) {
+                        item.dataset.navLabel = label;
+                    }
+                });
+
+                function updateTitles(isCollapsed) {
+                    navItems.forEach((item) => {
+                        const originalTitle = Object.prototype.hasOwnProperty.call(item.dataset, 'originalTitle')
+                            ? item.dataset.originalTitle
+                            : null;
+                        if (isCollapsed) {
+                            if (originalTitle !== null) {
+                                item.setAttribute('title', originalTitle);
+                            } else if (item.dataset.navLabel) {
+                                item.setAttribute('title', item.dataset.navLabel);
+                            }
+                            return;
+                        }
+                        if (originalTitle !== null) {
+                            item.setAttribute('title', originalTitle);
+                        } else {
+                            item.removeAttribute('title');
+                        }
+                    });
+                }
+
+                function applyState(isCollapsed) {
+                    bodyEl.classList.toggle('wms-sidebar-collapsed', isCollapsed);
+                    toggleBtn.setAttribute('aria-expanded', isCollapsed ? 'false' : 'true');
+                    if (iconEl) {
+                        iconEl.className = isCollapsed ? 'bi bi-chevron-right' : 'bi bi-chevron-left';
+                    }
+                    const label = isCollapsed ? 'Mo rong sidebar' : 'Thu gon sidebar';
+                    toggleBtn.setAttribute('aria-label', label);
+                    toggleBtn.setAttribute('title', label);
+                    updateTitles(isCollapsed);
+                }
+
+                let isCollapsed = false;
+                try {
+                    isCollapsed = localStorage.getItem(storageKey) === '1';
+                } catch (err) {
+                    isCollapsed = false;
+                }
+                applyState(isCollapsed);
+
+                toggleBtn.addEventListener('click', () => {
+                    isCollapsed = !bodyEl.classList.contains('wms-sidebar-collapsed');
+                    applyState(isCollapsed);
+                    try {
+                        localStorage.setItem(storageKey, isCollapsed ? '1' : '0');
+                    } catch (err) {
+                        // ignore storage errors
+                    }
+                });
+            })();
+        </script>
     </div>
 
 </body>
