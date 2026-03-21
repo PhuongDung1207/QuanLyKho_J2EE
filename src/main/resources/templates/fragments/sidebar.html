@@ -392,6 +392,38 @@
                     Transactions
                 </a>
 
+                <div class="wms-nav-label">Green Warehouse</div>
+                <a class="wms-nav-item"
+                    th:classappend="${currentUri != null and currentUri.startsWith('/green-warehouse/dashboard')} ? 'active'"
+                    href="/green-warehouse/dashboard">
+                    <span class="wms-nav-icon"><i class="bi bi-speedometer2"></i></span>
+                    Green Dashboard
+                </a>
+                <a class="wms-nav-item"
+                    th:classappend="${currentUri != null and currentUri.startsWith('/green-warehouse/aging')} ? 'active'"
+                    href="/green-warehouse/aging">
+                    <span class="wms-nav-icon"><i class="bi bi-clock-history"></i></span>
+                    Inventory Aging
+                </a>
+                <a class="wms-nav-item"
+                    th:classappend="${currentUri != null and currentUri.startsWith('/green-warehouse/slow-moving')} ? 'active'"
+                    href="/green-warehouse/slow-moving">
+                    <span class="wms-nav-icon"><i class="bi bi-exclamation-diamond"></i></span>
+                    Slow-Moving Alert
+                </a>
+                <a class="wms-nav-item"
+                    th:classappend="${currentUri != null and currentUri.startsWith('/green-warehouse/expiring')} ? 'active'"
+                    href="/green-warehouse/expiring">
+                    <span class="wms-nav-icon"><i class="bi bi-calendar-x"></i></span>
+                    Expiry Alert
+                </a>
+                <a class="wms-nav-item"
+                    th:classappend="${currentUri != null and currentUri.startsWith('/green-warehouse/waste')} ? 'active'"
+                    href="/green-warehouse/waste">
+                    <span class="wms-nav-icon"><i class="bi bi-trash3"></i></span>
+                    Waste & Damaged
+                </a>
+
                 <div class="wms-nav-label">Management</div>
                 <a class="wms-nav-item"
                     th:classappend="${currentUri != null and currentUri.startsWith('/warehouses')} ? 'active'"

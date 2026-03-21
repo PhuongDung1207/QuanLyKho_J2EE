@@ -49,6 +49,15 @@ public class InventoryBalance {
     @Column(name = "max_qty", precision = 19, scale = 6)
     private BigDecimal maxQty;
 
+    @Column(name = "expiry_date")
+    private java.time.LocalDate expiryDate;
+
+    @Column(name = "last_inbound_date")
+    private java.time.OffsetDateTime lastInboundDate;
+
+    @Column(name = "last_outbound_date")
+    private java.time.OffsetDateTime lastOutboundDate;
+
     public UUID getId() {
         return id;
     }
@@ -111,5 +120,29 @@ public class InventoryBalance {
 
     public void setMaxQty(BigDecimal maxQty) {
         this.maxQty = maxQty;
+    }
+
+    public java.time.LocalDate getExpiryDate() {
+        return expiryDate;
+    }
+
+    public void setExpiryDate(java.time.LocalDate expiryDate) {
+        this.expiryDate = expiryDate;
+    }
+
+    public java.time.OffsetDateTime getLastInboundDate() {
+        return lastInboundDate;
+    }
+
+    public void setLastInboundDate(java.time.OffsetDateTime lastInboundDate) {
+        this.lastInboundDate = lastInboundDate;
+    }
+
+    public java.time.OffsetDateTime getLastOutboundDate() {
+        return lastOutboundDate;
+    }
+
+    public void setLastOutboundDate(java.time.OffsetDateTime lastOutboundDate) {
+        this.lastOutboundDate = lastOutboundDate;
     }
 }
