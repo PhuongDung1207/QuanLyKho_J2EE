@@ -86,6 +86,8 @@ public class InboundDtos {
 
         private UUID locationId;
 
+        private java.time.LocalDate expiryDate;
+
         public UUID getProductId() {
             return productId;
         }
@@ -116,6 +118,14 @@ public class InboundDtos {
 
         public void setLocationId(UUID locationId) {
             this.locationId = locationId;
+        }
+
+        public java.time.LocalDate getExpiryDate() {
+            return expiryDate;
+        }
+
+        public void setExpiryDate(java.time.LocalDate expiryDate) {
+            this.expiryDate = expiryDate;
         }
     }
 
@@ -236,6 +246,7 @@ public class InboundDtos {
         private UUID uomId;
         private BigDecimal quantity;
         private UUID locationId;
+        private java.time.LocalDate expiryDate;
 
         public UUID getId() {
             return id;
@@ -275,6 +286,14 @@ public class InboundDtos {
 
         public void setLocationId(UUID locationId) {
             this.locationId = locationId;
+        }
+
+        public java.time.LocalDate getExpiryDate() {
+            return expiryDate;
+        }
+
+        public void setExpiryDate(java.time.LocalDate expiryDate) {
+            this.expiryDate = expiryDate;
         }
     }
 }

@@ -163,6 +163,10 @@ public class InboundServiceImpl implements InboundService {
                     });
 
             balance.setQtyOnHand(safe(balance.getQtyOnHand()).add(line.getQuantity()));
+            balance.setLastInboundDate(OffsetDateTime.now());
+            if (line.getExpiryDate() != null) {
+                balance.setExpiryDate(line.getExpiryDate());
+            }
             inventoryBalanceRepository.save(balance);
         }
 
@@ -216,6 +220,7 @@ public class InboundServiceImpl implements InboundService {
             line.setUomId(reqLine.getUomId());
             line.setQuantity(reqLine.getQuantity());
             line.setLocationId(reqLine.getLocationId());
+            line.setExpiryDate(reqLine.getExpiryDate());
             lines.add(line);
         }
         return lines;
