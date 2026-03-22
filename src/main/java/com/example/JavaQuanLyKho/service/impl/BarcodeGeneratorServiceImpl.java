@@ -1,0 +1,39 @@
+package com.example.JavaQuanLyKho.service.impl;
+
+import com.example.JavaQuanLyKho.service.BarcodeGeneratorService;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.oned.Code128Writer;
+import com.google.zxing.qrcode.QRCodeWriter;
+import org.springframework.stereotype.Service;
+
+import java.io.ByteArrayOutputStream;
+
+@Service
+public class BarcodeGeneratorServiceImpl implements BarcodeGeneratorService {
+
+    @Override
+    public byte[] generateQRCodeImage(String text, int width, int height) throws Exception {
+        QRCodeWriter qrCodeWriter = new QRCodeWriter();
+        BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, width, height);
+
+        ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();
+        MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream);
+        return pngOutputStream.toByteArray();
+    }
+
+    @Override
+    public byte[] generateBarcodeImage(String text, int width, int height) throws Exception {
+        Code128Writer barcodeWriter = new Code128Writer();
+        
+        java.util.Map<com.google.zxing.EncodeHintType, Object> hints = new java.util.HashMap<>();
+        hints.put(com.google.zxing.EncodeHintType.MARGIN, 10); // Add quiet zone
+
+        BitMatrix bitMatrix = barcodeWriter.encode(text, BarcodeFormat.CODE_128, width, height, hints);
+
+        ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();
+        MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream);
+        return pngOutputStream.toByteArray();
+    }
+}

@@ -11,13 +11,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
+import com.example.JavaQuanLyKho.repository.UomRepository;
+
 @Service
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
+    private final UomRepository uomRepository;
 
-    public ProductServiceImpl(ProductRepository productRepository) {
+    public ProductServiceImpl(ProductRepository productRepository, UomRepository uomRepository) {
         this.productRepository = productRepository;
+        this.uomRepository = uomRepository;
     }
 
     @Override
@@ -32,12 +36,28 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public Product findByBarcode(String barcode) {
+        Product product = productRepository.findByBarcode(barcode)
+                .orElseThrow(() -> new RuntimeException("Product not found with barcode: " + barcode));
+        if (product.getBaseUomId() != null) {
+            uomRepository.findById(product.getBaseUomId()).ifPresent(u -> product.setUomName(u.getName()));
+        }
+        return product;
+    }
+
+    @Override
     @Transactional
     public Product create(Product product) {
         if (productRepository.existsBySku(product.getSku())) {
             throw new DataIntegrityViolationException("CONFLICT_DUPLICATE_CODE");
         }
-        if (product.getBarcode() != null && productRepository.existsByBarcode(product.getBarcode())) {
+        if (product.getBarcode() == null || product.getBarcode().trim().isEmpty()) {
+            String generatedBarcode;
+            do {
+                generatedBarcode = "PRD-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+            } while (productRepository.existsByBarcode(generatedBarcode));
+            product.setBarcode(generatedBarcode);
+        } else if (productRepository.existsByBarcode(product.getBarcode())) {
             throw new DataIntegrityViolationException("CONFLICT_DUPLICATE_CODE");
         }
         product.setStatus("ACTIVE");

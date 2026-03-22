@@ -37,6 +37,10 @@ public class ProductController {
         Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(productService.findAll(pageable));
     }
+    @GetMapping("/barcode/{barcode}")
+    public ResponseEntity<Product> getProductByBarcode(@PathVariable String barcode) {
+        return ResponseEntity.ok(productService.findByBarcode(barcode));
+    }
 
     @PostMapping
     public ResponseEntity<Product> createProduct(@Validated @RequestBody Product product) {

@@ -102,5 +102,16 @@ public class Product {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    @jakarta.persistence.Transient
+    private String uomName;
+
+    public String getUomName() {
+        return uomName;
+    }
+
+    public void setUomName(String uomName) {
+        this.uomName = uomName;
+    }
 }
 
