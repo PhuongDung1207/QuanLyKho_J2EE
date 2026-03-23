@@ -2,7 +2,6 @@ package com.example.JavaQuanLyKho.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
 import javax.crypto.SecretKey;
@@ -16,8 +15,8 @@ public class JwtService {
 
     private final long accessTokenTtlSeconds;
 
-    public JwtService(long accessTokenTtlSeconds) {
-        this.secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    public JwtService(String secret, long accessTokenTtlSeconds) {
+        this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(java.nio.charset.StandardCharsets.UTF_8));
         this.accessTokenTtlSeconds = accessTokenTtlSeconds;
     }
 

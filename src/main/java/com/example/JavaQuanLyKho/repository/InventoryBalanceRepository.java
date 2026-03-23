@@ -105,4 +105,28 @@ public interface InventoryBalanceRepository extends JpaRepository<InventoryBalan
 
     @Query("select count(b) from InventoryBalance b where (:warehouseId is null or b.warehouseId = :warehouseId) and b.qtyOnHand > 0 and b.expiryDate is not null and b.expiryDate <= :thresholdDate")
     long countExpiringItems(@Param("warehouseId") UUID warehouseId, @Param("thresholdDate") java.time.LocalDate thresholdDate);
+
+    @Query("SELECT w.name, SUM(b.qtyOnHand), count(distinct b.productId) FROM InventoryBalance b JOIN Warehouse w ON b.warehouseId = w.id GROUP BY w.name")
+    java.util.List<Object[]> sumQuantityByWarehouseGroup();
+
+    @Query("""
+            select new com.example.JavaQuanLyKho.model.dto.InventoryRowDto(
+                p.name, p.sku,
+                w.name,
+                l.code,
+                b.qtyOnHand, b.qtyReserved,
+                b.qtyOnHand - b.qtyReserved,
+                b.minQty, b.maxQty,
+                b.lastInboundDate
+            )
+            from InventoryBalance b
+            join Product p on b.productId = p.id
+            join Warehouse w on b.warehouseId = w.id
+            left join Location l on b.locationId = l.id
+            where (:warehouseId is null or b.warehouseId = :warehouseId)
+            order by p.name asc
+            """)
+    org.springframework.data.domain.Page<com.example.JavaQuanLyKho.model.dto.InventoryRowDto> findInventoryRows(
+            @Param("warehouseId") UUID warehouseId,
+            org.springframework.data.domain.Pageable pageable);
 }

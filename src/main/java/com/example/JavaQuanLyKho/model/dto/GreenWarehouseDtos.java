@@ -23,5 +23,13 @@ public class GreenWarehouseDtos {
         public void setTotalWasteQty(BigDecimal totalWasteQty) { this.totalWasteQty = totalWasteQty; }
         public Map<String, BigDecimal> getWasteByType() { return wasteByType; }
         public void setWasteByType(Map<String, BigDecimal> wasteByType) { this.wasteByType = wasteByType; }
+        
+        private BigDecimal turnoverRate;
+        private BigDecimal wastePercentage;
+        
+        public BigDecimal getTurnoverRate() { return turnoverRate; }
+        public void setTurnoverRate(BigDecimal turnoverRate) { this.turnoverRate = turnoverRate; }
+        public BigDecimal getWastePercentage() { return wastePercentage; }
+        public void setWastePercentage(BigDecimal wastePercentage) { this.wastePercentage = wastePercentage; }
     }
 }

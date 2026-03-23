@@ -71,4 +71,6 @@ public interface OutboundIssueRepository extends JpaRepository<OutboundIssue, UU
             @Param("start") java.time.OffsetDateTime start,
             @Param("end") java.time.OffsetDateTime end
     );
+
+    long countByCreatedAtBetween(java.time.OffsetDateTime start, java.time.OffsetDateTime end);
 }

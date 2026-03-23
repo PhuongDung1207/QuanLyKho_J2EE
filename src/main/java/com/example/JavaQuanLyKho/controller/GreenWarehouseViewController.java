@@ -35,7 +35,7 @@ public class GreenWarehouseViewController {
 
     @GetMapping("/dashboard")
     public String dashboard(
-            @RequestParam(required = false) UUID warehouseId,
+            @RequestParam(name = "warehouseId", required = false) UUID warehouseId,
             Model model
     ) {
         model.addAttribute("summary", greenWarehouseService.getHealthSummary(warehouseId));
@@ -46,9 +46,9 @@ public class GreenWarehouseViewController {
 
     @GetMapping("/aging")
     public String aging(
-            @RequestParam(required = false) UUID warehouseId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(name = "warehouseId", required = false) UUID warehouseId,
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "20") int size,
             Model model
     ) {
         Pageable pageable = PageRequest.of(page, size);
@@ -62,10 +62,10 @@ public class GreenWarehouseViewController {
 
     @GetMapping("/slow-moving")
     public String slowMoving(
-            @RequestParam(required = false) UUID warehouseId,
-            @RequestParam(defaultValue = "90") int thresholdDays,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(name = "warehouseId", required = false) UUID warehouseId,
+            @RequestParam(name = "thresholdDays", defaultValue = "90") int thresholdDays,
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "20") int size,
             Model model
     ) {
         Pageable pageable = PageRequest.of(page, size);
@@ -80,10 +80,10 @@ public class GreenWarehouseViewController {
 
     @GetMapping("/expiring")
     public String expiring(
-            @RequestParam(required = false) UUID warehouseId,
-            @RequestParam(defaultValue = "30") int thresholdDays,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(name = "warehouseId", required = false) UUID warehouseId,
+            @RequestParam(name = "thresholdDays", defaultValue = "30") int thresholdDays,
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "20") int size,
             Model model
     ) {
         Pageable pageable = PageRequest.of(page, size);
@@ -98,9 +98,9 @@ public class GreenWarehouseViewController {
 
     @GetMapping("/waste")
     public String waste(
-            @RequestParam(required = false) UUID warehouseId,
-            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") LocalDateTime start,
-            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") LocalDateTime end,
+            @RequestParam(name = "warehouseId", required = false) UUID warehouseId,
+            @RequestParam(name = "start", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") LocalDateTime start,
+            @RequestParam(name = "end", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") LocalDateTime end,
             Model model
     ) {
         if (start == null) start = LocalDateTime.now().minusMonths(1).withHour(0).withMinute(0).withSecond(0).withNano(0);
