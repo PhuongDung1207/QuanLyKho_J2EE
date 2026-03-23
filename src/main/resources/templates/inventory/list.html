@@ -531,28 +531,28 @@
                 <div class="stat-icon s1"><i class="bi bi-grid-3x3-gap-fill"></i></div>
                 <div>
                     <p class="stat-label">Tracked SKU</p>
-                    <p class="stat-value">248</p>
+                    <p class="stat-value" th:text="${totalSkus}">0</p>
                 </div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon s2"><i class="bi bi-archive-fill"></i></div>
                 <div>
                     <p class="stat-label">On Hand Units</p>
-                    <p class="stat-value">38,420</p>
+                    <p class="stat-value" th:text="${totalOnHand}">0</p>
                 </div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon s3"><i class="bi bi-exclamation-triangle-fill"></i></div>
                 <div>
                     <p class="stat-label">Low Stock SKU</p>
-                    <p class="stat-value">19</p>
+                    <p class="stat-value" th:text="${lowStock}">0</p>
                 </div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon s4"><i class="bi bi-x-octagon-fill"></i></div>
                 <div>
                     <p class="stat-label">Out Of Stock</p>
-                    <p class="stat-value">5</p>
+                    <p class="stat-value" th:text="${outOfStock}">0</p>
                 </div>
             </div>
         </div>
@@ -564,11 +564,13 @@
                         <i class="bi bi-search"></i>
                         <input id="searchInput" type="text" class="input-control" placeholder="Search by product, SKU, warehouse or section...">
                     </div>
-                    <select id="warehouseFilter" class="select-control">
+                    <form id="filterForm" method="get" action="/inventory" style="display:contents">
+                    <select name="warehouseId" id="warehouseFilter" class="select-control" onchange="this.form.submit()">
                         <option value="">All Warehouses</option>
-                        <option value="North Hub">North Hub</option>
-                        <option value="Central Depot">Central Depot</option>
-                        <option value="South Branch">South Branch</option>
+                        <option th:each="wh : ${warehouses}"
+                                th:value="${wh.id}"
+                                th:text="${wh.name}"
+                                th:selected="${selectedWarehouseId != null and selectedWarehouseId == wh.id}">Warehouse</option>
                     </select>
                     <select id="statusFilter" class="select-control">
                         <option value="">All Status</option>
@@ -578,10 +580,11 @@
                     </select>
                     <select id="locationFilter" class="select-control">
                         <option value="">All Sections</option>
-                        <option value="A1-01">A1-01</option>
-                        <option value="B2-03">B2-03</option>
-                        <option value="C4-07">C4-07</option>
+                        <option th:each="loc : ${locations}"
+                                th:value="${loc.code}"
+                                th:text="${loc.code}">Section</option>
                     </select>
+                    </form>
                 </div>
                 <div class="panel-head-right">
                     <button type="button" class="quick-pill" data-quick="all">All</button>
@@ -607,85 +610,38 @@
                     </tr>
                     </thead>
                     <tbody id="inventoryRows">
-                    <tr data-search="instant noodles IN-001 North Hub A1-01" data-warehouse="North Hub" data-status="Normal" data-location="A1-01">
-                        <td>1</td>
+                    <tr th:if="${rows.isEmpty()}">
+                        <td colspan="10" class="text-center text-secondary py-4">Không có dữ liệu tồn kho.</td>
+                    </tr>
+                    <tr th:each="row, iter : ${rows.content}"
+                        th:attr="data-search=${row.productName + ' ' + row.productSku + ' ' + row.warehouseName + ' ' + (row.locationCode ?: '')},
+                                 data-warehouse=${row.warehouseName},
+                                 data-status=${row.status},
+                                 data-location=${row.locationCode ?: ''}">
+                        <td th:text="${rows.number * rows.size + iter.index + 1}">1</td>
                         <td>
                             <div class="prod-wrap">
                                 <span class="prod-icon"><i class="bi bi-box-seam"></i></span>
                                 <div>
-                                    <p class="prod-name">Instant Noodles</p>
-                                    <p class="prod-meta">SKU: <span class="mono-badge">IN-001</span></p>
+                                    <p class="prod-name" th:text="${row.productName}">Product</p>
+                                    <p class="prod-meta">SKU: <span class="mono-badge" th:text="${row.productSku}">SKU</span></p>
                                 </div>
                             </div>
                         </td>
-                        <td>North Hub</td>
-                        <td><span class="mono-badge">A1-01</span></td>
-                        <td><span class="qty-chip onhand">2,140</span></td>
-                        <td><span class="qty-chip reserve">340</span></td>
-                        <td><span class="qty-chip available">1,800</span></td>
-                        <td>300 / 3,000</td>
-                        <td><span class="status-pill status-normal">Normal</span></td>
-                        <td>20/03/2026 09:20</td>
-                    </tr>
-                    <tr data-search="cooking oil CO-210 Central Depot B2-03" data-warehouse="Central Depot" data-status="Low" data-location="B2-03">
-                        <td>2</td>
+                        <td th:text="${row.warehouseName}">Warehouse</td>
                         <td>
-                            <div class="prod-wrap">
-                                <span class="prod-icon" style="background:linear-gradient(135deg,#22c55e,#16a34a)"><i class="bi bi-droplet-half"></i></span>
-                                <div>
-                                    <p class="prod-name">Cooking Oil 1L</p>
-                                    <p class="prod-meta">SKU: <span class="mono-badge">CO-210</span></p>
-                                </div>
-                            </div>
+                            <span class="mono-badge" th:if="${row.locationCode != null}" th:text="${row.locationCode}">LOC</span>
+                            <span class="text-secondary" th:if="${row.locationCode == null}">—</span>
                         </td>
-                        <td>Central Depot</td>
-                        <td><span class="mono-badge">B2-03</span></td>
-                        <td><span class="qty-chip onhand">126</span></td>
-                        <td><span class="qty-chip reserve">40</span></td>
-                        <td><span class="qty-chip available">86</span></td>
-                        <td>120 / 1,000</td>
-                        <td><span class="status-pill status-low">Low Stock</span></td>
-                        <td>20/03/2026 08:42</td>
-                    </tr>
-                    <tr data-search="soda can SD-553 South Branch C4-07" data-warehouse="South Branch" data-status="Out" data-location="C4-07">
-                        <td>3</td>
+                        <td><span class="qty-chip onhand" th:text="${#numbers.formatDecimal(row.qtyOnHand, 1, 'COMMA', 0, 'POINT')}">0</span></td>
+                        <td><span class="qty-chip reserve" th:text="${#numbers.formatDecimal(row.qtyReserved, 1, 'COMMA', 0, 'POINT')}">0</span></td>
+                        <td><span class="qty-chip available" th:text="${#numbers.formatDecimal(row.qtyAvailable, 1, 'COMMA', 0, 'POINT')}">0</span></td>
                         <td>
-                            <div class="prod-wrap">
-                                <span class="prod-icon" style="background:linear-gradient(135deg,#ef4444,#dc2626)"><i class="bi bi-cup-straw"></i></span>
-                                <div>
-                                    <p class="prod-name">Soda Can 330ml</p>
-                                    <p class="prod-meta">SKU: <span class="mono-badge">SD-553</span></p>
-                                </div>
-                            </div>
+                            <span th:if="${row.minQty != null}" th:text="${#numbers.formatDecimal(row.minQty,1,'COMMA',0,'POINT') + ' / ' + (row.maxQty != null ? #numbers.formatDecimal(row.maxQty,1,'COMMA',0,'POINT') : '∞')}">— / —</span>
+                            <span th:if="${row.minQty == null}" class="text-secondary">—</span>
                         </td>
-                        <td>South Branch</td>
-                        <td><span class="mono-badge">C4-07</span></td>
-                        <td><span class="qty-chip onhand">0</span></td>
-                        <td><span class="qty-chip reserve">0</span></td>
-                        <td><span class="qty-chip available">0</span></td>
-                        <td>80 / 900</td>
-                        <td><span class="status-pill status-out">Out Of Stock</span></td>
-                        <td>20/03/2026 07:18</td>
-                    </tr>
-                    <tr data-search="detergent 2kg DT-300 North Hub A1-01" data-warehouse="North Hub" data-status="Normal" data-location="A1-01">
-                        <td>4</td>
-                        <td>
-                            <div class="prod-wrap">
-                                <span class="prod-icon" style="background:linear-gradient(135deg,#6366f1,#4338ca)"><i class="bi bi-stars"></i></span>
-                                <div>
-                                    <p class="prod-name">Detergent Powder 2kg</p>
-                                    <p class="prod-meta">SKU: <span class="mono-badge">DT-300</span></p>
-                                </div>
-                            </div>
-                        </td>
-                        <td>North Hub</td>
-                        <td><span class="mono-badge">A1-01</span></td>
-                        <td><span class="qty-chip onhand">860</span></td>
-                        <td><span class="qty-chip reserve">95</span></td>
-                        <td><span class="qty-chip available">765</span></td>
-                        <td>100 / 1,500</td>
-                        <td><span class="status-pill status-normal">Normal</span></td>
-                        <td>20/03/2026 10:04</td>
+                        <td><span th:class="'status-pill ' + ${row.statusClass}" th:text="${row.statusLabel}">Normal</span></td>
+                        <td th:text="${row.lastInboundDate != null ? #temporals.format(row.lastInboundDate, 'dd/MM/yyyy HH:mm') : '—'}">—</td>
                     </tr>
                     </tbody>
                 </table>
@@ -698,11 +654,13 @@
             </div>
 
             <div class="tfoot">
-                <div>Showing <span id="rowCount" class="count-strong">4</span> inventory rows</div>
+                <div>Showing <span id="rowCount" class="count-strong" th:text="${rows.numberOfElements}">0</span>
+                    of <span class="count-strong" th:text="${rows.totalElements}">0</span> inventory rows</div>
                 <div class="d-flex align-items-center gap-1">
-                    <span class="page-badge active">1</span>
-                    <span class="page-badge">2</span>
-                    <span class="page-badge">3</span>
+                    <a th:each="p : ${#numbers.sequence(0, rows.totalPages - 1)}"
+                       th:href="@{/inventory(page=${p}, warehouseId=${selectedWarehouseId})}"
+                       th:text="${p + 1}"
+                       th:class="'page-badge' + (${p == rows.number} ? ' active' : '')">1</a>
                 </div>
             </div>
         </div>
