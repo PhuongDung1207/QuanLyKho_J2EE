@@ -34,6 +34,9 @@ public class InboundReceiptLine {
     @Column(name = "location_id")
     private UUID locationId;
 
+    @Column(name = "expiry_date")
+    private java.time.LocalDate expiryDate;
+
     public UUID getId() {
         return id;
     }
@@ -80,5 +83,13 @@ public class InboundReceiptLine {
 
     public void setLocationId(UUID locationId) {
         this.locationId = locationId;
+    }
+
+    public java.time.LocalDate getExpiryDate() {
+        return expiryDate;
+    }
+
+    public void setExpiryDate(java.time.LocalDate expiryDate) {
+        this.expiryDate = expiryDate;
     }
 }

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Damaged & Waste Statistics - WMS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        body { background: #f6f8fc; color: #1e293b; }
+        .page-shell { padding: 1.25rem 1.4rem 1.6rem; }
+        .page-hero {
+            border-radius: 18px;
+            background: linear-gradient(120deg, #fffaf6 0%, #ffffff 50%, #f8fbff 100%);
+            border: 1px solid #e6ebf4;
+            box-shadow: 0 14px 28px rgba(15, 23, 42, 0.07);
+            padding: 1.2rem 1.2rem;
+            margin-bottom: 1rem;
+        }
+        .hero-title { margin: 0; font-size: 1.22rem; font-weight: 800; color: #0f172a; }
+        .hero-sub { margin: 0.35rem 0 0; font-size: 0.82rem; color: #64748b; }
+        .panel { background: #fff; border: 1px solid #e6ebf4; border-radius: 16px; overflow: hidden; padding: 1.5rem; }
+        .stat-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
+        .stat-label { font-size: 0.875rem; color: #64748b; margin-bottom: 0.5rem; }
+        .stat-value { font-size: 2rem; font-weight: 700; color: #0f172a; }
+        .inventory-table { width: 100%; border-collapse: collapse; margin-top: 0; }
+        .inventory-table thead th { 
+            background: #f8fbff; 
+            color: #64748b; 
+            font-size: 0.75rem; 
+            text-transform: uppercase; 
+            font-weight: 800; 
+            border: 1px solid #e2e8f0; 
+            padding: 12px 15px; 
+            text-align: left;
+        }
+        .inventory-table tbody td { 
+            padding: 12px 15px; 
+            border: 1px solid #eef3f8; 
+            font-size: 0.875rem; 
+            color: #334155; 
+            vertical-align: middle;
+        }
+        .mono-badge { font-family: monospace; font-weight: 700; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; }
+        .status-pill { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; display: inline-block; }
+        .status-old { background: #fee2e2; color: #ef4444; }
+        .status-mid { background: #fef3c7; color: #d97706; }
+    </style>
+</head>
+<body>
+<div th:replace="fragments/sidebar :: sidebar"></div>
+
+<div class="wms-main">
+    <div class="page-shell">
+        <div class="page-hero">
+            <div>
+                <h1 class="hero-title"><i class="bi bi-trash3 me-2" style="color:#f26722"></i>Damaged & Waste Statistics</h1>
+                <p class="hero-sub">Monitor waste levels to optimize storage conditions and handling processes.</p>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="mb-4">
+                <form method="get" class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label">Warehouse</label>
+                        <select name="warehouseId" class="form-select" onchange="this.form.submit()">
+                            <option value="">All Warehouses</option>
+                            <option th:each="w : ${warehouses}" th:value="${w.id}" th:text="${w.name}" th:selected="${w.id == selectedWarehouseId}"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">From Date</label>
+                        <input type="datetime-local" name="start" class="form-control" th:value="${#temporals.format(start, 'yyyy-MM-dd''T''HH:mm')}" onchange="this.form.submit()">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">To Date</label>
+                        <input type="datetime-local" name="end" class="form-control" th:value="${#temporals.format(end, 'yyyy-MM-dd''T''HH:mm')}" onchange="this.form.submit()">
+                    </div>
+                </form>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="stat-card">
+                        <p class="stat-label">Total Damaged / Waste Quantity</p>
+                        <p class="stat-value" th:text="${total}">0</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="stat-card h-100">
+                        <p class="stat-label">Breakdown by Type</p>
+                        <div th:if="${stats.isEmpty()}" class="text-muted small">No data for this period.</div>
+                        <div class="d-flex align-items-center">
+                            <div style="width: 200px; height: 200px;">
+                                <canvas id="wasteChart"></canvas>
+                            </div>
+                            <div class="ms-4 flex-grow-1">
+                                <div th:each="entry : ${stats}">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span class="badge bg-secondary" th:text="${entry.key}">WASTE</span>
+                                        <span class="fw-bold" th:text="${entry.value}">0</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel mt-4">
+                <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
+                    <h5 class="hero-title mb-0">Detailed Waste Records</h5>
+                    <span class="badge bg-primary" th:text="${details.size() + ' records'}">0 records</span>
+                </div>
+                <div class="table-wrap">
+                    <table class="inventory-table">
+                        <thead>
+                        <tr>
+                            <th>Issue Code</th>
+                            <th>Product</th>
+                            <th>Warehouse</th>
+                            <th>Quantity</th>
+                            <th>Type</th>
+                            <th>Date</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="d : ${details}">
+                            <td><span class="mono-badge" th:text="${d.productCode}">WST-001</span></td>
+                            <td>
+                                <div class="fw-bold" th:text="${d.productName}">Product Name</div>
+                                <div class="small text-muted" th:text="${d.sku}">SKU</div>
+                            </td>
+                            <td th:text="${d.warehouseName}">Warehouse</td>
+                            <td>
+                                <span class="fw-bold" th:text="${d.quantity}">0</span>
+                                <span class="small text-muted" th:text="${d.uomName}">PCS</span>
+                            </td>
+                            <td>
+                                <span th:if="${d.type == 'WASTE'}" class="status-pill status-old">WASTE</span>
+                                <span th:if="${d.type == 'DAMAGED'}" class="status-pill status-mid">DAMAGED</span>
+                            </td>
+                            <td th:text="${#temporals.format(d.completedAt, 'dd/MM/yyyy HH:mm')}">Date</td>
+                        </tr>
+                        <tr th:if="${details.isEmpty()}">
+                            <td colspan="6" class="text-center p-5 text-muted">
+                                <i class="bi bi-inbox fs-1 d-block mb-3"></i>
+                                No detailed records found for the selected criteria.
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const stats = /*[[${stats}]]*/ {};
+    const labels = Object.keys(stats);
+    const data = Object.values(stats);
+
+    if (labels.length > 0) {
+        new Chart(document.getElementById('wasteChart'), {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    backgroundColor: ['#ef4444', '#f59e0b', '#3b82f6', '#10b981'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: { display: false }
+                },
+                cutout: '70%'
+            }
+        });
+    }
+    /*]]>*/
+</script>
+</body>
+</html>

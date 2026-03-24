@@ -24,9 +24,38 @@ import java.util.Map;
 @EnableMethodSecurity
 public class SecurityConfig {
 
+    @org.springframework.beans.factory.annotation.Value("${jwt.secret:}")
+    private String jwtSecret;
+
+    @org.springframework.beans.factory.annotation.Value("${jwt.expire:86400}")
+    private String jwtExpire;
+
     @Bean
     public JwtService jwtService() {
-        return new JwtService(3600);
+        long expireSeconds;
+        try {
+            if (jwtExpire.endsWith("d")) {
+                expireSeconds = Long.parseLong(jwtExpire.substring(0, jwtExpire.length() - 1)) * 24 * 3600;
+            } else if (jwtExpire.endsWith("h")) {
+                expireSeconds = Long.parseLong(jwtExpire.substring(0, jwtExpire.length() - 1)) * 3600;
+            } else {
+                expireSeconds = Long.parseLong(jwtExpire);
+            }
+        } catch (NumberFormatException e) {
+            expireSeconds = 86400; // 1 day default
+        }
+        
+        // Use default secret if not provided in .env
+        String secret = (jwtSecret == null || jwtSecret.isEmpty()) 
+            ? "defaultSecretKey_must_be_at_least_32_characters_long_for_HS256" 
+            : jwtSecret;
+            
+        // Ensure secret is long enough for HS256 (32 bytes / 256 bits)
+        if (secret.length() < 32) {
+            secret = String.format("%-32s", secret).replace(' ', '0');
+        }
+        
+        return new JwtService(secret, expireSeconds);
     }
 
     @Bean
