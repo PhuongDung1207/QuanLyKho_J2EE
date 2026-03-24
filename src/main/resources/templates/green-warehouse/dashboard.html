@@ -85,7 +85,7 @@
             <div class="col-md-3">
                 <div class="stat-card">
                     <div class="stat-icon bg-danger-subtle text-danger"><i class="bi bi-clock-history"></i></div>
-                    <div class="stat-label">Aged Stock (>90d)</div>
+                    <div class="stat-label">Aged Stock (>5d)</div>
                     <div class="stat-value" th:text="${summary.totalAgedItems}">0</div>
                     <div class="mt-2 small text-muted">Items requiring immediate rotation</div>
                 </div>
@@ -93,24 +93,24 @@
             <div class="col-md-3">
                 <div class="stat-card">
                     <div class="stat-icon bg-warning-subtle text-warning"><i class="bi bi-exclamation-triangle"></i></div>
-                    <div class="stat-label">Slow Moving</div>
+                    <div class="stat-label">Slow Moving (>7d)</div>
                     <div class="stat-value" th:text="${summary.totalSlowMovingItems}">0</div>
-                    <div class="mt-2 small text-muted">No outbound movement in 90 days</div>
+                    <div class="mt-2 small text-muted">No outbound movement in 7 days</div>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="stat-card">
                     <div class="stat-icon bg-info-subtle text-info"><i class="bi bi-calendar-x"></i></div>
-                    <div class="stat-label">Expiring Soon</div>
+                    <div class="stat-label">Expiring Soon (<5d)</div>
                     <div class="stat-value" th:text="${summary.totalExpiringItems}">0</div>
-                    <div class="mt-2 small text-muted">Expiring within 30 days</div>
+                    <div class="mt-2 small text-muted">Expiring within 5 days</div>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="stat-card">
                     <div class="stat-icon bg-success-subtle text-success"><i class="bi bi-trash3"></i></div>
                     <div class="stat-label">Waste (Last 30d)</div>
-                    <div class="stat-value" th:text="${summary.totalWasteQty}">0</div>
+                    <div class="stat-value" th:text="${summary.totalWasteQty != null ? #numbers.formatDecimal(summary.totalWasteQty, 1, 1) : '0.0'}">0.0</div>
                     <div class="mt-2 small text-muted">Total units discarded/damaged</div>
                 </div>
             </div>
@@ -145,7 +145,7 @@
     new Chart(document.getElementById('healthChart'), {
         type: 'bar',
         data: {
-            labels: ['Aged (>90d)', 'Slow Moving', 'Expiring Soon'],
+            labels: ['Aged (>5d)', 'Slow Moving (>7d)', 'Expiring Soon (<5d)'],
             datasets: [{
                 label: 'Item Count',
                 data: [summary.totalAgedItems, summary.totalSlowMovingItems, summary.totalExpiringItems],

@@ -13,13 +13,13 @@ public class ExpiringResponse {
     private UUID locationId;
     private String locationCode;
     private BigDecimal qtyOnHand;
-    private LocalDate expiryDate;
+    private LocalDate expDate;
     private Long daysRemaining;
 
     public ExpiringResponse(UUID productId, String productName, String sku, 
                            UUID warehouseId, String warehouseName, 
                            UUID locationId, String locationCode, 
-                           BigDecimal qtyOnHand, LocalDate expiryDate) {
+                           BigDecimal qtyOnHand, LocalDate expDate) {
         this.productId = productId;
         this.productName = productName;
         this.sku = sku;
@@ -28,9 +28,9 @@ public class ExpiringResponse {
         this.locationId = locationId;
         this.locationCode = locationCode;
         this.qtyOnHand = qtyOnHand;
-        this.expiryDate = expiryDate;
-        if (expiryDate != null) {
-            this.daysRemaining = java.time.temporal.ChronoUnit.DAYS.between(LocalDate.now(), expiryDate);
+        this.expDate = expDate;
+        if (expDate != null) {
+            this.daysRemaining = java.time.temporal.ChronoUnit.DAYS.between(LocalDate.now(), expDate);
         }
     }
 
@@ -43,6 +43,6 @@ public class ExpiringResponse {
     public UUID getLocationId() { return locationId; }
     public String getLocationCode() { return locationCode; }
     public BigDecimal getQtyOnHand() { return qtyOnHand; }
-    public LocalDate getExpiryDate() { return expiryDate; }
+    public LocalDate getExpDate() { return expDate; }
     public Long getDaysRemaining() { return daysRemaining; }
 }

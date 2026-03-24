@@ -98,28 +98,29 @@
                         </td>
                         <td th:text="${b.warehouseName}">Warehouse Name</td>
                         <td><span class="mono-badge" th:text="${b.locationCode != null ? b.locationCode : 'N/A'}">Location</span></td>
-                        <td th:text="${b.qtyOnHand}">0</td>
-                        <td th:text="${#temporals.format(b.expiryDate, 'dd/MM/yyyy')}"></td>
+                        <td th:text="${#numbers.formatDecimal(b.qtyOnHand, 1, 1)}">0.0</td>
+                        <td th:text="${#temporals.format(b.expDate, 'dd/MM/yyyy')}"></td>
                         <td>
                             <span th:text="${b.daysRemaining}">0</span>
                         </td>
                         <td>
                             <span th:if="${b.daysRemaining <= 0}" class="status-pill status-danger">EXPIRED!</span>
-                            <span th:if="${b.daysRemaining > 0 && b.daysRemaining <= 7}" class="status-pill status-danger">URGENT (<7 days)</span>
-                            <span th:if="${b.daysRemaining > 7 && b.daysRemaining <= thresholdDays}" class="status-pill status-warn">Expiring Soon</span>
+                            <span th:if="${b.daysRemaining == 1}" class="status-pill status-danger">CRITICAL (1 day)</span>
+                            <span th:if="${b.daysRemaining > 1 && b.daysRemaining <= 3}" class="status-pill status-warn">WARNING (2-3 days)</span>
+                            <span th:if="${b.daysRemaining > 3 && b.daysRemaining <= thresholdDays}" class="status-pill status-mid">SAFE (>3 days)</span>
                         </td>
                         <td>
                             <div th:if="${b.daysRemaining <= 0}" class="text-danger small fw-bold">
-                                <i class="bi bi-x-circle"></i> Move to Waste
+                                <i class="bi bi-x-circle"></i> Dispose Immediately
                             </div>
-                            <div th:if="${b.daysRemaining > 0 && b.daysRemaining <= 7}" class="text-warning small fw-bold">
-                                <i class="bi bi-percent"></i> Suggest 50% Discount
+                            <div th:if="${b.daysRemaining == 1}" class="text-danger small fw-bold">
+                                <i class="bi bi-percent"></i> Clearance - 80% OFF
                             </div>
-                            <div th:if="${b.daysRemaining > 7 && b.daysRemaining <= 15}" class="text-info small fw-bold">
-                                <i class="bi bi-percent"></i> Suggest 20% Discount
+                            <div th:if="${b.daysRemaining > 1 && b.daysRemaining <= 3}" class="text-warning small fw-bold">
+                                <i class="bi bi-percent"></i> Flash Sale - 50% OFF
                             </div>
-                            <div th:if="${b.daysRemaining > 15}" class="text-muted small">
-                                <i class="bi bi-check-circle"></i> Monitor
+                            <div th:if="${b.daysRemaining > 3}" class="text-muted small">
+                                <i class="bi bi-check-circle"></i> Good Condition
                             </div>
                         </td>
                     </tr>

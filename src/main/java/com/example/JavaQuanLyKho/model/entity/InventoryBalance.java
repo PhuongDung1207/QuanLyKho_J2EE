@@ -49,8 +49,11 @@ public class InventoryBalance {
     @Column(name = "max_qty", precision = 19, scale = 6)
     private BigDecimal maxQty;
 
-    @Column(name = "expiry_date")
-    private java.time.LocalDate expiryDate;
+    @Column(name = "mfg_date")
+    private java.time.LocalDate mfgDate;
+
+    @Column(name = "exp_date")
+    private java.time.LocalDate expDate;
 
     @Column(name = "last_inbound_date")
     private java.time.OffsetDateTime lastInboundDate;
@@ -122,12 +125,20 @@ public class InventoryBalance {
         this.maxQty = maxQty;
     }
 
-    public java.time.LocalDate getExpiryDate() {
-        return expiryDate;
+    public java.time.LocalDate getMfgDate() {
+        return mfgDate;
     }
 
-    public void setExpiryDate(java.time.LocalDate expiryDate) {
-        this.expiryDate = expiryDate;
+    public void setMfgDate(java.time.LocalDate mfgDate) {
+        this.mfgDate = mfgDate;
+    }
+
+    public java.time.LocalDate getExpDate() {
+        return expDate;
+    }
+
+    public void setExpDate(java.time.LocalDate expDate) {
+        this.expDate = expDate;
     }
 
     public java.time.OffsetDateTime getLastInboundDate() {

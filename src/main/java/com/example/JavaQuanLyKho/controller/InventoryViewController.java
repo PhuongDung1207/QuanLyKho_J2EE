@@ -5,7 +5,6 @@ import com.example.JavaQuanLyKho.repository.InventoryBalanceRepository;
 import com.example.JavaQuanLyKho.repository.LocationRepository;
 import com.example.JavaQuanLyKho.service.WarehouseService;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,12 +19,18 @@ import java.util.UUID;
 
 @Controller
 @RequestMapping("/inventory")
-@RequiredArgsConstructor
 public class InventoryViewController {
 
     private final InventoryBalanceRepository inventoryBalanceRepository;
     private final WarehouseService warehouseService;
     private final LocationRepository locationRepository;
+
+    public InventoryViewController(InventoryBalanceRepository inventoryBalanceRepository,
+            WarehouseService warehouseService, LocationRepository locationRepository) {
+        this.inventoryBalanceRepository = inventoryBalanceRepository;
+        this.warehouseService = warehouseService;
+        this.locationRepository = locationRepository;
+    }
 
     @GetMapping
     public String index(

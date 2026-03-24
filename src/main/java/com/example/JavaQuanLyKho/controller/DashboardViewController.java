@@ -6,7 +6,6 @@ import com.example.JavaQuanLyKho.repository.OutboundIssueRepository;
 import com.example.JavaQuanLyKho.service.GreenWarehouseService;
 import com.example.JavaQuanLyKho.service.ReportService;
 import com.example.JavaQuanLyKho.service.WarehouseService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import java.time.OffsetDateTime;
 
 @Controller
-@RequiredArgsConstructor
 public class DashboardViewController {
 
     private final ReportService reportService;
@@ -24,6 +22,16 @@ public class DashboardViewController {
     private final InboundReceiptRepository inboundReceiptRepository;
     private final OutboundIssueRepository outboundIssueRepository;
     private final InventoryBalanceRepository inventoryBalanceRepository;
+
+    public DashboardViewController(ReportService reportService, GreenWarehouseService greenWarehouseService,
+            InboundReceiptRepository inboundReceiptRepository, OutboundIssueRepository outboundIssueRepository,
+            InventoryBalanceRepository inventoryBalanceRepository) {
+        this.reportService = reportService;
+        this.greenWarehouseService = greenWarehouseService;
+        this.inboundReceiptRepository = inboundReceiptRepository;
+        this.outboundIssueRepository = outboundIssueRepository;
+        this.inventoryBalanceRepository = inventoryBalanceRepository;
+    }
 
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
