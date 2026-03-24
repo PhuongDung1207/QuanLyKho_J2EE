@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard | Storage Solutions</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-page: #f0f2f5;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-sub: #64748b;
+            --primary: #2563eb;
+            --secondary: #64748b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --border-soft: 1px solid rgba(0,0,0,0.05);
+            --shadow-soft: 0 4px 20px rgba(0,0,0,0.03);
+            --radius-lg: 16px;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        .dashboard-header {
+            padding: 1.5rem 0;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .header-icon-btn {
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.03);
+            border-radius: 50%;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .header-icon-btn:hover {
+            background: rgba(0,0,0,0.06);
+        }
+
+        .notification-dot {
+            position: absolute;
+            top: 10px;
+            right: 12px;
+            width: 8px;
+            height: 8px;
+            background: var(--danger);
+            border-radius: 50%;
+            border: 2px solid var(--bg-page);
+        }
+
+        .header-user-avatar {
+            width: 50px;
+            height: 50px;
+            background: #e2e8f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            font-size: 1.25rem;
+            border: 2px solid #fff;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .stat-card {
+            background: #e1e1e1; /* Matched the light grey cards from screenshot background */
+            background: #fff;
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            border: 1px solid #d1d5db;
+            box-shadow: var(--shadow-soft);
+            height: 100%;
+            transition: transform 0.2s;
+        }
+        
+        /* Stats cards in screenshot have a grey background, let's use a very light grey blend */
+        .stat-card-overlay {
+            background: #f1f1f1;
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+            border: 1px solid #dbdbdb;
+        }
+
+        .stat-icon-wrapper {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .bg-success-light { background: #d1fae5; color: #059669; }
+        .bg-blue-light { background: #dbeafe; color: #2563eb; }
+        .bg-yellow-light { background: #fef3c7; color: #d97706; }
+        .bg-ltgreen-light { background: #ecfdf5; color: #10b981; }
+        .bg-orange-light { background: #ffedd5; color: #ea580c; }
+
+        .stat-trend {
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin: 0.5rem 0 0.25rem;
+            color: #1e293b;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        .main-card {
+            background: #e9e9e9;
+            border: 1px solid #cfcfcf;
+            border-radius: var(--radius-lg);
+            padding: 1rem;
+            height: 100%;
+        }
+        
+        .chart-wrapper {
+            background: #fff;
+            border-radius: 12px;
+            padding: 1.5rem;
+            height: 100%;
+            border: 1px solid #ddd;
+        }
+
+        .activity-card {
+            background: #e9e9e9;
+            border: 1px solid #cfcfcf;
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            height: 100%;
+        }
+
+        .alert-card {
+            background: #e9e9e9;
+            border: 1px solid #cfcfcf;
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .alert-title {
+            color: #c2410c;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .cursor-pointer { cursor: pointer; }
+    </style>
+</head>
+
+<body th:classappend="${session.sidebar_collapsed != null and session.sidebar_collapsed} ? 'wms-sidebar-collapsed' : ''">
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+    <div class="wms-main">
+        <div class="container-fluid px-5">
+            <!-- Header -->
+            <div class="dashboard-header d-flex justify-content-between align-items-center">
+                <h1 class="fw-extrabold mb-0" style="font-size: 2.2rem;">Dashboard</h1>
+                <div class="d-flex align-items-center gap-4">
+                    <div class="header-icon-btn">
+                        <i class="bi bi-bell-fill fs-4"></i>
+                        <span class="notification-dot"></span>
+                    </div>
+                    <div class="header-user-avatar">
+                        <i class="bi bi-person-fill"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Row -->
+            <div class="row g-4 mb-5">
+                <!-- Total Products -->
+                <div class="col">
+                    <div class="stat-card-overlay">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="stat-icon-wrapper bg-success-light">
+                                <i class="bi bi-box-seam"></i>
+                            </div>
+                            <div class="stat-trend d-flex align-items-center gap-1" 
+                                 th:classappend="${summary.totalProductsTrend >= 0 ? 'text-success' : 'text-danger'}">
+                                <i th:class="${summary.totalProductsTrend >= 0 ? 'bi bi-graph-up' : 'bi bi-graph-down'}"></i>
+                                <span th:text="${summary.totalProductsTrend >= 0 ? '+' : ''} + ${#numbers.formatDecimal(summary.totalProductsTrend, 1, 1)} + '%'">+12,5%</span>
+                            </div>
+                        </div>
+                        <div class="stat-value" th:text="${#numbers.formatDecimal(summary.totalProducts, 1, 'COMMA', 0, 'POINT')}">1,234</div>
+                        <div class="stat-label">Total Products</div>
+                    </div>
+                </div>
+                <!-- Categories -->
+                <div class="col">
+                    <div class="stat-card-overlay">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="stat-icon-wrapper bg-blue-light">
+                                <i class="bi bi-folder2"></i>
+                            </div>
+                            <div class="stat-trend d-flex align-items-center gap-1"
+                                 th:classappend="${summary.totalCategoriesTrend >= 0 ? 'text-success' : 'text-danger'}">
+                                <i th:class="${summary.totalCategoriesTrend >= 0 ? 'bi bi-graph-up' : 'bi bi-graph-down'}"></i>
+                                <span th:text="${summary.totalCategoriesTrend >= 0 ? '+' : ''} + ${#numbers.formatDecimal(summary.totalCategoriesTrend, 1, 1)} + '%'">-3%</span>
+                            </div>
+                        </div>
+                        <div class="stat-value" th:text="${summary.totalCategories}">56</div>
+                        <div class="stat-label">Categories</div>
+                    </div>
+                </div>
+                <!-- Storages -->
+                <div class="col">
+                    <div class="stat-card-overlay">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="stat-icon-wrapper bg-yellow-light">
+                                <i class="bi bi-house-door"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value" th:text="${summary.totalWarehouses}">78</div>
+                        <div class="stat-label">Storages</div>
+                    </div>
+                </div>
+                <!-- Stock In -->
+                <div class="col">
+                    <div class="stat-card-overlay">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="stat-icon-wrapper bg-ltgreen-light">
+                                <i class="bi bi-box-arrow-in-down"></i>
+                            </div>
+                            <div class="stat-trend d-flex align-items-center gap-1"
+                                 th:classappend="${summary.stockInTrend >= 0 ? 'text-success' : 'text-danger'}">
+                                <i th:class="${summary.stockInTrend >= 0 ? 'bi bi-graph-up' : 'bi bi-graph-down'}"></i>
+                                <span th:text="${summary.stockInTrend >= 0 ? '+' : ''} + ${#numbers.formatDecimal(summary.stockInTrend, 1, 1)} + '%'">+12,5%</span>
+                            </div>
+                        </div>
+                        <div class="stat-value" th:text="${summary.stockInCount}">9</div>
+                        <div class="stat-label">Stock In (Month)</div>
+                    </div>
+                </div>
+                <!-- Stock Out -->
+                <div class="col">
+                    <div class="stat-card-overlay">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="stat-icon-wrapper bg-orange-light">
+                                <i class="bi bi-box-arrow-up"></i>
+                            </div>
+                            <div class="stat-trend d-flex align-items-center gap-1"
+                                 th:classappend="${summary.stockOutTrend >= 0 ? 'text-success' : 'text-danger'}">
+                                <i th:class="${summary.stockOutTrend >= 0 ? 'bi bi-graph-up' : 'bi bi-graph-down'}"></i>
+                                <span th:text="${summary.stockOutTrend >= 0 ? '+' : ''} + ${#numbers.formatDecimal(summary.stockOutTrend, 1, 1)} + '%'">-3%</span>
+                            </div>
+                        </div>
+                        <div class="stat-value" th:text="${summary.stockOutCount}">10</div>
+                        <div class="stat-label">Stock Out (Month)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Middle Row: Chart & Activity -->
+            <div class="row g-4 mb-4 pb-5">
+                <div class="col-lg-8">
+                    <div class="main-card">
+                        <div class="chart-wrapper">
+                            <canvas id="movementChart" style="height: 380px; width: 100%;"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="activity-card">
+                        <h4 class="fw-extrabold mb-4" style="font-size: 1.4rem;">Recent Activity</h4>
+                        <div class="activity-list">
+                            <div th:each="receipt : ${recentInbounds}" class="mb-3 py-2 border-bottom border-secondary border-opacity-10 d-flex justify-content-between">
+                                <div>
+                                    <div class="fw-bold fs-6" th:text="${receipt.code}">RC-001</div>
+                                    <div class="text-secondary small" th:text="${#temporals.format(receipt.createdAt, 'HH:mm dd/MM')}">09:00 12/03</div>
+                                </div>
+                                <span class="badge bg-success bg-opacity-10 text-success rounded-pill align-self-start py-2 px-3 fw-bold">Stock In</span>
+                            </div>
+                            <div th:each="issue : ${recentOutbounds}" class="mb-3 py-2 border-bottom border-secondary border-opacity-10 d-flex justify-content-between">
+                                <div>
+                                    <div class="fw-bold fs-6" th:text="${issue.code}">IS-001</div>
+                                    <div class="text-secondary small" th:text="${#temporals.format(issue.createdAt, 'HH:mm dd/MM')}">14:00 12/03</div>
+                                </div>
+                                <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill align-self-start py-2 px-3 fw-bold">Stock Out</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        // Data from Controller
+        const timeline = /*[[${timeline}]]*/[];
+        const labels = timeline.map(t => {
+            if (t.period.length > 7) { // YYYY-MM-DD
+                const parts = t.period.split('-');
+                return `${parts[2]}/${parts[1]}`;
+            }
+            return t.period;
+        });
+        const inData = timeline.map(t => t.inboundQty);
+        const outData = timeline.map(t => t.outboundQty);
+
+        // Movement Chart
+        const ctx = document.getElementById('movementChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    { 
+                        label: 'Stock In', 
+                        data: inData, 
+                        borderColor: '#6366f1', 
+                        backgroundColor: 'rgba(99, 102, 241, 0.05)', 
+                        fill: true, 
+                        tension: 0.4,
+                        borderWidth: 3,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: '#6366f1',
+                        pointBorderWidth: 2
+                    },
+                    { 
+                        label: 'Stock Out', 
+                        data: outData, 
+                        borderColor: '#f43f5e', 
+                        backgroundColor: 'rgba(244, 63, 94, 0.05)', 
+                        fill: true, 
+                        tension: 0.4,
+                        borderWidth: 3,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: '#f43f5e',
+                        pointBorderWidth: 2
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 20,
+                            font: {
+                                size: 12,
+                                weight: '600',
+                                family: "'Inter', sans-serif"
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: '#1e293b',
+                        padding: 12,
+                        cornerRadius: 8,
+                        titleFont: { size: 14, weight: 'bold' },
+                        bodyFont: { size: 13 }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0,0,0,0.05)',
+                            drawBorder: false
+                        },
+                        ticks: {
+                            padding: 10,
+                            color: '#64748b',
+                            font: { size: 11 }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            padding: 10,
+                            color: '#64748b',
+                            font: { size: 11 }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

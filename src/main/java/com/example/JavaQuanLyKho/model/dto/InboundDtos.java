@@ -264,6 +264,7 @@ public class InboundDtos {
         private UUID uomId;
         private BigDecimal quantity;
         private UUID locationId;
+        private java.time.LocalDate expiryDate;
 
         private java.time.LocalDate mfgDate;
         private Integer shelfLife;

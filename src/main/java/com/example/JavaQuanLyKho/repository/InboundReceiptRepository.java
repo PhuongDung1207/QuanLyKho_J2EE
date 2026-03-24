@@ -24,4 +24,6 @@ public interface InboundReceiptRepository extends JpaRepository<InboundReceipt, 
            "WHERE r.warehouseId = :warehouseId AND r.status = :status")
     BigDecimal sumQuantityByWarehouseIdAndStatus(@Param("warehouseId") UUID warehouseId,
                                                  @Param("status") InboundReceiptStatus status);
+
+    long countByCreatedAtBetween(java.time.OffsetDateTime start, java.time.OffsetDateTime end);
 }
