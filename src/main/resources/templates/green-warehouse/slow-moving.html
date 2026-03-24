@@ -96,7 +96,7 @@
                         </td>
                         <td th:text="${b.warehouseName}">Warehouse Name</td>
                         <td><span class="mono-badge" th:text="${b.locationCode != null ? b.locationCode : 'N/A'}">Location</span></td>
-                        <td th:text="${b.qtyOnHand}">0</td>
+                        <td th:text="${#numbers.formatDecimal(b.qtyOnHand, 1, 1)}">0.0</td>
                         <td th:text="${b.lastOutboundDate != null ? #temporals.format(b.lastOutboundDate, 'dd/MM/yyyy HH:mm') : 'Never'}"></td>
                         <td>
                             <span th:text="${b.daysSinceLastOutbound != null ? b.daysSinceLastOutbound : '-'}">0</span>

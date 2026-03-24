@@ -164,8 +164,11 @@ public class InboundServiceImpl implements InboundService {
 
             balance.setQtyOnHand(safe(balance.getQtyOnHand()).add(line.getQuantity()));
             balance.setLastInboundDate(OffsetDateTime.now());
-            if (line.getExpiryDate() != null) {
-                balance.setExpiryDate(line.getExpiryDate());
+            if (line.getExpDate() != null) {
+                balance.setExpDate(line.getExpDate());
+            }
+            if (line.getMfgDate() != null) {
+                balance.setMfgDate(line.getMfgDate());
             }
             inventoryBalanceRepository.save(balance);
         }

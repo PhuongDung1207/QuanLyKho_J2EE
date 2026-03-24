@@ -4,7 +4,6 @@ import com.example.JavaQuanLyKho.model.dto.ReportDtos;
 import com.example.JavaQuanLyKho.service.GreenWarehouseService;
 import com.example.JavaQuanLyKho.service.ReportService;
 import com.example.JavaQuanLyKho.service.WarehouseService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,12 +17,18 @@ import java.util.UUID;
 
 @Controller
 @RequestMapping("/reports")
-@RequiredArgsConstructor
 public class ReportViewController {
 
     private final ReportService reportService;
     private final WarehouseService warehouseService;
     private final GreenWarehouseService greenWarehouseService;
+
+    public ReportViewController(ReportService reportService, WarehouseService warehouseService,
+            GreenWarehouseService greenWarehouseService) {
+        this.reportService = reportService;
+        this.warehouseService = warehouseService;
+        this.greenWarehouseService = greenWarehouseService;
+    }
 
     @GetMapping
     public String index(

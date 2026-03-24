@@ -74,12 +74,12 @@ public class GreenWarehouseServiceImpl implements GreenWarehouseService {
         // Count Aged Items
         summary.setTotalAgedItems(inventoryBalanceRepository.countAgedItems(warehouseId));
         
-        // Count Slow Moving Items (> 90 days no outbound)
-        OffsetDateTime slowMovingThreshold = OffsetDateTime.now().minusDays(90);
+        // Count Slow Moving Items (> 7 days no outbound for fresh food)
+        OffsetDateTime slowMovingThreshold = OffsetDateTime.now().minusDays(7);
         summary.setTotalSlowMovingItems(inventoryBalanceRepository.countSlowMovingItems(warehouseId, slowMovingThreshold));
         
-        // Count Expiring Items (< 30 days)
-        LocalDate expiringThreshold = LocalDate.now().plusDays(30);
+        // Count Expiring Items (< 5 days for fresh food)
+        LocalDate expiringThreshold = LocalDate.now().plusDays(5);
         summary.setTotalExpiringItems(inventoryBalanceRepository.countExpiringItems(warehouseId, expiringThreshold));
         
         // Waste stats (last 30 days)

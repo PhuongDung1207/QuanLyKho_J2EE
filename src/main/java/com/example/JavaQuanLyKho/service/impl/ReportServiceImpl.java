@@ -3,7 +3,6 @@ package com.example.JavaQuanLyKho.service.impl;
 import com.example.JavaQuanLyKho.model.dto.ReportDtos;
 import com.example.JavaQuanLyKho.repository.*;
 import com.example.JavaQuanLyKho.service.ReportService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -13,7 +12,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class ReportServiceImpl implements ReportService {
 
         private final InventoryBalanceRepository inventoryBalanceRepository;
@@ -24,6 +22,24 @@ public class ReportServiceImpl implements ReportService {
         private final WarehouseRepository warehouseRepository;
         private final ProductRepository productRepository;
         private final CategoryRepository categoryRepository;
+
+        public ReportServiceImpl(InventoryBalanceRepository inventoryBalanceRepository,
+                        InboundReceiptRepository inboundReceiptRepository,
+                        InboundReceiptLineRepository inboundReceiptLineRepository,
+                        OutboundIssueRepository outboundIssueRepository,
+                        OutboundIssueLineRepository outboundIssueLineRepository,
+                        WarehouseRepository warehouseRepository,
+                        ProductRepository productRepository,
+                        CategoryRepository categoryRepository) {
+                this.inventoryBalanceRepository = inventoryBalanceRepository;
+                this.inboundReceiptRepository = inboundReceiptRepository;
+                this.inboundReceiptLineRepository = inboundReceiptLineRepository;
+                this.outboundIssueRepository = outboundIssueRepository;
+                this.outboundIssueLineRepository = outboundIssueLineRepository;
+                this.warehouseRepository = warehouseRepository;
+                this.productRepository = productRepository;
+                this.categoryRepository = categoryRepository;
+        }
 
         @Override
         public List<ReportDtos.WarehouseInventoryReport> getInventoryByWarehouse() {

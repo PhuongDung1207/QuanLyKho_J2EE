@@ -93,16 +93,16 @@
                         </td>
                         <td th:text="${b.warehouseName}">Warehouse Name</td>
                         <td><span class="mono-badge" th:text="${b.locationCode != null ? b.locationCode : 'N/A'}">Location</span></td>
-                        <td th:text="${b.qtyOnHand}">0</td>
+                        <td th:text="${#numbers.formatDecimal(b.qtyOnHand, 1, 1)}">0.0</td>
                         <td th:text="${b.lastInboundDate != null ? #temporals.format(b.lastInboundDate, 'dd/MM/yyyy HH:mm') : 'N/A'}"></td>
                         <td>
                             <span th:text="${b.agingDays != null ? b.agingDays : '-'}">0</span>
                         </td>
                         <td>
                             <span th:if="${b.agingDays != null}">
-                                <span th:if="${b.agingDays > 90}" class="status-pill status-old">Old Stock (>90 days)</span>
-                                <span th:if="${b.agingDays > 30 && b.agingDays <= 90}" class="status-pill status-mid">Medium (30-90 days)</span>
-                                <span th:if="${b.agingDays <= 30}" class="status-pill status-new">New (<30 days)</span>
+                                <span th:if="${b.agingDays > 5}" class="status-pill status-old">Stagnant (>5 days)</span>
+                                <span th:if="${b.agingDays > 2 && b.agingDays <= 5}" class="status-pill status-mid">Warning (2-5 days)</span>
+                                <span th:if="${b.agingDays <= 2}" class="status-pill status-new">Fresh (<2 days)</span>
                             </span>
                         </td>
                     </tr>
