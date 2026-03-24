@@ -252,6 +252,9 @@ public class TransferServiceImpl implements TransferService {
             line.setQuantity(reqLine.getQuantity());
             line.setFromLocationId(reqLine.getFromLocationId());
             line.setToLocationId(reqLine.getToLocationId());
+            line.setMfgDate(reqLine.getMfgDate());
+            line.setShelfLife(reqLine.getShelfLife());
+            line.setExpDate(reqLine.getExpDate());
             lines.add(line);
         }
         return lines;

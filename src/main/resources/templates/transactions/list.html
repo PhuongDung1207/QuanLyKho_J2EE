@@ -609,10 +609,13 @@
                             <table class="table receipt-items-table align-middle">
                                 <thead>
                                 <tr>
-                                    <th style="min-width:260px;">Item Name / Product</th>
-                                    <th style="width:130px;">Quantity</th>
-                                    <th style="width:130px;">Unit</th>
-                                    <th>Notes</th>
+                                    <th style="min-width:220px;">Item Name / Product</th>
+                                    <th style="width:100px;">Quantity</th>
+                                    <th style="width:110px;">Unit</th>
+                                    <th style="width:130px;">Ngày SX</th>
+                                    <th style="width:110px;">Hạn dùng (Tháng)</th>
+                                    <th style="width:130px;">Ngày hết hạn</th>
+                                    <th style="min-width:160px;">Notes</th>
                                     <th style="width:52px;"></th>
                                 </tr>
                                 </thead>
@@ -1694,6 +1697,9 @@
                 '<td><select class="form-select receipt-item-product">', buildProductOptions(data.productId), '</select></td>',
                 '<td><input type="number" class="form-control receipt-item-qty" min="0.000001" step="0.000001" value="', escapeHtml(data.quantity || '1'), '" /></td>',
                 '<td><select class="form-select receipt-item-uom">', buildUomOptions(data.uomId), '</select></td>',
+                '<td><input type="date" class="form-control receipt-item-mfg-date" value="', escapeHtml(data.mfgDate || ''), '" required /></td>',
+                '<td><input type="number" class="form-control receipt-item-shelf-life" min="0" placeholder="Tháng" value="', escapeHtml(data.shelfLife || ''), '" /></td>',
+                '<td><input type="date" class="form-control receipt-item-exp-date" value="', escapeHtml(data.expDate || ''), '" /></td>',
                 '<td><input type="text" class="form-control receipt-item-note" value="', escapeHtml(data.note || ''), '" placeholder="Product notes..." /></td>',
                 '<td class="text-end"><button type="button" class="receipt-remove-item" title="Remove item"><i class="bi bi-trash"></i></button></td>'
             ].join('');
@@ -1706,6 +1712,27 @@
                     uomSelect.value = normalizeId(p.baseUomId);
                 }
             }
+
+            const mfgInput = row.querySelector('.receipt-item-mfg-date');
+            const shelfInput = row.querySelector('.receipt-item-shelf-life');
+            const expInput = row.querySelector('.receipt-item-exp-date');
+
+            function calculateExp() {
+                const mfg = mfgInput.value;
+                const shelf = shelfInput.value;
+                if (mfg && shelf) {
+                    const date = new Date(mfg);
+                    date.setMonth(date.getMonth() + parseInt(shelf));
+                    const yyyy = date.getFullYear();
+                    const mm = String(date.getMonth() + 1).padStart(2, '0');
+                    const dd = String(date.getDate()).padStart(2, '0');
+                    expInput.value = `${yyyy}-${mm}-${dd}`;
+                }
+            }
+
+            mfgInput.addEventListener('input', calculateExp);
+            shelfInput.addEventListener('input', calculateExp);
+
             return row;
         }
 
@@ -1751,11 +1778,21 @@
                     throw new Error('Row ' + rowNumber + ': quantity must be greater than 0.');
                 }
 
+                const mfgDate = row.querySelector('.receipt-item-mfg-date')?.value;
+                const shelfLife = row.querySelector('.receipt-item-shelf-life')?.value;
+                const expDate = row.querySelector('.receipt-item-exp-date')?.value;
+
+                if (!mfgDate) throw new Error('Row ' + rowNumber + ': vui lòng nhập ngày sản xuất.');
+
                 const base = {
                     productId: productId,
                     uomId: uomId,
-                    quantity: quantity
+                    quantity: quantity,
+                    mfgDate: mfgDate
                 };
+                if (shelfLife) base.shelfLife = Number(shelfLife);
+                if (expDate) base.expDate = expDate;
+
                 if (receiptType === 'TRANSFER') {
                     return {...base, fromLocationId: null, toLocationId: null};
                 }

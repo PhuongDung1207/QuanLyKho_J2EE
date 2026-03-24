@@ -86,7 +86,9 @@ public class InboundDtos {
 
         private UUID locationId;
 
-        private java.time.LocalDate expiryDate;
+        private java.time.LocalDate mfgDate;
+        private Integer shelfLife;
+        private java.time.LocalDate expDate;
 
         public UUID getProductId() {
             return productId;
@@ -120,12 +122,28 @@ public class InboundDtos {
             this.locationId = locationId;
         }
 
-        public java.time.LocalDate getExpiryDate() {
-            return expiryDate;
+        public java.time.LocalDate getMfgDate() {
+            return mfgDate;
         }
 
-        public void setExpiryDate(java.time.LocalDate expiryDate) {
-            this.expiryDate = expiryDate;
+        public void setMfgDate(java.time.LocalDate mfgDate) {
+            this.mfgDate = mfgDate;
+        }
+
+        public Integer getShelfLife() {
+            return shelfLife;
+        }
+
+        public void setShelfLife(Integer shelfLife) {
+            this.shelfLife = shelfLife;
+        }
+
+        public java.time.LocalDate getExpDate() {
+            return expDate;
+        }
+
+        public void setExpDate(java.time.LocalDate expDate) {
+            this.expDate = expDate;
         }
     }
 
@@ -248,6 +266,10 @@ public class InboundDtos {
         private UUID locationId;
         private java.time.LocalDate expiryDate;
 
+        private java.time.LocalDate mfgDate;
+        private Integer shelfLife;
+        private java.time.LocalDate expDate;
+
         public UUID getId() {
             return id;
         }
@@ -288,12 +310,28 @@ public class InboundDtos {
             this.locationId = locationId;
         }
 
-        public java.time.LocalDate getExpiryDate() {
-            return expiryDate;
+        public java.time.LocalDate getMfgDate() {
+            return mfgDate;
         }
 
-        public void setExpiryDate(java.time.LocalDate expiryDate) {
-            this.expiryDate = expiryDate;
+        public void setMfgDate(java.time.LocalDate mfgDate) {
+            this.mfgDate = mfgDate;
+        }
+
+        public Integer getShelfLife() {
+            return shelfLife;
+        }
+
+        public void setShelfLife(Integer shelfLife) {
+            this.shelfLife = shelfLife;
+        }
+
+        public java.time.LocalDate getExpDate() {
+            return expDate;
+        }
+
+        public void setExpDate(java.time.LocalDate expDate) {
+            this.expDate = expDate;
         }
     }
 }

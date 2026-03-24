@@ -220,7 +220,9 @@ public class InboundServiceImpl implements InboundService {
             line.setUomId(reqLine.getUomId());
             line.setQuantity(reqLine.getQuantity());
             line.setLocationId(reqLine.getLocationId());
-            line.setExpiryDate(reqLine.getExpiryDate());
+            line.setMfgDate(reqLine.getMfgDate());
+            line.setShelfLife(reqLine.getShelfLife());
+            line.setExpDate(reqLine.getExpDate());
             lines.add(line);
         }
         return lines;
