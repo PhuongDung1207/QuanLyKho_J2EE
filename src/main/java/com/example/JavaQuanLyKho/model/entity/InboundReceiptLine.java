@@ -34,8 +34,14 @@ public class InboundReceiptLine {
     @Column(name = "location_id")
     private UUID locationId;
 
-    @Column(name = "expiry_date")
-    private java.time.LocalDate expiryDate;
+    @Column(name = "mfg_date")
+    private java.time.LocalDate mfgDate;
+
+    @Column(name = "shelf_life")
+    private Integer shelfLife;
+
+    @Column(name = "exp_date")
+    private java.time.LocalDate expDate;
 
     public UUID getId() {
         return id;
@@ -85,11 +91,27 @@ public class InboundReceiptLine {
         this.locationId = locationId;
     }
 
-    public java.time.LocalDate getExpiryDate() {
-        return expiryDate;
+    public java.time.LocalDate getMfgDate() {
+        return mfgDate;
     }
 
-    public void setExpiryDate(java.time.LocalDate expiryDate) {
-        this.expiryDate = expiryDate;
+    public void setMfgDate(java.time.LocalDate mfgDate) {
+        this.mfgDate = mfgDate;
+    }
+
+    public Integer getShelfLife() {
+        return shelfLife;
+    }
+
+    public void setShelfLife(Integer shelfLife) {
+        this.shelfLife = shelfLife;
+    }
+
+    public java.time.LocalDate getExpDate() {
+        return expDate;
+    }
+
+    public void setExpDate(java.time.LocalDate expDate) {
+        this.expDate = expDate;
     }
 }

@@ -115,6 +115,9 @@ public class TransferController {
         response.setQuantity(line.getQuantity());
         response.setFromLocationId(line.getFromLocationId());
         response.setToLocationId(line.getToLocationId());
+        response.setMfgDate(line.getMfgDate());
+        response.setShelfLife(line.getShelfLife());
+        response.setExpDate(line.getExpDate());
         return response;
     }
 }

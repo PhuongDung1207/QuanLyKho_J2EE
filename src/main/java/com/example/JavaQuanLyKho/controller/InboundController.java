@@ -114,6 +114,9 @@ public class InboundController {
         response.setUomId(line.getUomId());
         response.setQuantity(line.getQuantity());
         response.setLocationId(line.getLocationId());
+        response.setMfgDate(line.getMfgDate());
+        response.setShelfLife(line.getShelfLife());
+        response.setExpDate(line.getExpDate());
         return response;
     }
 }

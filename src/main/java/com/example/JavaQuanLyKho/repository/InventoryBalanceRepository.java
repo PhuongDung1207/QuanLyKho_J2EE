@@ -84,7 +84,7 @@ public interface InventoryBalanceRepository extends JpaRepository<InventoryBalan
     // 20. Hàng sắp hết hạn
     @Query("""
             select new com.example.JavaQuanLyKho.model.dto.ExpiringResponse(
-                b.productId, p.name, p.sku, b.warehouseId, w.name, b.locationId, l.code, b.qtyOnHand, b.expiryDate
+                b.productId, p.name, p.sku, b.warehouseId, w.name, b.locationId, l.code, b.qtyOnHand, b.expDate
             )
             from InventoryBalance b
             join Product p on b.productId = p.id
@@ -92,8 +92,8 @@ public interface InventoryBalanceRepository extends JpaRepository<InventoryBalan
             left join Location l on b.locationId = l.id
             where (:warehouseId is null or b.warehouseId = :warehouseId)
               and b.qtyOnHand > 0
-              and b.expiryDate is not null
-              and b.expiryDate <= :thresholdDate
+              and b.expDate is not null
+              and b.expDate <= :thresholdDate
             """)
     Page<com.example.JavaQuanLyKho.model.dto.ExpiringResponse> findExpiringDetailed(@Param("warehouseId") UUID warehouseId, @Param("thresholdDate") java.time.LocalDate thresholdDate, Pageable pageable);
 
@@ -103,7 +103,7 @@ public interface InventoryBalanceRepository extends JpaRepository<InventoryBalan
     @Query("select count(b) from InventoryBalance b where (:warehouseId is null or b.warehouseId = :warehouseId) and b.qtyOnHand > 0 and (b.lastOutboundDate is null or b.lastOutboundDate <= :thresholdDate)")
     long countSlowMovingItems(@Param("warehouseId") UUID warehouseId, @Param("thresholdDate") java.time.OffsetDateTime thresholdDate);
 
-    @Query("select count(b) from InventoryBalance b where (:warehouseId is null or b.warehouseId = :warehouseId) and b.qtyOnHand > 0 and b.expiryDate is not null and b.expiryDate <= :thresholdDate")
+    @Query("select count(b) from InventoryBalance b where (:warehouseId is null or b.warehouseId = :warehouseId) and b.qtyOnHand > 0 and b.expDate is not null and b.expDate <= :thresholdDate")
     long countExpiringItems(@Param("warehouseId") UUID warehouseId, @Param("thresholdDate") java.time.LocalDate thresholdDate);
 
     @Query("SELECT w.name, SUM(b.qtyOnHand), count(distinct b.productId) FROM InventoryBalance b JOIN Warehouse w ON b.warehouseId = w.id GROUP BY w.name")

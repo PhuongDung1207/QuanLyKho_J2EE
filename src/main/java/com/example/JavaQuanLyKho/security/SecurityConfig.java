@@ -117,6 +117,8 @@ public class SecurityConfig {
                         .requestMatchers("/uoms/**").permitAll()
                         .requestMatchers("/categories/**").permitAll()
                         .requestMatchers("/products/**").permitAll()
+                        .requestMatchers("/api/v1/labels/**").permitAll()
+                        .requestMatchers("/labels/**").permitAll()
                         .requestMatchers("/dispatch/**").permitAll()
                         .requestMatchers("/locations/**").permitAll()
                         // Users - Thymeleaf views

@@ -88,7 +88,7 @@
                 <div class="col-md-6">
                     <div class="stat-card">
                         <p class="stat-label">Total Damaged / Waste Quantity</p>
-                        <p class="stat-value" th:text="${total}">0</p>
+                        <p class="stat-value" th:text="${total != null ? #numbers.formatDecimal(total, 1, 1) : '0.0'}">0.0</p>
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -138,7 +138,7 @@
                             </td>
                             <td th:text="${d.warehouseName}">Warehouse</td>
                             <td>
-                                <span class="fw-bold" th:text="${d.quantity}">0</span>
+                                <span class="fw-bold" th:text="${#numbers.formatDecimal(d.quantity, 1, 1)}">0.0</span>
                                 <span class="small text-muted" th:text="${d.uomName}">PCS</span>
                             </td>
                             <td>
