@@ -7,13 +7,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 @Configuration
 public class DataInitializer {
@@ -24,13 +21,7 @@ public class DataInitializer {
             RoleRepository roleRepository,
             PermissionRepository permissionRepository,
             WarehouseRepository warehouseRepository,
-            CategoryRepository categoryRepository,
-            UomRepository uomRepository,
-            ProductRepository productRepository,
-            LocationRepository locationRepository,
-            InventoryBalanceRepository inventoryBalanceRepository,
-            OutboundIssueRepository outboundIssueRepository,
-            OutboundIssueLineRepository outboundIssueLineRepository,
+            SampleDataSeeder sampleDataSeeder,
             PasswordEncoder passwordEncoder
     ) {
         return args -> {
@@ -381,131 +372,7 @@ public class DataInitializer {
             userRepository.save(admin);
 
             // ─── SAMPLE DATA ────────────────────────────────────────────────
-            Warehouse wh1 = new Warehouse();
-            wh1.setCode("WH-GREEN-NORTH");
-            wh1.setName("Green Warehouse North (Fresh Food)");
-            wh1.setStatus("ACTIVE");
-            Warehouse savedWh1 = warehouseRepository.save(wh1);
-
-            Warehouse wh2 = new Warehouse();
-            wh2.setCode("WH-GREEN-SOUTH");
-            wh2.setName("Green Warehouse South (Dairy & Bakery)");
-            wh2.setStatus("ACTIVE");
-            Warehouse savedWh2 = warehouseRepository.save(wh2);
-
-            Category catFood = new Category();
-            catFood.setCode("FRESH_FOOD");
-            catFood.setName("Fresh Food");
-            Category savedCatFood = categoryRepository.save(catFood);
-
-            Category catDairy = new Category();
-            catDairy.setCode("DAIRY_BAKERY");
-            catDairy.setName("Dairy & Bakery");
-            Category savedCatDairy = categoryRepository.save(catDairy);
-
-            Uom uomKg = new Uom();
-            uomKg.setCode("KG");
-            uomKg.setName("Kilograms");
-            Uom savedUomKg = uomRepository.save(uomKg);
-
-            Uom uomPack = new Uom();
-            uomPack.setCode("PACK");
-            uomPack.setName("Pack");
-            Uom savedUomPack = uomRepository.save(uomPack);
-
-            // --- NORTH WAREHOUSE PRODUCTS (Fresh Food) ---
-            Product prod1 = createProduct(productRepository, "VEG-001", "Organic Spinach", savedCatFood.getId(), savedUomKg.getId());
-            Product prod2 = createProduct(productRepository, "VEG-002", "Red Tomatoes", savedCatFood.getId(), savedUomKg.getId());
-            Product prod3 = createProduct(productRepository, "FRT-001", "Fresh Bananas", savedCatFood.getId(), savedUomKg.getId());
-            Product prod4 = createProduct(productRepository, "FRT-002", "Sweet Grapes", savedCatFood.getId(), savedUomKg.getId());
-            Product prod5 = createProduct(productRepository, "VEG-003", "Broccoli", savedCatFood.getId(), savedUomKg.getId());
-
-            // --- SOUTH WAREHOUSE PRODUCTS (Dairy & Bakery) ---
-            Product prod6 = createProduct(productRepository, "DRY-001", "Whole Milk 1L", savedCatDairy.getId(), savedUomPack.getId());
-            Product prod7 = createProduct(productRepository, "DRY-002", "Greek Yogurt", savedCatDairy.getId(), savedUomPack.getId());
-            Product prod8 = createProduct(productRepository, "BKY-001", "Whole Wheat Bread", savedCatDairy.getId(), savedUomPack.getId());
-            Product prod9 = createProduct(productRepository, "BKY-002", "Butter Croissants", savedCatDairy.getId(), savedUomPack.getId());
-            Product prod10 = createProduct(productRepository, "DRY-003", "Cheddar Cheese", savedCatDairy.getId(), savedUomPack.getId());
-
-            Location loc1 = createLocation(locationRepository, savedWh1.getId(), "N1-VEG-01", "PICKING");
-            Location loc2 = createLocation(locationRepository, savedWh2.getId(), "S1-DRY-01", "STORAGE");
-
-            // --- NORTH WAREHOUSE INVENTORY (Fresh Food - Fast Aging) ---
-            // Aging: Spinach (3 days old), Last out: 1 day ago
-            createInventory(inventoryBalanceRepository, prod1, savedWh1, loc1, "15.5", 3, 2, 1); 
-            // Aging: Tomatoes (5 days old), Last out: 8 days ago (Slow Moving)
-            createInventory(inventoryBalanceRepository, prod2, savedWh1, loc1, "42.0", 5, 1, 8);
-            // Expiring: Bananas (Expires in 1 day), Last out: 2 days ago
-            createInventory(inventoryBalanceRepository, prod3, savedWh1, loc1, "25.8", 4, 1, 2);
-            // Slow Moving: Broccoli (No movement for 12 days)
-            createInventory(inventoryBalanceRepository, prod5, savedWh1, loc1, "12.4", 15, 10, 12);
-
-            // --- SOUTH WAREHOUSE INVENTORY (Dairy & Bakery) ---
-            // Expired: Milk (Expired 2 days ago), Last out: 5 days ago
-            createInventory(inventoryBalanceRepository, prod6, savedWh2, loc2, "100.0", 10, -2, 5);
-            // Expiring Soon: Bread (Expires tomorrow), Last out: Never (null)
-            createInventory(inventoryBalanceRepository, prod8, savedWh2, loc2, "45.5", 1, 1, null);
-            // Healthy Stock: Cheese, Last out: 10 days ago (Slow Moving for food)
-            createInventory(inventoryBalanceRepository, prod10, savedWh2, loc2, "30.2", 15, 30, 10);
-
-            // --- WASTE DATA ---
-            createWaste(outboundIssueRepository, outboundIssueLineRepository, savedWh1, prod4, savedUomKg, "5.2", "SPOILAGE", 2);
-            createWaste(outboundIssueRepository, outboundIssueLineRepository, savedWh2, prod9, savedUomPack, "3.0", "EXPIRED", 1);
+            sampleDataSeeder.seed();
         };
-    }
-
-    private Product createProduct(ProductRepository repo, String sku, String name, UUID catId, UUID uomId) {
-        Product p = new Product();
-        p.setSku(sku);
-        p.setName(name);
-        p.setCategoryId(catId);
-        p.setBaseUomId(uomId);
-        p.setStatus("ACTIVE");
-        return repo.save(p);
-    }
-
-    private Location createLocation(LocationRepository repo, UUID whId, String code, String type) {
-        Location l = new Location();
-        l.setWarehouseId(whId);
-        l.setCode(code);
-        l.setType(type);
-        return repo.save(l);
-    }
-
-    private void createInventory(InventoryBalanceRepository repo, Product p, Warehouse wh, Location loc, String qty, int daysAgoInbound, int daysToExpiry) {
-        createInventory(repo, p, wh, loc, qty, daysAgoInbound, daysToExpiry, null);
-    }
-
-    private void createInventory(InventoryBalanceRepository repo, Product p, Warehouse wh, Location loc, String qty, int daysAgoInbound, int daysToExpiry, Integer daysAgoOutbound) {
-        InventoryBalance bal = new InventoryBalance();
-        bal.setProductId(p.getId());
-        bal.setWarehouseId(wh.getId());
-        bal.setLocationId(loc.getId());
-        bal.setQtyOnHand(new BigDecimal(qty));
-        bal.setLastInboundDate(OffsetDateTime.now().minusDays(daysAgoInbound));
-        bal.setExpDate(LocalDate.now().plusDays(daysToExpiry));
-        bal.setMfgDate(LocalDate.now().minusDays(daysAgoInbound + 2));
-        if (daysAgoOutbound != null) {
-            bal.setLastOutboundDate(OffsetDateTime.now().minusDays(daysAgoOutbound));
-        }
-        repo.save(bal);
-    }
-
-    private void createWaste(OutboundIssueRepository outRepo, OutboundIssueLineRepository lineRepo, Warehouse wh, Product p, Uom uom, String qty, String reason, int daysAgo) {
-        OutboundIssue waste = new OutboundIssue();
-        waste.setCode(reason.substring(0, 3) + "-" + UUID.randomUUID().toString().substring(0, 5).toUpperCase());
-        waste.setType("WASTE");
-        waste.setWarehouseId(wh.getId());
-        waste.setStatus(OutboundIssueStatus.COMPLETED);
-        waste.setCreatedAt(OffsetDateTime.now().minusDays(daysAgo));
-        waste.setCompletedAt(OffsetDateTime.now().minusDays(daysAgo));
-        OutboundIssue saved = outRepo.save(waste);
-
-        OutboundIssueLine line = new OutboundIssueLine();
-        line.setIssueId(saved.getId());
-        line.setProductId(p.getId());
-        line.setUomId(uom.getId());
-        line.setQuantity(new BigDecimal(qty));
-        lineRepo.save(line);
     }
 }

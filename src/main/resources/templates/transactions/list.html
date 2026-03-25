@@ -566,6 +566,13 @@
                                 </select>
                             </div>
 
+                            <div id="receiptSectionGroup" class="col-lg-3 col-md-6">
+                                <label>Section / Location</label>
+                                <select id="receiptSection" class="form-select">
+                                    <option value="">— Select warehouse first —</option>
+                                </select>
+                            </div>
+
                             <div id="receiptFromWarehouseGroup" class="col-lg-3 col-md-6 d-none">
                                 <label>From Warehouse</label>
                                 <select id="receiptFromWarehouse" class="form-select">
@@ -783,6 +790,8 @@
             receiptWarehouseGroup: document.getElementById('receiptWarehouseGroup'),
             receiptWarehouseLabel: document.getElementById('receiptWarehouseLabel'),
             receiptWarehouse: document.getElementById('receiptWarehouse'),
+            receiptSection: document.getElementById('receiptSection'),
+            receiptSectionGroup: document.getElementById('receiptSectionGroup'),
             receiptFromWarehouseGroup: document.getElementById('receiptFromWarehouseGroup'),
             receiptFromWarehouse: document.getElementById('receiptFromWarehouse'),
             receiptToWarehouseGroup: document.getElementById('receiptToWarehouseGroup'),
@@ -1219,6 +1228,12 @@
         }
 
         async function deleteTransaction(record) {
+            const status = String(record.status || '').toUpperCase();
+            if (status !== 'DRAFT') {
+                showAlert('warning', 'Only DRAFT transactions can be deleted.');
+                return;
+            }
+
             const endpoint = deleteEndpointFor(record);
             if (!endpoint) {
                 showAlert('danger', 'Delete API is not mapped for this transaction type.');
@@ -1491,7 +1506,6 @@
                 const recordId = escapeHtml(normalizeId(record.id));
                 const recordSource = escapeHtml(record.source || '');
                 const canDelete = String(record.status || '').toUpperCase() === 'DRAFT';
-                const deleteDisabled = canDelete ? '' : ' disabled';
                 const deleteTitle = canDelete ? 'Delete this draft transaction' : 'Only DRAFT transactions can be deleted';
 
                 return [
@@ -1505,7 +1519,7 @@
                     '<td class="px-4 py-3">', statusBadge(record.status), '</td>',
                     '<td class="px-4 py-3 text-end"><div class="tx-action-group">',
                     '<button type="button" class="btn btn-sm btn-outline-primary tx-action-btn" title="View details" data-tx-action="detail" data-record-id="', recordId, '" data-record-source="', recordSource, '"><i class="bi bi-eye"></i></button>',
-                    '<button type="button" class="btn btn-sm btn-outline-danger tx-action-btn" data-tx-action="delete" data-record-id="', recordId, '" data-record-source="', recordSource, '" title="', deleteTitle, '"', deleteDisabled, '><i class="bi bi-trash"></i></button>',
+                    '<button type="button" class="btn btn-sm btn-outline-danger tx-action-btn" data-tx-action="delete" data-record-id="', recordId, '" data-record-source="', recordSource, '" title="', deleteTitle, '"><i class="bi bi-trash"></i></button>',
                     '</div></td>',
                     '</tr>'
                 ].join('');
@@ -1624,6 +1638,31 @@
             selectElement.innerHTML = buildSupplierOptionsHtml(selectedValue, placeholder);
         }
 
+        async function loadSectionsForWarehouse(warehouseId) {
+            if (!el.receiptSection) return;
+            if (!warehouseId) {
+                el.receiptSection.innerHTML = '<option value="">— Select warehouse first —</option>';
+                return;
+            }
+            el.receiptSection.innerHTML = '<option value="">Loading...</option>';
+            try {
+                const sections = await fetchJson('/api/v1/warehouses/' + encodeURIComponent(warehouseId) + '/sections');
+                if (!Array.isArray(sections) || sections.length === 0) {
+                    el.receiptSection.innerHTML = '<option value="">— No sections found —</option>';
+                    return;
+                }
+                const options = ['<option value="">Select section (optional)</option>'];
+                sections.forEach((s) => {
+                    const id = escapeHtml(String(s.id || ''));
+                    const label = escapeHtml((s.code || '') + (s.type ? ' [' + s.type + ']' : ''));
+                    options.push('<option value="' + id + '">' + label + '</option>');
+                });
+                el.receiptSection.innerHTML = options.join('');
+            } catch (err) {
+                el.receiptSection.innerHTML = '<option value="">— Failed to load sections —</option>';
+            }
+        }
+
         function renderReceiptTypeFields() {
             const type = getSelectedReceiptType();
             const isTransfer = type === 'TRANSFER';
@@ -1632,6 +1671,9 @@
 
             if (el.receiptWarehouseGroup) {
                 el.receiptWarehouseGroup.classList.toggle('d-none', isTransfer);
+            }
+            if (el.receiptSectionGroup) {
+                el.receiptSectionGroup.classList.toggle('d-none', isTransfer);
             }
             if (el.receiptFromWarehouseGroup) {
                 el.receiptFromWarehouseGroup.classList.toggle('d-none', !isTransfer);
@@ -1657,6 +1699,10 @@
             }
             if (el.receiptSupplier) {
                 populateSupplierSelect(el.receiptSupplier, el.receiptSupplier.value, 'Select supplier');
+            }
+            // Reset section list when switching to TRANSFER
+            if (isTransfer && el.receiptSection) {
+                el.receiptSection.innerHTML = '<option value="">— Select warehouse first —</option>';
             }
             syncReceiptSaveButton();
         }
@@ -1745,6 +1791,7 @@
             if (el.receiptFromWarehouse) el.receiptFromWarehouse.value = '';
             if (el.receiptToWarehouse) el.receiptToWarehouse.value = '';
             if (el.receiptSupplier) el.receiptSupplier.value = '';
+            if (el.receiptSection) el.receiptSection.innerHTML = '<option value="">— Select warehouse first —</option>';
             renderReceiptTypeFields();
             el.receiptItemsBody.innerHTML = '';
             el.receiptItemsBody.appendChild(createItemRow());
@@ -1764,6 +1811,8 @@
             if (rows.length === 0) {
                 throw new Error('Please add at least one item.');
             }
+
+            const sectionId = (!el.receiptSectionGroup.classList.contains('d-none') && el.receiptSection) ? normalizeId(el.receiptSection.value) : null;
 
             return rows.map((row, index) => {
                 const productId = normalizeId(row.querySelector('.receipt-item-product')?.value);
@@ -1796,7 +1845,7 @@
                 if (receiptType === 'TRANSFER') {
                     return {...base, fromLocationId: null, toLocationId: null};
                 }
-                return {...base, locationId: null};
+                return {...base, locationId: sectionId};
             });
         }
 
@@ -2038,6 +2087,12 @@
                 syncReceiptSaveButton();
             });
         });
+
+        if (el.receiptWarehouse) {
+            el.receiptWarehouse.addEventListener('change', () => {
+                loadSectionsForWarehouse(el.receiptWarehouse.value);
+            });
+        }
 
         el.pagination.addEventListener('click', (event) => {
             const btn = event.target.closest('button[data-page]');

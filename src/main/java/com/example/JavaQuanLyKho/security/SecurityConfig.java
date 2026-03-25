@@ -167,6 +167,17 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/suppliers/**").hasAuthority("SUPPLIER_DELETE")
                         .requestMatchers(HttpMethod.GET, "/api/v1/warehouses/*/sections/**").hasAuthority("LOCATION_VIEW")
                         .requestMatchers(HttpMethod.POST, "/api/v1/warehouses/*/sections/**").hasAuthority("LOCATION_CREATE")
+                        // Green Warehouse - Thymeleaf views
+                        .requestMatchers(HttpMethod.GET, "/green-warehouse/dashboard").hasAnyAuthority("GREEN_AGING_VIEW", "GREEN_SLOW_VIEW", "GREEN_EXPIRY_VIEW", "GREEN_WASTE_VIEW")
+                        .requestMatchers(HttpMethod.GET, "/green-warehouse/aging").hasAuthority("GREEN_AGING_VIEW")
+                        .requestMatchers(HttpMethod.GET, "/green-warehouse/slow-moving").hasAuthority("GREEN_SLOW_VIEW")
+                        .requestMatchers(HttpMethod.GET, "/green-warehouse/expiring").hasAuthority("GREEN_EXPIRY_VIEW")
+                        .requestMatchers(HttpMethod.GET, "/green-warehouse/waste").hasAuthority("GREEN_WASTE_VIEW")
+                        // Green Warehouse - REST API
+                        .requestMatchers(HttpMethod.GET, "/api/v1/green-warehouse/aging").hasAuthority("GREEN_AGING_VIEW")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/green-warehouse/slow-moving").hasAuthority("GREEN_SLOW_VIEW")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/green-warehouse/expiring").hasAuthority("GREEN_EXPIRY_VIEW")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/green-warehouse/waste/**").hasAuthority("GREEN_WASTE_VIEW")
                         .anyRequest().authenticated()
                 )
                 .userDetailsService(customUserDetailsService)
