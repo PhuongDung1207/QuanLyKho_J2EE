@@ -1,6 +1,6 @@
 package com.example.JavaQuanLyKho.service;
 
-import com.example.JavaQuanLyKho.dto.TimelineEventDTO;
+import com.example.JavaQuanLyKho.model.dto.TimelineEventDTO;
 import java.util.List;
 import java.util.UUID;
 

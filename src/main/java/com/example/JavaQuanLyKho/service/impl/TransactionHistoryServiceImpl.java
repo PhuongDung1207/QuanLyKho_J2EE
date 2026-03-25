@@ -1,6 +1,6 @@
 package com.example.JavaQuanLyKho.service.impl;
 
-import com.example.JavaQuanLyKho.dto.TransactionReportDTO;
+import com.example.JavaQuanLyKho.model.dto.TransactionReportDTO;
 import com.example.JavaQuanLyKho.repository.InboundReceiptRepository;
 import com.example.JavaQuanLyKho.repository.OutboundIssueRepository;
 import com.example.JavaQuanLyKho.repository.TransferRepository;

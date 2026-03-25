@@ -1,6 +1,6 @@
 package com.example.JavaQuanLyKho.controller;
 
-import com.example.JavaQuanLyKho.dto.TimelineEventDTO;
+import com.example.JavaQuanLyKho.model.dto.TimelineEventDTO;
 import com.example.JavaQuanLyKho.service.ProductTimelineService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

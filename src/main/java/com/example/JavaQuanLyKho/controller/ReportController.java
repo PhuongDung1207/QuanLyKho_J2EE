@@ -1,6 +1,6 @@
 package com.example.JavaQuanLyKho.controller;
 
-import com.example.JavaQuanLyKho.dto.TransactionReportDTO;
+import com.example.JavaQuanLyKho.model.dto.TransactionReportDTO;
 import com.example.JavaQuanLyKho.service.TransactionHistoryService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;

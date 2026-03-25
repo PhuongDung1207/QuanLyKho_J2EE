@@ -60,6 +60,6 @@ public class DashboardViewController {
                 .stream().filter(i -> i.getMinQty() != null && i.getQtyOnHand().compareTo(i.getMinQty()) <= 0)
                 .toList());
 
-        return "dashboard";
+        return "dashboard/dashboard";
     }
 }

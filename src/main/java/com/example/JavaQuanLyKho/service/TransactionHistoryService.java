@@ -1,6 +1,6 @@
 package com.example.JavaQuanLyKho.service;
 
-import com.example.JavaQuanLyKho.dto.TransactionReportDTO;
+import com.example.JavaQuanLyKho.model.dto.TransactionReportDTO;
 import java.time.OffsetDateTime;
 import java.util.List;
 

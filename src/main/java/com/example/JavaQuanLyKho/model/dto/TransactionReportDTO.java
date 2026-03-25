@@ -1,4 +1,4 @@
-package com.example.JavaQuanLyKho.dto;
+package com.example.JavaQuanLyKho.model.dto;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;

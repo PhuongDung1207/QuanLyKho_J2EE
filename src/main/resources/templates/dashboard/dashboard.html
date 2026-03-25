@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Storage Solutions</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        body { background: radial-gradient(1100px 420px at -10% -15%, rgba(245,110,45,.13), transparent 60%), radial-gradient(900px 460px at 110% -22%, rgba(14,165,233,.12), transparent 65%), #f6f8fc; color: #1e293b; }
+        .page-shell { padding: 1.25rem 1.4rem 1.6rem; }
+        .hero { border-radius: 18px; background: linear-gradient(120deg,#fffaf6 0%,#fff 50%,#f8fbff 100%); border: 1px solid #e6ebf4; box-shadow: 0 14px 28px rgba(15,23,42,.07); padding: 1.08rem 1.16rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; position: relative; overflow: hidden; }
+        .hero::after { content: ''; position: absolute; width: 190px; height: 190px; right: -45px; top: -70px; background: radial-gradient(circle, rgba(242,103,34,.18), transparent 70%); pointer-events: none; }
+        .hero-tag { margin: 0; text-transform: uppercase; letter-spacing: .08em; font-size: .67rem; font-weight: 800; color: #f26722; }
+        .hero h1 { margin: .35rem 0 0; font-size: 1.18rem; font-weight: 800; color: #0f172a; }
+        .hero p { margin: .34rem 0 0; font-size: .81rem; color: #64748b; }
+        .hero-actions { margin-top: .8rem; display: flex; gap: .5rem; flex-wrap: wrap; }
+        .hero-btn { border: 1px solid #dfe6f1; background: #fff; color: #475569; border-radius: 10px; font-size: .77rem; font-weight: 700; padding: .41rem .72rem; text-decoration: none; display: inline-flex; align-items: center; gap: .4rem; }
+        .hero-btn:hover { border-color: #cdd8e7; background: #f8fafc; color: #1e293b; }
+        .hero-btn.primary { border-color: #f59e73; background: linear-gradient(135deg,#f26722,#ea580c); color: #fff; box-shadow: 0 10px 18px rgba(242,103,34,.2); }
+        .hero-btn.primary:hover { color: #fff; filter: brightness(.97); }
+        .hero-score { width: 185px; min-width: 185px; border-radius: 14px; border: 1px solid #e6ebf4; background: #fff; box-shadow: 0 10px 20px rgba(15,23,42,.07); padding: .78rem; position: relative; z-index: 1; }
+        .hero-score .label { margin: 0; font-size: .65rem; text-transform: uppercase; letter-spacing: .07em; font-weight: 800; color: #94a3b8; }
+        .hero-score .value { margin: .22rem 0 .38rem; font-size: 1.58rem; line-height: 1; font-weight: 800; color: #0f172a; }
+        .hero-score .value .pct { font-size: .76rem; color: #64748b; margin-left: .08rem; }
+        .hero-score .line { display: flex; justify-content: space-between; gap: .35rem; font-size: .71rem; color: #64748b; margin-top: .2rem; }
+        .hero-score strong { color: #0f172a; }
+        .stat-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: .78rem; margin-bottom: 1rem; }
+        .card-kpi { border-radius: 15px; border: 1px solid #e6ebf4; background: #fff; box-shadow: 0 8px 20px rgba(15,23,42,.05); padding: .88rem; min-height: 124px; display: flex; flex-direction: column; justify-content: space-between; gap: .45rem; }
+        .kpi-head { display: flex; align-items: center; justify-content: space-between; gap: .45rem; }
+        .kpi-icon { width: 40px; height: 40px; border-radius: 11px; display: inline-flex; align-items: center; justify-content: center; font-size: 1.08rem; }
+        .ic-o { background: #fff4eb; color: #f26722; }
+        .ic-b { background: #eff6ff; color: #2563eb; }
+        .ic-c { background: #ecfeff; color: #0891b2; }
+        .ic-g { background: #f0fdf4; color: #16a34a; }
+        .ic-r { background: #fef2f2; color: #dc2626; }
+        .kpi-label { margin: 0; font-size: .67rem; text-transform: uppercase; letter-spacing: .06em; font-weight: 800; color: #64748b; }
+        .kpi-value { margin: .12rem 0 0; font-size: 1.26rem; line-height: 1.1; font-weight: 800; color: #0f172a; }
+        .kpi-note { margin: 0; font-size: .72rem; color: #94a3b8; font-weight: 600; }
+        .trend { display: inline-flex; align-items: center; gap: .2rem; border-radius: 999px; border: 1px solid transparent; padding: .18rem .44rem; font-size: .66rem; font-weight: 700; line-height: 1.2; white-space: nowrap; }
+        .up { color: #15803d; background: #f0fdf4; border-color: #bbf7d0; }
+        .down { color: #b91c1c; background: #fef2f2; border-color: #fecaca; }
+        .flat { color: #475569; background: #f8fafc; border-color: #e2e8f0; }
+        .panel { border-radius: 15px; border: 1px solid #e6ebf4; background: #fff; box-shadow: 0 8px 20px rgba(15,23,42,.05); overflow: hidden; }
+        .panel-h { padding: .88rem .94rem; border-bottom: 1px solid #edf1f6; background: #fcfdff; }
+        .panel-h h2 { margin: 0; font-size: .9rem; font-weight: 800; color: #0f172a; display: inline-flex; align-items: center; gap: .42rem; }
+        .panel-h p { margin: .15rem 0 0; font-size: .73rem; font-weight: 600; color: #94a3b8; }
+        .panel-b { padding: .9rem .94rem; }
+        .chart-box { height: 320px; }
+        .donut-box { height: 215px; }
+        .mini-grid { margin-top: .65rem; display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: .44rem; }
+        .mini { border: 1px solid #e8edf5; background: #f8fbff; border-radius: 10px; text-align: center; padding: .4rem; }
+        .mini .n { font-size: .63rem; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; }
+        .mini .v { margin-top: .14rem; font-size: .95rem; line-height: 1; font-weight: 800; color: #0f172a; }
+        .act { display: flex; align-items: flex-start; justify-content: space-between; gap: .7rem; padding: .56rem .16rem; border-bottom: 1px solid #eef3f8; }
+        .act:last-child { border-bottom: 0; }
+        .act .code { margin: 0; font-size: .85rem; font-weight: 700; color: #0f172a; }
+        .act .time { margin: .14rem 0 0; font-size: .72rem; color: #94a3b8; }
+        .type { border-radius: 999px; border: 1px solid transparent; font-size: .67rem; font-weight: 700; padding: .19rem .5rem; display: inline-flex; align-items: center; gap: .25rem; white-space: nowrap; }
+        .type-in { color: #15803d; background: #f0fdf4; border-color: #bbf7d0; }
+        .type-out { color: #b91c1c; background: #fef2f2; border-color: #fecaca; }
+        .empty { text-align: center; color: #94a3b8; font-size: .82rem; padding: 1.8rem .8rem; }
+        .low-table thead th { background: #f8fbff; color: #64748b; font-size: .66rem; text-transform: uppercase; letter-spacing: .06em; font-weight: 800; border-bottom: 1px solid #e8eef5; padding: .6rem .7rem; white-space: nowrap; }
+        .low-table tbody td { padding: .62rem .7rem; border-bottom: 1px solid #eef3f8; font-size: .8rem; color: #334155; vertical-align: middle; }
+        .low-table tbody tr:last-child td { border-bottom: 0; }
+        .sku { display: inline-block; margin-top: .22rem; border-radius: 7px; border: 1px solid #e2e8f0; background: #f8fafc; color: #475569; font-size: .66rem; font-family: \"Consolas\", \"Courier New\", monospace; font-weight: 700; padding: .14rem .38rem; }
+        .qty-low { display: inline-flex; align-items: center; justify-content: center; border-radius: 999px; border: 1px solid #fecaca; background: #fef2f2; color: #b91c1c; font-size: .67rem; font-weight: 700; padding: .18rem .5rem; }
+        @media (max-width: 1199px) { .hero { flex-direction: column; align-items: stretch; } .hero-score { width: 100%; min-width: 0; } .stat-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+        @media (max-width: 767px) { .page-shell { padding: .9rem; } .hero { padding: .95rem; border-radius: 14px; } .hero h1 { font-size: 1.1rem; } .stat-grid { grid-template-columns: 1fr; } .panel-h,.panel-b { padding-left: .8rem; padding-right: .8rem; } .chart-box { height: 280px; } .donut-box { height: 200px; } }
+    </style>
+</head>
+<body th:classappend="${session.sidebar_collapsed != null and session.sidebar_collapsed} ? 'wms-sidebar-collapsed' : ''">
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="wms-main">
+    <div class="page-shell">
+        <section class="hero" th:with="score=${100 - (health.totalAgedItems + health.totalSlowMovingItems + health.totalExpiringItems)}">
+            <div>
+                <p class="hero-tag">Operations Overview</p>
+                <h1>Warehouse Performance Dashboard</h1>
+                <p>Track stock movement, inventory risks, and operational health in one place.</p>
+                <div class="hero-actions">
+                    <a href="/transactions" class="hero-btn primary"><i class="bi bi-truck"></i>Transactions</a>
+                    <a href="/inventory" class="hero-btn"><i class="bi bi-box-seam"></i>Inventory</a>
+                    <a href="/reports" class="hero-btn"><i class="bi bi-clipboard-data"></i>Reports</a>
+                </div>
+            </div>
+            <div class="hero-score">
+                <p class="label">Network Health</p>
+                <p class="value"><span th:text="${score > 0 ? score : 0}">0</span><span class="pct">%</span></p>
+                <div class="line"><span>Slow moving</span><strong th:text="${health.totalSlowMovingItems}">0</strong></div>
+                <div class="line"><span>Aged stock</span><strong th:text="${health.totalAgedItems}">0</strong></div>
+                <div class="line"><span>Expiring soon</span><strong th:text="${health.totalExpiringItems}">0</strong></div>
+            </div>
+        </section>
+
+        <section class="stat-grid">
+            <article class="card-kpi">
+                <div class="kpi-head">
+                    <span class="kpi-icon ic-o"><i class="bi bi-box-seam"></i></span>
+                    <span class="trend" th:classappend="${summary.totalProductsTrend >= 0 ? ' up' : ' down'}">
+                        <i th:class="${summary.totalProductsTrend >= 0 ? 'bi bi-arrow-up-right' : 'bi bi-arrow-down-right'}"></i>
+                        <span th:text="${summary.totalProductsTrend >= 0 ? '+' : ''} + ${#numbers.formatDecimal(summary.totalProductsTrend, 1, 1)} + '%'">+0.0%</span>
+                    </span>
+                </div>
+                <div>
+                    <p class="kpi-label">Total Products</p>
+                    <p class="kpi-value" th:text="${#numbers.formatDecimal(summary.totalProducts, 1, 'COMMA', 0, 'POINT')}">0</p>
+                </div>
+                <p class="kpi-note">Active SKUs in system</p>
+            </article>
+
+            <article class="card-kpi">
+                <div class="kpi-head">
+                    <span class="kpi-icon ic-b"><i class="bi bi-folder2-open"></i></span>
+                    <span class="trend" th:classappend="${summary.totalCategoriesTrend >= 0 ? ' up' : ' down'}">
+                        <i th:class="${summary.totalCategoriesTrend >= 0 ? 'bi bi-arrow-up-right' : 'bi bi-arrow-down-right'}"></i>
+                        <span th:text="${summary.totalCategoriesTrend >= 0 ? '+' : ''} + ${#numbers.formatDecimal(summary.totalCategoriesTrend, 1, 1)} + '%'">+0.0%</span>
+                    </span>
+                </div>
+                <div>
+                    <p class="kpi-label">Categories</p>
+                    <p class="kpi-value" th:text="${#numbers.formatDecimal(summary.totalCategories, 1, 'COMMA', 0, 'POINT')}">0</p>
+                </div>
+                <p class="kpi-note">Current classification map</p>
+            </article>
+
+            <article class="card-kpi">
+                <div class="kpi-head">
+                    <span class="kpi-icon ic-c"><i class="bi bi-buildings"></i></span>
+                    <span class="trend" th:classappend="${summary.totalWarehousesTrend >= 0 ? ' up' : ' down'}">
+                        <i th:class="${summary.totalWarehousesTrend >= 0 ? 'bi bi-arrow-up-right' : 'bi bi-arrow-down-right'}"></i>
+                        <span th:text="${summary.totalWarehousesTrend >= 0 ? '+' : ''} + ${#numbers.formatDecimal(summary.totalWarehousesTrend, 1, 1)} + '%'">+0.0%</span>
+                    </span>
+                </div>
+                <div>
+                    <p class="kpi-label">Warehouses</p>
+                    <p class="kpi-value" th:text="${#numbers.formatDecimal(summary.totalWarehouses, 1, 'COMMA', 0, 'POINT')}">0</p>
+                </div>
+                <p class="kpi-note">Facilities monitored</p>
+            </article>
+
+            <article class="card-kpi">
+                <div class="kpi-head">
+                    <span class="kpi-icon ic-g"><i class="bi bi-archive-fill"></i></span>
+                    <span class="trend flat">Units</span>
+                </div>
+                <div>
+                    <p class="kpi-label">Overall Stock</p>
+                    <p class="kpi-value" th:text="${summary.overallStock != null ? #numbers.formatDecimal(summary.overallStock, 1, 'COMMA', 0, 'POINT') : '0'}">0</p>
+                </div>
+                <p class="kpi-note">Current on-hand quantity</p>
+            </article>
+
+            <article class="card-kpi">
+                <div class="kpi-head">
+                    <span class="kpi-icon ic-g"><i class="bi bi-box-arrow-in-down"></i></span>
+                    <span class="trend" th:classappend="${summary.stockInTrend >= 0 ? ' up' : ' down'}">
+                        <i th:class="${summary.stockInTrend >= 0 ? 'bi bi-arrow-up-right' : 'bi bi-arrow-down-right'}"></i>
+                        <span th:text="${summary.stockInTrend >= 0 ? '+' : ''} + ${#numbers.formatDecimal(summary.stockInTrend, 1, 1)} + '%'">+0.0%</span>
+                    </span>
+                </div>
+                <div>
+                    <p class="kpi-label">Stock In (Month)</p>
+                    <p class="kpi-value" th:text="${#numbers.formatDecimal(summary.stockInCount, 1, 'COMMA', 0, 'POINT')}">0</p>
+                </div>
+                <p class="kpi-note">Inbound receipts created</p>
+            </article>
+
+            <article class="card-kpi">
+                <div class="kpi-head">
+                    <span class="kpi-icon ic-r"><i class="bi bi-box-arrow-up"></i></span>
+                    <span class="trend" th:classappend="${summary.stockOutTrend >= 0 ? ' up' : ' down'}">
+                        <i th:class="${summary.stockOutTrend >= 0 ? 'bi bi-arrow-up-right' : 'bi bi-arrow-down-right'}"></i>
+                        <span th:text="${summary.stockOutTrend >= 0 ? '+' : ''} + ${#numbers.formatDecimal(summary.stockOutTrend, 1, 1)} + '%'">+0.0%</span>
+                    </span>
+                </div>
+                <div>
+                    <p class="kpi-label">Stock Out (Month)</p>
+                    <p class="kpi-value" th:text="${#numbers.formatDecimal(summary.stockOutCount, 1, 'COMMA', 0, 'POINT')}">0</p>
+                </div>
+                <p class="kpi-note">Outbound issues created</p>
+            </article>
+        </section>
+
+        <div class="row g-3 mb-3">
+            <div class="col-xl-8">
+                <section class="panel h-100">
+                    <div class="panel-h">
+                        <h2><i class="bi bi-graph-up-arrow text-success"></i>Stock Movement Trend</h2>
+                        <p>Inbound and outbound quantity timeline.</p>
+                    </div>
+                    <div class="panel-b">
+                        <div class="chart-box"><canvas id="movementChart"></canvas></div>
+                    </div>
+                </section>
+            </div>
+            <div class="col-xl-4">
+                <section class="panel h-100">
+                    <div class="panel-h">
+                        <h2><i class="bi bi-pie-chart-fill text-primary"></i>Health Mix</h2>
+                        <p>Aged, slow moving, and expiring distribution.</p>
+                    </div>
+                    <div class="panel-b">
+                        <div class="donut-box"><canvas id="healthChart"></canvas></div>
+                        <div class="mini-grid">
+                            <div class="mini"><div class="n">Aged</div><div class="v" th:text="${health.totalAgedItems}">0</div></div>
+                            <div class="mini"><div class="n">Slow</div><div class="v" th:text="${health.totalSlowMovingItems}">0</div></div>
+                            <div class="mini"><div class="n">Expiring</div><div class="v" th:text="${health.totalExpiringItems}">0</div></div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-xl-6">
+                <section class="panel h-100">
+                    <div class="panel-h">
+                        <h2><i class="bi bi-clock-history text-info"></i>Recent Activity</h2>
+                        <p>Latest inbound and outbound documents.</p>
+                    </div>
+                    <div class="panel-b">
+                        <div th:if="${#lists.isEmpty(recentInbounds) and #lists.isEmpty(recentOutbounds)}" class="empty">No recent transactions available.</div>
+                        <div class="act" th:each="receipt : ${recentInbounds}">
+                            <div>
+                                <p class="code" th:text="${receipt.code}">INB-001</p>
+                                <p class="time" th:text="${#temporals.format(receipt.createdAt, 'HH:mm dd/MM/yyyy')}">08:30 25/03/2026</p>
+                            </div>
+                            <span class="type type-in"><i class="bi bi-box-arrow-in-down"></i>Stock In</span>
+                        </div>
+                        <div class="act" th:each="issue : ${recentOutbounds}">
+                            <div>
+                                <p class="code" th:text="${issue.code}">OUT-001</p>
+                                <p class="time" th:text="${#temporals.format(issue.createdAt, 'HH:mm dd/MM/yyyy')}">09:40 25/03/2026</p>
+                            </div>
+                            <span class="type type-out"><i class="bi bi-box-arrow-up-right"></i>Stock Out</span>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <div class="col-xl-6">
+                <section class="panel h-100">
+                    <div class="panel-h">
+                        <h2><i class="bi bi-exclamation-octagon-fill text-danger"></i>Low Stock Alert</h2>
+                        <p>Items below or equal to minimum threshold.</p>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table low-table mb-0">
+                            <thead>
+                            <tr>
+                                <th style="width:56px">#</th>
+                                <th>Product</th>
+                                <th>Warehouse</th>
+                                <th>On Hand</th>
+                                <th>Min Qty</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:if="${#lists.isEmpty(lowStockItems)}"><td colspan="5" class="empty">No low stock item detected.</td></tr>
+                            <tr th:each="item, stat : ${lowStockItems}">
+                                <td th:text="${stat.count}">1</td>
+                                <td>
+                                    <div class="fw-semibold" th:text="${item.productName != null ? item.productName : '-'}">Product Name</div>
+                                    <span class="sku" th:text="${item.productSku != null ? item.productSku : 'N/A'}">SKU-001</span>
+                                </td>
+                                <td th:text="${item.warehouseName != null ? item.warehouseName : '-'}">Main Warehouse</td>
+                                <td><span class="qty-low" th:text="${item.qtyOnHand != null ? #numbers.formatDecimal(item.qtyOnHand, 1, 'COMMA', 0, 'POINT') : '0'}">0</span></td>
+                                <td th:text="${item.minQty != null ? #numbers.formatDecimal(item.minQty, 1, 'COMMA', 0, 'POINT') : '-'}">0</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    const timeline = /*[[${timeline}]]*/ [];
+    const rows = Array.isArray(timeline) ? timeline : [];
+    const labels = rows.length ? rows.map((row) => {
+        const period = String(row.period || '');
+        const parts = period.split('-');
+        if (parts.length === 3) return parts[2] + '/' + parts[1];
+        if (parts.length === 2) return parts[1] + '/' + parts[0];
+        return period || '-';
+    }) : ['No data'];
+    const inbound = rows.length ? rows.map((row) => Number(row.inboundQty || 0)) : [0];
+    const outbound = rows.length ? rows.map((row) => Number(row.outboundQty || 0)) : [0];
+
+    const movementCanvas = document.getElementById('movementChart');
+    if (movementCanvas) {
+        new Chart(movementCanvas.getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    { label: 'Stock In', data: inbound, borderColor: '#16a34a', backgroundColor: 'rgba(22,163,74,.08)', fill: true, tension: .35, borderWidth: 2.4, pointRadius: 3, pointBackgroundColor: '#fff', pointBorderColor: '#16a34a', pointBorderWidth: 1.8 },
+                    { label: 'Stock Out', data: outbound, borderColor: '#f97316', backgroundColor: 'rgba(249,115,22,.08)', fill: true, tension: .35, borderWidth: 2.4, pointRadius: 3, pointBackgroundColor: '#fff', pointBorderColor: '#f97316', pointBorderWidth: 1.8 }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    legend: { position: 'bottom', labels: { usePointStyle: true, pointStyle: 'circle', padding: 18, boxWidth: 8, color: '#64748b', font: { size: 11, weight: '700' } } },
+                    tooltip: { backgroundColor: '#0f172a', titleFont: { size: 12, weight: '700' }, bodyFont: { size: 11 }, cornerRadius: 8, padding: 10 }
+                },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: 'rgba(148,163,184,.16)' }, ticks: { color: '#64748b', font: { size: 10.5, weight: '600' } } },
+                    x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 10.5, weight: '600' } } }
+                }
+            }
+        });
+    }
+
+    const aged = Number(/*[[${health.totalAgedItems}]]*/ 0) || 0;
+    const slow = Number(/*[[${health.totalSlowMovingItems}]]*/ 0) || 0;
+    const expiring = Number(/*[[${health.totalExpiringItems}]]*/ 0) || 0;
+    const totalRisk = aged + slow + expiring;
+    const healthCanvas = document.getElementById('healthChart');
+    if (healthCanvas) {
+        new Chart(healthCanvas.getContext('2d'), {
+            type: 'doughnut',
+            data: {
+                labels: totalRisk > 0 ? ['Aged', 'Slow Moving', 'Expiring Soon'] : ['No risk item'],
+                datasets: [{
+                    data: totalRisk > 0 ? [aged, slow, expiring] : [1],
+                    backgroundColor: totalRisk > 0 ? ['#ef4444', '#f59e0b', '#3b82f6'] : ['#16a34a'],
+                    borderWidth: 0,
+                    hoverOffset: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '70%',
+                plugins: {
+                    legend: { position: 'bottom', labels: { usePointStyle: true, pointStyle: 'circle', padding: 14, boxWidth: 8, color: '#64748b', font: { size: 10.5, weight: '700' } } },
+                    tooltip: { backgroundColor: '#0f172a', titleFont: { size: 12, weight: '700' }, bodyFont: { size: 11 }, cornerRadius: 8, padding: 10 }
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>

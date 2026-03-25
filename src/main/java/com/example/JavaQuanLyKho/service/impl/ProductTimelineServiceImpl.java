@@ -1,6 +1,6 @@
 package com.example.JavaQuanLyKho.service.impl;
 
-import com.example.JavaQuanLyKho.dto.TimelineEventDTO;
+import com.example.JavaQuanLyKho.model.dto.TimelineEventDTO;
 import com.example.JavaQuanLyKho.model.entity.InboundReceiptLine;
 import com.example.JavaQuanLyKho.model.entity.OutboundIssueLine;
 import com.example.JavaQuanLyKho.model.entity.TransferLine;

@@ -1,6 +1,6 @@
 package com.example.JavaQuanLyKho.controller;
 
-import com.example.JavaQuanLyKho.dto.StocktakeQRRequestDTO;
+import com.example.JavaQuanLyKho.model.dto.StocktakeQRRequestDTO;
 import com.example.JavaQuanLyKho.model.entity.Stocktake;
 import com.example.JavaQuanLyKho.model.entity.StocktakeLine;
 import com.example.JavaQuanLyKho.service.StocktakeService;

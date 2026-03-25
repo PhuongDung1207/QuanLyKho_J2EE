@@ -1,4 +1,4 @@
-package com.example.JavaQuanLyKho.dto;
+package com.example.JavaQuanLyKho.model.dto;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;

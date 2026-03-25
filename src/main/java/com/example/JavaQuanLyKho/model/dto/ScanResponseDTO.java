@@ -1,4 +1,4 @@
-package com.example.JavaQuanLyKho.dto;
+package com.example.JavaQuanLyKho.model.dto;
 
 import com.example.JavaQuanLyKho.model.entity.Batch;
 import com.example.JavaQuanLyKho.model.entity.Product;

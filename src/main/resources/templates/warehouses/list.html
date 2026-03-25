@@ -603,7 +603,7 @@
                             <th>CODE</th>
                             <th>STATUS</th>
                             <th>CAPACITY</th>
-                            <th style="width:90px">LOCATIONS</th>
+                            <th style="width:90px">SECTIONS</th>
                             <th style="width:100px">ACTIONS</th>
                         </tr>
                     </thead>
@@ -660,7 +660,7 @@
                                 </div>
                             </td>
                             <td>
-                                <a class="btn-locations" th:href="@{'/warehouses/' + ${w.id} + '/locations'}">
+                                <a class="btn-locations" th:href="@{/sections(warehouseId=${w.id})}">
                                     <i class="bi bi-geo-alt"></i>View
                                 </a>
                             </td>
@@ -732,7 +732,7 @@
                 <div class="stat-card">
                     <div class="stat-icon-wrap si-amber"><i class="bi bi-geo-alt-fill"></i></div>
                     <div>
-                        <div class="stat-label">LOCATIONS</div>
+                        <div class="stat-label">SECTIONS</div>
                         <div class="stat-value" th:text="${allLocations.size()}">0</div>
                     </div>
                 </div>

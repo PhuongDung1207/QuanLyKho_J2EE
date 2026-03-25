@@ -58,6 +58,10 @@
         .table-custom thead { background: #f8fafc; border-bottom: 1px solid var(--border-color); }
         .table-custom th { font-weight: 600; color: #475569; font-size: 0.85rem; padding: 1rem; }
         .table-custom td { padding: 1rem; font-size: 0.9rem; color: #1e293b; background: #fff; }
+        .report-search-wrap { max-width: 340px; }
+        .report-search-wrap .input-group-text { background: #fff; border-right: 0; }
+        .report-search-wrap .form-control { border-left: 0; }
+        .report-table-empty { color: #94a3b8; font-size: 0.88rem; font-weight: 500; }
         
         .waste-badge { padding: 0.4rem 0.75rem; border-radius: 8px; font-weight: 600; font-size: 0.75rem; }
         .badge-expired { background: #fef2f2; color: #b91c1c; border: 1px solid #fee2e2; }
@@ -194,6 +198,15 @@
                             No inbound/outbound data found for this period.
                         </div>
                         <div class="table-responsive" th:unless="${timeline.isEmpty()}">
+                            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                                <div class="input-group input-group-sm report-search-wrap">
+                                    <span class="input-group-text"><i class="bi bi-search text-secondary"></i></span>
+                                    <input id="timelineSearchInput" type="text" class="form-control"
+                                           placeholder="Search by month, inbound, outbound, or balance...">
+                                </div>
+                                <small id="timelineSearchCount" class="text-muted fw-semibold"
+                                       th:text="${timeline.size()} + ' rows'">0 rows</small>
+                            </div>
                             <table class="table table-hover table-custom align-middle mb-0">
                                 <thead>
                                     <tr>
@@ -203,14 +216,21 @@
                                         <th class="text-end">Balance</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr th:each="t : ${timeline}">
+                                <tbody id="timelineBody">
+                                    <tr th:each="t : ${timeline}"
+                                        th:attr="data-period=${t.period}, data-inbound=${t.inboundQty}, data-outbound=${t.outboundQty}, data-balance=${t.inboundQty.subtract(t.outboundQty)}">
                                         <td class="fw-semibold" th:text="${t.period}">2023-10</td>
                                         <td class="text-end text-success fw-bold" th:text="${t.inboundQty}">500</td>
                                         <td class="text-end text-danger fw-bold" th:text="${t.outboundQty}">300</td>
                                         <td class="text-end fw-bold">
                                             <span th:text="${t.inboundQty.subtract(t.outboundQty)}" 
                                                   th:class="${t.inboundQty.subtract(t.outboundQty) >= 0 ? 'text-primary' : 'text-danger'}">200</span>
+                                        </td>
+                                    </tr>
+                                    <tr id="timelineNoResultRow" style="display:none">
+                                        <td colspan="4" class="text-center py-4 report-table-empty">
+                                            <i class="bi bi-search d-block mb-2" style="font-size:1.35rem"></i>
+                                            No matching months found.
                                         </td>
                                     </tr>
                                 </tbody>
@@ -349,6 +369,43 @@
                 scales: { r: { ticks: { display: false }, grid: { color: '#f1f5f9' } } }
             }
         });
+
+        (function () {
+            const searchInput = document.getElementById('timelineSearchInput');
+            if (!searchInput) return;
+
+            const noResultRow = document.getElementById('timelineNoResultRow');
+            const tableCount = document.getElementById('timelineSearchCount');
+
+            function applyFilter() {
+                const q = (searchInput.value || '').trim().toLowerCase();
+                const rows = document.querySelectorAll('#timelineBody tr[data-period]');
+                let visible = 0;
+
+                rows.forEach((row) => {
+                    const searchable = [
+                        row.dataset.period || '',
+                        row.dataset.inbound || '',
+                        row.dataset.outbound || '',
+                        row.dataset.balance || ''
+                    ].join(' ').toLowerCase();
+
+                    const match = !q || searchable.includes(q);
+                    row.style.display = match ? '' : 'none';
+                    if (match) visible += 1;
+                });
+
+                if (noResultRow) {
+                    noResultRow.style.display = (rows.length > 0 && visible === 0) ? '' : 'none';
+                }
+                if (tableCount) {
+                    tableCount.textContent = visible + ' rows';
+                }
+            }
+
+            searchInput.addEventListener('input', applyFilter);
+            applyFilter();
+        })();
     </script>
 </body>
 </html>

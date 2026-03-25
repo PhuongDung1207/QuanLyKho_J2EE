@@ -1,6 +1,6 @@
 package com.example.JavaQuanLyKho.service;
 
-import com.example.JavaQuanLyKho.dto.StocktakeQRRequestDTO;
+import com.example.JavaQuanLyKho.model.dto.StocktakeQRRequestDTO;
 import com.example.JavaQuanLyKho.model.entity.Stocktake;
 import com.example.JavaQuanLyKho.model.entity.StocktakeLine;
 import org.springframework.data.domain.Page;

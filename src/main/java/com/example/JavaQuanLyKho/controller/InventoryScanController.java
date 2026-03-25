@@ -1,6 +1,6 @@
 package com.example.JavaQuanLyKho.controller;
 
-import com.example.JavaQuanLyKho.dto.ScanResponseDTO;
+import com.example.JavaQuanLyKho.model.dto.ScanResponseDTO;
 import com.example.JavaQuanLyKho.model.entity.Batch;
 import com.example.JavaQuanLyKho.model.entity.Product;
 import com.example.JavaQuanLyKho.service.BatchService;
