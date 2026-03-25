@@ -29,9 +29,8 @@ public class LocationServiceImpl implements LocationService {
     public Location create(Location location) {
         try {
             return locationRepository.save(location);
-        } catch (Exception ex) {
-            throw new DataIntegrityViolationException("CONFLICT_DUPLICATE_CODE");
+        } catch (DataIntegrityViolationException ex) {
+            throw new DataIntegrityViolationException("CONFLICT_DUPLICATE_CODE", ex);
         }
     }
 }
-

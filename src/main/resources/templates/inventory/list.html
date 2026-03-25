@@ -613,7 +613,7 @@
                     </thead>
                     <tbody id="inventoryRows">
                     <tr th:if="${rows.isEmpty()}">
-                        <td colspan="10" class="text-center text-secondary py-4">Không có dữ liệu tồn kho.</td>
+                        <td colspan="10" class="text-center text-secondary py-4">No data information.</td>
                     </tr>
                     <tr th:each="row, iter : ${rows.content}"
                         th:attr="data-search=${row.productName + ' ' + row.productSku + ' ' + row.warehouseName + ' ' + (row.locationCode ?: '')},
