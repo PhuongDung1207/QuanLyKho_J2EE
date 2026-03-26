@@ -741,6 +741,14 @@
             suppliers: [],
             products: [],
             uoms: [],
+            outboundSectionProductIds: null,
+            outboundSectionProductCache: new Map(),
+            outboundSectionProductRequestSeq: 0,
+            isLoadingOutboundSectionProducts: false,
+            transferSourceProductIds: null,
+            transferSourceProductCache: new Map(),
+            transferSourceProductRequestSeq: 0,
+            isLoadingTransferSourceProducts: false,
             currentPage: 1,
             pageSize: 10,
             isSubmittingReceipt: false,
@@ -1297,97 +1305,6 @@
             return response.json();
         }
 
-        async function fetchAllPages(baseUrl) {
-            const pageSize = 200;
-            const all = [];
-            let page = 0;
-            let totalPages = 1;
-
-            while (page < totalPages) {
-                const separator = baseUrl.includes('?') ? '&' : '?';
-                const url = baseUrl + separator + 'page=' + page + '&size=' + pageSize;
-                const data = await fetchJson(url);
-                const content = Array.isArray(data.content) ? data.content : [];
-                all.push(...content);
-
-                const apiTotalPages = Number.isFinite(data.totalPages) ? data.totalPages : 1;
-                totalPages = Math.max(apiTotalPages, 1);
-                if (apiTotalPages === 0) break;
-                page += 1;
-            }
-            return all;
-        }
-
-        function normalizeInbound(item) {
-            const lines = Array.isArray(item.lines) ? item.lines.map((line) => ({
-                id: line.id,
-                productId: line.productId,
-                uomId: line.uomId,
-                quantity: line.quantity,
-                locationId: line.locationId
-            })) : [];
-            return {
-                id: item.id,
-                source: 'INBOUND',
-                code: item.code || shortUuid(item.id),
-                businessType: item.type || '',
-                warehouseId: item.warehouseId,
-                toWarehouseId: null,
-                createdAt: item.createdAt,
-                createdBy: item.createdBy,
-                status: (item.status || 'UNKNOWN').toUpperCase(),
-                lines: lines,
-                lineCount: lines.length
-            };
-        }
-
-        function normalizeOutbound(item) {
-            const lines = Array.isArray(item.lines) ? item.lines.map((line) => ({
-                id: line.id,
-                productId: line.productId,
-                uomId: line.uomId,
-                quantity: line.quantity,
-                locationId: line.locationId
-            })) : [];
-            return {
-                id: item.id,
-                source: 'OUTBOUND',
-                code: item.code || shortUuid(item.id),
-                businessType: item.type || '',
-                warehouseId: item.warehouseId,
-                toWarehouseId: null,
-                createdAt: item.createdAt,
-                createdBy: item.createdBy,
-                status: (item.status || 'UNKNOWN').toUpperCase(),
-                lines: lines,
-                lineCount: lines.length
-            };
-        }
-
-        function normalizeTransfer(item) {
-            const lines = Array.isArray(item.lines) ? item.lines.map((line) => ({
-                id: line.id,
-                productId: line.productId,
-                uomId: line.uomId,
-                quantity: line.quantity,
-                fromLocationId: line.fromLocationId,
-                toLocationId: line.toLocationId
-            })) : [];
-            return {
-                id: item.id,
-                source: 'TRANSFER',
-                code: item.code || shortUuid(item.id),
-                businessType: 'INTERNAL_TRANSFER',
-                warehouseId: item.fromWarehouseId,
-                toWarehouseId: item.toWarehouseId,
-                createdAt: item.createdAt,
-                createdBy: item.createdBy,
-                status: (item.status || 'UNKNOWN').toUpperCase(),
-                lines: lines,
-                lineCount: lines.length
-            };
-        }
-
         function updateStatusOptions() {
             const options = [''];
             const preferred = ['DRAFT', 'SUBMITTED', 'APPROVED', 'ISSUED', 'COMPLETED', 'CANCELLED'];
@@ -1604,11 +1521,13 @@
             return isReady;
         }
 
-        function buildWarehouseOptionsHtml(selectedValue, placeholder) {
+        function buildWarehouseOptionsHtml(selectedValue, placeholder, excludedIds) {
             const selected = normalizeId(selectedValue);
+            const excluded = excludedIds instanceof Set ? excludedIds : new Set();
             const options = ['<option value="">' + escapeHtml(placeholder || 'Select warehouse') + '</option>'];
             state.warehouseList.forEach((warehouse) => {
                 const id = normalizeId(warehouse.id);
+                if (excluded.has(id)) return;
                 const selectedAttr = selected && selected === id ? ' selected' : '';
                 const label = escapeHtml((warehouse.name || '') + (warehouse.code ? ' (' + warehouse.code + ')' : ''));
                 options.push('<option value="' + id + '"' + selectedAttr + '>' + label + '</option>');
@@ -1616,9 +1535,25 @@
             return options.join('');
         }
 
-        function populateWarehouseSelect(selectElement, selectedValue, placeholder) {
+        function populateWarehouseSelect(selectElement, selectedValue, placeholder, excludedIds) {
             if (!selectElement) return;
-            selectElement.innerHTML = buildWarehouseOptionsHtml(selectedValue, placeholder);
+            selectElement.innerHTML = buildWarehouseOptionsHtml(selectedValue, placeholder, excludedIds);
+        }
+
+        function populateTransferWarehouseSelects() {
+            if (el.receiptFromWarehouse) {
+                populateWarehouseSelect(el.receiptFromWarehouse, el.receiptFromWarehouse.value, 'Select source warehouse');
+            }
+            if (!el.receiptToWarehouse) return;
+
+            const fromWarehouseId = normalizeId(el.receiptFromWarehouse?.value);
+            const excluded = new Set();
+            if (fromWarehouseId) excluded.add(fromWarehouseId);
+            populateWarehouseSelect(el.receiptToWarehouse, el.receiptToWarehouse.value, 'Select destination warehouse', excluded);
+
+            if (fromWarehouseId && normalizeId(el.receiptToWarehouse.value) === fromWarehouseId) {
+                el.receiptToWarehouse.value = '';
+            }
         }
 
         function buildSupplierOptionsHtml(selectedValue, placeholder) {
@@ -1691,11 +1626,15 @@
                 const placeholder = isOutbound ? 'Select source warehouse' : 'Select warehouse';
                 populateWarehouseSelect(el.receiptWarehouse, el.receiptWarehouse.value, placeholder);
             }
-            if (el.receiptFromWarehouse) {
-                populateWarehouseSelect(el.receiptFromWarehouse, el.receiptFromWarehouse.value, 'Select source warehouse');
-            }
-            if (el.receiptToWarehouse) {
-                populateWarehouseSelect(el.receiptToWarehouse, el.receiptToWarehouse.value, 'Select destination warehouse');
+            if (isTransfer) {
+                populateTransferWarehouseSelects();
+            } else {
+                if (el.receiptFromWarehouse) {
+                    populateWarehouseSelect(el.receiptFromWarehouse, el.receiptFromWarehouse.value, 'Select source warehouse');
+                }
+                if (el.receiptToWarehouse) {
+                    populateWarehouseSelect(el.receiptToWarehouse, el.receiptToWarehouse.value, 'Select destination warehouse');
+                }
             }
             if (el.receiptSupplier) {
                 populateSupplierSelect(el.receiptSupplier, el.receiptSupplier.value, 'Select supplier');
@@ -1704,18 +1643,192 @@
             if (isTransfer && el.receiptSection) {
                 el.receiptSection.innerHTML = '<option value="">— Select warehouse first —</option>';
             }
+            loadOutboundProductsForSection(el.receiptWarehouse?.value, el.receiptSection?.value);
+            loadTransferProductsForSourceWarehouse(isTransfer ? el.receiptFromWarehouse?.value : el.receiptWarehouse?.value);
             syncReceiptSaveButton();
+        }
+
+        function getReceiptProductsForCurrentContext() {
+            const receiptType = getSelectedReceiptType();
+            const isOutbound = receiptType === 'OUTBOUND';
+            const sectionId = normalizeId(el.receiptSection?.value);
+            const sectionVisible = !el.receiptSectionGroup || !el.receiptSectionGroup.classList.contains('d-none');
+            const shouldFilterBySection = isOutbound && sectionVisible && !!sectionId;
+            if (shouldFilterBySection) {
+                if (!(state.outboundSectionProductIds instanceof Set)) return [];
+                const allowedProductIds = state.outboundSectionProductIds;
+                return state.products.filter((product) => allowedProductIds.has(normalizeId(product.id)));
+            }
+
+            if (receiptType === 'TRANSFER' || (isOutbound && !shouldFilterBySection)) {
+                const sourceWarehouseId = normalizeId(receiptType === 'TRANSFER' ? el.receiptFromWarehouse?.value : el.receiptWarehouse?.value);
+                if (!sourceWarehouseId) return [];
+                if (!(state.transferSourceProductIds instanceof Set)) return [];
+                const allowedProductIds = state.transferSourceProductIds;
+                return state.products.filter((product) => allowedProductIds.has(normalizeId(product.id)));
+            }
+
+            return state.products;
+        }
+
+        function refreshReceiptItemProductOptions() {
+            if (!el.receiptItemsBody) return;
+            const rows = [...el.receiptItemsBody.querySelectorAll('tr')];
+            rows.forEach((row) => {
+                const productSelect = row.querySelector('.receipt-item-product');
+                if (!productSelect) return;
+
+                const selectedProductId = normalizeId(productSelect.value);
+                productSelect.innerHTML = buildProductOptions(selectedProductId);
+                if (selectedProductId && normalizeId(productSelect.value) !== selectedProductId) {
+                    productSelect.value = '';
+                }
+
+                const uomSelect = row.querySelector('.receipt-item-uom');
+                if (!uomSelect) return;
+                if (!normalizeId(productSelect.value)) {
+                    uomSelect.value = '';
+                    return;
+                }
+
+                const product = findProductById(productSelect.value);
+                if (product && product.baseUomId && !normalizeId(uomSelect.value)) {
+                    uomSelect.value = normalizeId(product.baseUomId);
+                }
+            });
+        }
+
+        async function loadOutboundProductsForSection(warehouseId, sectionId) {
+            const normalizedWarehouseId = normalizeId(warehouseId);
+            const normalizedSectionId = normalizeId(sectionId);
+            const sectionVisible = !el.receiptSectionGroup || !el.receiptSectionGroup.classList.contains('d-none');
+            const isOutbound = getSelectedReceiptType() === 'OUTBOUND';
+            const requestSeq = ++state.outboundSectionProductRequestSeq;
+
+            if (!isOutbound || !sectionVisible || !normalizedWarehouseId || !normalizedSectionId) {
+                state.isLoadingOutboundSectionProducts = false;
+                state.outboundSectionProductIds = null;
+                refreshReceiptItemProductOptions();
+                return;
+            }
+
+            const cacheKey = normalizedWarehouseId + '::' + normalizedSectionId;
+            if (state.outboundSectionProductCache.has(cacheKey)) {
+                state.isLoadingOutboundSectionProducts = false;
+                state.outboundSectionProductIds = state.outboundSectionProductCache.get(cacheKey);
+                refreshReceiptItemProductOptions();
+                return;
+            }
+
+            state.isLoadingOutboundSectionProducts = true;
+            state.outboundSectionProductIds = null;
+            refreshReceiptItemProductOptions();
+
+            try {
+                const response = await fetchJson(
+                    '/transactions/outbound-section-products'
+                    + '?warehouseId=' + encodeURIComponent(normalizedWarehouseId)
+                    + '&sectionId=' + encodeURIComponent(normalizedSectionId)
+                );
+                if (requestSeq !== state.outboundSectionProductRequestSeq) return;
+
+                const productIds = new Set();
+                const rawIds = Array.isArray(response) ? response : [];
+                rawIds.forEach((id) => {
+                    const productId = normalizeId(id);
+                    if (productId) productIds.add(productId);
+                });
+
+                state.outboundSectionProductCache.set(cacheKey, productIds);
+                state.outboundSectionProductIds = productIds;
+                state.isLoadingOutboundSectionProducts = false;
+                refreshReceiptItemProductOptions();
+            } catch (error) {
+                if (requestSeq !== state.outboundSectionProductRequestSeq) return;
+                state.isLoadingOutboundSectionProducts = false;
+                state.outboundSectionProductIds = null;
+                refreshReceiptItemProductOptions();
+            }
+        }
+
+        async function loadTransferProductsForSourceWarehouse(warehouseId) {
+            const normalizedWarehouseId = normalizeId(warehouseId);
+            const receiptType = getSelectedReceiptType();
+            const isValidType = receiptType === 'TRANSFER' || receiptType === 'OUTBOUND';
+            const requestSeq = ++state.transferSourceProductRequestSeq;
+
+            if (!isValidType || !normalizedWarehouseId) {
+                state.isLoadingTransferSourceProducts = false;
+                state.transferSourceProductIds = null;
+                refreshReceiptItemProductOptions();
+                return;
+            }
+
+            if (state.transferSourceProductCache.has(normalizedWarehouseId)) {
+                state.isLoadingTransferSourceProducts = false;
+                state.transferSourceProductIds = state.transferSourceProductCache.get(normalizedWarehouseId);
+                refreshReceiptItemProductOptions();
+                return;
+            }
+
+            state.isLoadingTransferSourceProducts = true;
+            state.transferSourceProductIds = null;
+            refreshReceiptItemProductOptions();
+
+            try {
+                const response = await fetchJson(
+                    '/transactions/transfer-source-products?warehouseId=' + encodeURIComponent(normalizedWarehouseId)
+                );
+                if (requestSeq !== state.transferSourceProductRequestSeq) return;
+
+                const productIds = new Set();
+                const rawIds = Array.isArray(response) ? response : [];
+                rawIds.forEach((id) => {
+                    const productId = normalizeId(id);
+                    if (productId) productIds.add(productId);
+                });
+
+                state.transferSourceProductCache.set(normalizedWarehouseId, productIds);
+                state.transferSourceProductIds = productIds;
+                state.isLoadingTransferSourceProducts = false;
+                refreshReceiptItemProductOptions();
+            } catch (error) {
+                if (requestSeq !== state.transferSourceProductRequestSeq) return;
+                state.isLoadingTransferSourceProducts = false;
+                state.transferSourceProductIds = null;
+                refreshReceiptItemProductOptions();
+            }
         }
 
         function buildProductOptions(selectedValue) {
             const selected = normalizeId(selectedValue);
             const options = ['<option value="">Select product</option>'];
-            state.products.forEach((product) => {
+            const productsForContext = getReceiptProductsForCurrentContext();
+            productsForContext.forEach((product) => {
                 const id = normalizeId(product.id);
                 const selectedAttr = selected && selected === id ? ' selected' : '';
                 const productLabel = (product.name || shortUuid(product.id)) + (product.sku ? ' (' + product.sku + ')' : '');
                 options.push('<option value="' + id + '"' + selectedAttr + '>' + escapeHtml(productLabel) + '</option>');
             });
+            const sectionId = normalizeId(el.receiptSection?.value);
+            const isOutbound = getSelectedReceiptType() === 'OUTBOUND';
+            const shouldFilterBySection = isOutbound
+                && !!sectionId
+                && (!el.receiptSectionGroup || !el.receiptSectionGroup.classList.contains('d-none'));
+            const isTransfer = getSelectedReceiptType() === 'TRANSFER';
+            const sourceWarehouseId = normalizeId(isTransfer ? el.receiptFromWarehouse?.value : (isOutbound ? el.receiptWarehouse?.value : ''));
+            const shouldFilterBySourceWarehouse = (isTransfer || (!shouldFilterBySection && isOutbound)) && !!sourceWarehouseId;
+            if (shouldFilterBySection && state.isLoadingOutboundSectionProducts) {
+                options.push('<option value="" disabled>Loading section products...</option>');
+            } else if (shouldFilterBySection && productsForContext.length === 0) {
+                options.push('<option value="" disabled>No products in selected section</option>');
+            } else if ((isTransfer || isOutbound) && !sourceWarehouseId) {
+                options.push('<option value="" disabled>Select warehouse first</option>');
+            } else if (shouldFilterBySourceWarehouse && state.isLoadingTransferSourceProducts) {
+                options.push('<option value="" disabled>Loading warehouse products...</option>');
+            } else if (shouldFilterBySourceWarehouse && productsForContext.length === 0) {
+                options.push('<option value="" disabled>No products in selected warehouse</option>');
+            }
             return options.join('');
         }
 
@@ -1965,103 +2078,67 @@
         }
 
         async function loadData() {
-            showAlert('info', 'Loading transactions from APIs...');
-            el.body.innerHTML = '<tr><td colspan="8" class="text-center py-5"><div class="spinner-border spinner-border-sm text-secondary me-2" role="status"></div>Loading transactions from API...</td></tr>';
+            showAlert('info', 'Loading transactions from backend...');
+            el.body.innerHTML = '<tr><td colspan="8" class="text-center py-5"><div class="spinner-border spinner-border-sm text-secondary me-2" role="status"></div>Loading transactions...</td></tr>';
             el.empty.classList.add('d-none');
 
-            const [warehousesRes, suppliersRes, productsRes, uomsRes, inboundsRes, outboundsRes, transfersRes] = await Promise.allSettled([
-                fetchAllPages('/api/v1/warehouses'),
-                fetchAllPages('/api/v1/suppliers'),
-                fetchAllPages('/api/v1/products'),
-                fetchAllPages('/api/v1/uoms'),
-                fetchAllPages('/api/v1/inbounds'),
-                fetchAllPages('/api/v1/outbounds'),
-                fetchAllPages('/api/v1/transfers')
-            ]);
-
-            const warnings = [];
             state.warehouses.clear();
             state.warehouseList = [];
             state.suppliers = [];
             state.products = [];
             state.uoms = [];
+            state.outboundSectionProductIds = null;
+            state.outboundSectionProductCache.clear();
+            state.outboundSectionProductRequestSeq += 1;
+            state.isLoadingOutboundSectionProducts = false;
+            state.transferSourceProductIds = null;
+            state.transferSourceProductCache.clear();
+            state.transferSourceProductRequestSeq += 1;
+            state.isLoadingTransferSourceProducts = false;
 
-            if (warehousesRes.status === 'fulfilled') {
-                state.warehouseList = warehousesRes.value.slice().sort((a, b) =>
-                    String(a.name || a.code || '').localeCompare(String(b.name || b.code || ''), 'vi'));
+            try {
+                const payload = await fetchJson('/transactions/payload');
+
+                state.warehouseList = Array.isArray(payload.warehouses) ? payload.warehouses : [];
+                state.suppliers = Array.isArray(payload.suppliers) ? payload.suppliers : [];
+                state.products = Array.isArray(payload.products) ? payload.products : [];
+                state.uoms = Array.isArray(payload.uoms) ? payload.uoms : [];
+                state.records = Array.isArray(payload.records) ? payload.records.map((record) => {
+                    const lines = Array.isArray(record.lines) ? record.lines : [];
+                    const lineCount = Number.isFinite(record.lineCount) ? record.lineCount : lines.length;
+                    return {
+                        ...record,
+                        lines: lines,
+                        lineCount: lineCount,
+                        source: String(record.source || '').toUpperCase(),
+                        status: String(record.status || 'UNKNOWN').toUpperCase()
+                    };
+                }) : [];
+
                 state.warehouseList.forEach((warehouse) => {
                     state.warehouses.set(warehouse.id, warehouse.name || warehouse.code || shortUuid(warehouse.id));
                 });
-            } else {
-                warnings.push('Could not load warehouse names. Showing warehouse IDs.');
-            }
 
-            if (productsRes.status === 'fulfilled') {
-                state.products = productsRes.value
-                    .filter((p) => String(p.status || '').toUpperCase() !== 'LOCKED')
-                    .sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''), 'vi'));
-            } else {
-                warnings.push('Could not load product list for receipt form.');
-            }
+                state.records.sort((a, b) => {
+                    const ta = parseDate(a.createdAt) ? parseDate(a.createdAt).getTime() : 0;
+                    const tb = parseDate(b.createdAt) ? parseDate(b.createdAt).getTime() : 0;
+                    return tb - ta;
+                });
 
-            if (suppliersRes.status === 'fulfilled') {
-                state.suppliers = suppliersRes.value
-                    .filter((supplier) => String(supplier.status || '').toUpperCase() !== 'LOCKED')
-                    .sort((a, b) => String(a.name || a.code || '').localeCompare(String(b.name || b.code || ''), 'vi'));
-            } else {
-                warnings.push('Could not load supplier list for inbound receipt form.');
-            }
-
-            if (uomsRes.status === 'fulfilled') {
-                state.uoms = uomsRes.value
-                    .slice()
-                    .sort((a, b) => String(a.name || a.code || '').localeCompare(String(b.name || b.code || ''), 'vi'));
-            } else {
-                warnings.push('Could not load UOM list for receipt form.');
-            }
-
-            const records = [];
-
-            if (inboundsRes.status === 'fulfilled') {
-                records.push(...inboundsRes.value.map(normalizeInbound));
-            } else {
-                warnings.push('Inbound API is unavailable or access denied.');
-            }
-
-            if (outboundsRes.status === 'fulfilled') {
-                records.push(...outboundsRes.value.map(normalizeOutbound));
-            } else {
-                warnings.push('Outbound API is unavailable or access denied.');
-            }
-
-            if (transfersRes.status === 'fulfilled') {
-                records.push(...transfersRes.value.map(normalizeTransfer));
-            } else {
-                warnings.push('Transfer API is unavailable or access denied.');
-            }
-
-            records.sort((a, b) => {
-                const ta = parseDate(a.createdAt) ? parseDate(a.createdAt).getTime() : 0;
-                const tb = parseDate(b.createdAt) ? parseDate(b.createdAt).getTime() : 0;
-                return tb - ta;
-            });
-
-            state.records = records;
-            updateStatusOptions();
-            updateStats();
-            applyFilters(true);
-            syncReceiptSaveButton();
-            renderReceiptTypeFields();
-
-            if (records.length === 0 && warnings.length > 0) {
-                showAlert('danger', 'Failed to load transaction data. ' + warnings.join(' '));
-                return;
-            }
-
-            if (warnings.length > 0) {
-                showAlert('warning', warnings.join(' '));
-            } else {
+                updateStatusOptions();
+                updateStats();
+                applyFilters(true);
+                syncReceiptSaveButton();
+                renderReceiptTypeFields();
                 showAlert('', '');
+            } catch (error) {
+                state.records = [];
+                updateStatusOptions();
+                updateStats();
+                applyFilters(true);
+                syncReceiptSaveButton();
+                renderReceiptTypeFields();
+                showAlert('danger', error.message || 'Failed to load transaction data from backend.');
             }
         }
 
@@ -2089,8 +2166,29 @@
         });
 
         if (el.receiptWarehouse) {
-            el.receiptWarehouse.addEventListener('change', () => {
-                loadSectionsForWarehouse(el.receiptWarehouse.value);
+            el.receiptWarehouse.addEventListener('change', async () => {
+                const warehouseId = normalizeId(el.receiptWarehouse.value);
+                await loadSectionsForWarehouse(warehouseId);
+                if (el.receiptSection) {
+                    el.receiptSection.value = '';
+                }
+                await loadOutboundProductsForSection(warehouseId, '');
+                if (getSelectedReceiptType() === 'OUTBOUND') {
+                    await loadTransferProductsForSourceWarehouse(warehouseId);
+                }
+            });
+        }
+
+        if (el.receiptSection) {
+            el.receiptSection.addEventListener('change', () => {
+                loadOutboundProductsForSection(el.receiptWarehouse?.value, el.receiptSection.value);
+            });
+        }
+
+        if (el.receiptFromWarehouse) {
+            el.receiptFromWarehouse.addEventListener('change', () => {
+                populateTransferWarehouseSelects();
+                loadTransferProductsForSourceWarehouse(el.receiptFromWarehouse.value);
             });
         }
 

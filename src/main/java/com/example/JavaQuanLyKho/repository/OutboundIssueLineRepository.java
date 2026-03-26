@@ -10,5 +10,7 @@ public interface OutboundIssueLineRepository extends JpaRepository<OutboundIssue
 
     List<OutboundIssueLine> findByIssueId(UUID issueId);
 
+    List<OutboundIssueLine> findByIssueIdIn(List<UUID> issueIds);
+
     void deleteByIssueId(UUID issueId);
 }

@@ -10,5 +10,7 @@ public interface InboundReceiptLineRepository extends JpaRepository<InboundRecei
 
     List<InboundReceiptLine> findByReceiptId(UUID receiptId);
 
+    List<InboundReceiptLine> findByReceiptIdIn(List<UUID> receiptIds);
+
     void deleteByReceiptId(UUID receiptId);
 }

@@ -363,7 +363,10 @@
                 </div>
                 <div class="wms-brand-text">
                     <div class="wms-brand-name">Storage Solutions</div>
-                    <div class="wms-brand-role">Facility Admin</div>
+                    <div class="wms-brand-role"
+                         th:text="${session.AUTH_USERNAME != null ? session.AUTH_USERNAME : 'Warehouse Management'}">
+                        Warehouse Management
+                    </div>
                 </div>
             </a>
 

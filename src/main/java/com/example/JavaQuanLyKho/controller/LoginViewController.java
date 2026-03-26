@@ -97,7 +97,7 @@ public class LoginViewController {
             AuthDtos.LoginResponse res = authService.login(req);
             session.setAttribute("AUTH_TOKEN", res.getAccessToken());
             session.setAttribute("AUTH_USERNAME", form.getUsername());
-            return "redirect:/warehouses";
+            return "redirect:/dashboard";
         } catch (AuthenticationException ex) {
             bindingResult.reject("login.failed", "Dang nhap that bai. Vui long thu lai.");
             return "auth/login";

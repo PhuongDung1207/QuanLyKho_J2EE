@@ -81,8 +81,12 @@
         <section class="hero" th:with="score=${100 - (health.totalAgedItems + health.totalSlowMovingItems + health.totalExpiringItems)}">
             <div>
                 <p class="hero-tag">Operations Overview</p>
-                <h1>Warehouse Performance Dashboard</h1>
-                <p>Track stock movement, inventory risks, and operational health in one place.</p>
+                <h1 th:text="${session.AUTH_USERNAME != null ? 'Welcome, ' + session.AUTH_USERNAME : 'Warehouse Performance Dashboard'}">
+                    Warehouse Performance Dashboard
+                </h1>
+                <p th:text="${session.AUTH_USERNAME != null ? 'Track stock movement, inventory risks, and operational health for your account.' : 'Track stock movement, inventory risks, and operational health in one place.'}">
+                    Track stock movement, inventory risks, and operational health in one place.
+                </p>
                 <div class="hero-actions">
                     <a href="/transactions" class="hero-btn primary"><i class="bi bi-truck"></i>Transactions</a>
                     <a href="/inventory" class="hero-btn"><i class="bi bi-box-seam"></i>Inventory</a>
