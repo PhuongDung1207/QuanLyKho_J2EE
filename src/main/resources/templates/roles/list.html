@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roles – WMS</title>
+    <title>Quản lý vai trò (Roles)</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
@@ -43,7 +43,7 @@
             margin: 0;
         }
 
-        .btn-header-action {
+        .btn-add-role {
             background: #0f172a;
             color: #fff;
             border: none;
@@ -58,27 +58,15 @@
             transition: background 0.18s, transform 0.15s;
         }
 
-        .btn-header-action:hover {
+        .btn-add-role:hover {
             background: #1e293b;
             color: #fff;
             transform: translateY(-1px);
         }
 
-        /* Main layout */
+        /* Main */
         .main-content {
             padding: 1.5rem 2rem;
-        }
-
-        .roles-grid {
-            display: grid;
-            grid-template-columns: 1fr 370px;
-            gap: 1.25rem;
-        }
-
-        @media (max-width: 1024px) {
-            .roles-grid {
-                grid-template-columns: 1fr;
-            }
         }
 
         /* Toolbar */
@@ -260,6 +248,28 @@
         .perm-pill.hidden {
             display: none;
         }
+        
+        /* Action btns */
+        .btn-act {
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            color: #64748b;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.83rem;
+            transition: all 0.15s;
+            cursor: pointer;
+        }
+
+        .btn-act:hover {
+            background: #f1f5f9;
+            color: #1e293b;
+            border-color: #cbd5e1;
+        }
 
         /* Table footer */
         .table-footer {
@@ -273,178 +283,24 @@
             color: #64748b;
         }
 
-        /* Sidebar panel cards */
-        .side-panel {
-            display: flex;
-            flex-direction: column;
-            gap: 1.25rem;
-        }
-
-        .panel-card {
-            background: #fff;
-            border-radius: 12px;
-            border: 1px solid #e2e8f0;
-            overflow: hidden;
-            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
-        }
-
-        .panel-card-header {
-            padding: 0.9rem 1.2rem 0.75rem;
-            border-bottom: 1px solid #f1f5f9;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .panel-card-header .ph-icon {
-            width: 30px;
-            height: 30px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.9rem;
-            flex-shrink: 0;
-        }
-
-        .ph-create {
-            background: #f0fdf4;
-            color: #16a34a;
-        }
-
-        .ph-assign {
-            background: #eff6ff;
-            color: #2563eb;
-        }
-
-        .panel-card-header h6 {
-            font-weight: 700;
-            font-size: 0.88rem;
-            margin: 0;
-            color: #0f172a;
-        }
-
-        .panel-card-body {
-            padding: 1.1rem 1.2rem;
-        }
-
-        /* Form controls inside panel */
-        .form-label {
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: #374151;
-            margin-bottom: 0.3rem;
-        }
-
-        .form-control,
-        .form-select {
-            border-radius: 8px;
-            border: 1px solid #d1d5db;
-            font-size: 0.875rem;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-
-        .form-control:focus,
-        .form-select:focus {
-            border-color: #0f172a;
-            box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.1);
-        }
-
-        .btn-panel-submit {
-            width: 100%;
-            background: #0f172a;
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.875rem;
-            padding: 0.55rem 1rem;
-            transition: background 0.18s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-
-        .btn-panel-submit:hover {
-            background: #1e293b;
-        }
-
-        .btn-assign-submit {
-            width: 100%;
-            background: #2563eb;
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.875rem;
-            padding: 0.55rem 1rem;
-            transition: background 0.18s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-
-        .btn-assign-submit:hover {
-            background: #1d4ed8;
-        }
-
-        /* Permissions multiselect */
-        .perm-multiselect {
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            overflow: hidden;
-            max-height: 220px;
-            overflow-y: auto;
-        }
-
-        .perm-multiselect::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        .perm-multiselect::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 99px;
-        }
-
-        .form-select[multiple] {
-            border-radius: 8px;
-            font-size: 0.82rem;
-            height: 200px;
-            padding: 0.35rem;
-        }
-
-        .form-select[multiple] option {
-            padding: 0.35rem 0.6rem;
-            border-radius: 5px;
-            margin: 1px 0;
-            cursor: pointer;
-        }
-
-        .form-select[multiple] option:checked {
-            background: #1d4ed8;
-            color: #fff;
-        }
-
         /* Stats */
         .stat-row {
             display: flex;
             gap: 1rem;
-            margin-top: 1.25rem;
+            margin-top: 1.5rem;
             flex-wrap: wrap;
         }
 
         .stat-card {
             flex: 1;
-            min-width: 130px;
+            min-width: 150px;
             background: #fff;
             border: 1px solid #e2e8f0;
             border-radius: 12px;
-            padding: 0.9rem 1.1rem;
+            padding: 1rem 1.2rem;
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 0.85rem;
             box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
             transition: box-shadow 0.2s, transform 0.2s;
         }
@@ -455,13 +311,13 @@
         }
 
         .stat-icon-wrap {
-            width: 38px;
-            height: 38px;
-            border-radius: 9px;
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.1rem;
+            font-size: 1.25rem;
             flex-shrink: 0;
         }
 
@@ -481,14 +337,14 @@
         }
 
         .stat-label {
-            font-size: 0.71rem;
+            font-size: 0.73rem;
             color: #64748b;
             font-weight: 500;
             margin-bottom: 2px;
         }
 
         .stat-value {
-            font-size: 1.35rem;
+            font-size: 1.45rem;
             font-weight: 700;
             color: #0f172a;
             line-height: 1;
@@ -508,9 +364,93 @@
         }
 
         .empty-state .ei {
-            font-size: 2.4rem;
+            font-size: 2.6rem;
             color: #cbd5e1;
             margin-bottom: 0.7rem;
+        }
+        
+        /* Modal */
+        .modal-content {
+            border: none;
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #1e3a5f, #0f172a);
+            color: #fff;
+            padding: 1.1rem 1.4rem;
+            border: none;
+        }
+
+        .modal-title {
+            font-weight: 700;
+            font-size: 0.98rem;
+        }
+
+        .modal-header .btn-close {
+            filter: brightness(0) invert(1);
+            opacity: 0.85;
+        }
+
+        .modal-body {
+            padding: 1.4rem;
+        }
+
+        .modal-footer {
+            border-top: 1px solid #f1f5f9;
+            padding: 0.9rem 1.4rem;
+        }
+
+        .form-label {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.3rem;
+        }
+
+        .form-control,
+        .form-select {
+            border-radius: 8px;
+            border: 1px solid #d1d5db;
+            font-size: 0.875rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #0f172a;
+            box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.1);
+        }
+
+        .btn-save {
+            background: #0f172a;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            padding: 0.5rem 1.3rem;
+            transition: background 0.18s;
+        }
+
+        .btn-save:hover {
+            background: #1e293b;
+            color: #fff;
+        }
+
+        .btn-cancel2 {
+            background: #f1f5f9;
+            color: #374151;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            padding: 0.5rem 1.1rem;
+        }
+
+        .btn-cancel2:hover {
+            background: #e2e8f0;
         }
     </style>
 </head>
@@ -526,12 +466,9 @@
                 <h1><i class="bi bi-shield-check me-2" style="color:#0f172a"></i>Role Management</h1>
                 <p>Define roles and assign permissions to control access across the system</p>
             </div>
-            <div class="d-flex gap-2">
-                <button class="btn-header-action" type="button"
-                    onclick="document.getElementById('createSection').scrollIntoView({behavior:'smooth'})">
-                    <i class="bi bi-plus-lg"></i> New Role
-                </button>
-            </div>
+            <button class="btn-add-role" type="button" data-bs-toggle="modal" data-bs-target="#addRoleModal">
+                <i class="bi bi-plus-lg"></i> New Role
+            </button>
         </div>
 
         <div class="main-content">
@@ -548,189 +485,209 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
 
-            <div class="roles-grid">
-
-                <!-- LEFT: Roles Table -->
-                <div>
-                    <!-- Toolbar -->
-                    <div class="toolbar">
-                        <div class="search-wrap">
-                            <i class="bi bi-search"></i>
-                            <input type="text" class="search-input" id="searchInput"
-                                placeholder="Search by role name or code...">
-                        </div>
-                    </div>
-
-                    <div class="table-card">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th style="width:42px">#</th>
-                                    <th>ROLE</th>
-                                    <th>CODE</th>
-                                    <th>PERMISSIONS</th>
-                                </tr>
-                            </thead>
-                            <tbody id="rolesBody">
-                                <tr th:each="r, stat : ${roles}" th:attr="data-name=${r.name}, data-code=${r.code}">
-                                    <td class="text-muted" style="font-size:0.82rem" th:text="${stat.count}">1</td>
-                                    <td>
-                                        <div class="role-info">
-                                            <div class="role-icon">
-                                                <i class="bi bi-shield"></i>
-                                            </div>
-                                            <div>
-                                                <div class="role-name" th:text="${r.name}">Role Name</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span class="badge-code" th:text="${r.code}">CODE</span>
-                                    </td>
-                                    <td>
-                                        <div class="perm-pills" th:if="${!#lists.isEmpty(r.permissions)}">
-                                            <span class="perm-pill" th:each="p, pStat : ${r.permissions}"
-                                                th:text="${p.code}" th:attr="data-idx=${pStat.index}">PERM</span>
-                                            <!-- +N more toggle button (rendered via JS) -->
-                                        </div>
-                                        <span class="perm-pill-empty" th:if="${#lists.isEmpty(r.permissions)}">
-                                            No permissions assigned
-                                        </span>
-                                    </td>
-                                </tr>
-                                <!-- Empty state -->
-                                <tr th:if="${#lists.isEmpty(roles)}">
-                                    <td colspan="4">
-                                        <div class="empty-state">
-                                            <div class="ei"><i class="bi bi-shield"></i></div>
-                                            <p style="color:#475569;font-weight:600;margin-bottom:4px">No roles yet</p>
-                                            <small>Create your first role using the form on the right</small>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <!-- No search results -->
-                                <tr id="noResultRow" style="display:none">
-                                    <td colspan="4">
-                                        <div class="empty-state">
-                                            <div class="ei"><i class="bi bi-search"></i></div>
-                                            <p style="color:#475569;font-weight:600;margin-bottom:4px">No matching roles
-                                            </p>
-                                            <small>Try a different keyword</small>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        <div class="table-footer">
-                            <span id="tableCount" th:text="${roles.size()} + ' role(s) total'">0 role(s) total</span>
-                        </div>
-                    </div>
-
-                    <!-- Stat Cards (below table) -->
-                    <div class="stat-row">
-                        <div class="stat-card">
-                            <div class="stat-icon-wrap si-dark"><i class="bi bi-shield-check"></i></div>
-                            <div>
-                                <div class="stat-label">TOTAL ROLES</div>
-                                <div class="stat-value" th:text="${roles.size()}">0</div>
-                            </div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon-wrap si-blue"><i class="bi bi-key-fill"></i></div>
-                            <div>
-                                <div class="stat-label">TOTAL PERMISSIONS</div>
-                                <div class="stat-value" th:text="${permissions.size()}">0</div>
-                            </div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon-wrap si-green"><i class="bi bi-check2-circle"></i></div>
-                            <div>
-                                <div class="stat-label">ROLES WITH PERMS</div>
-                                <div class="stat-value" id="rolesWithPerms">0</div>
-                            </div>
-                        </div>
-                    </div>
+            <!-- Toolbar -->
+            <div class="toolbar">
+                <div class="search-wrap">
+                    <i class="bi bi-search"></i>
+                    <input type="text" class="search-input" id="searchInput"
+                        placeholder="Search by role name or code...">
                 </div>
+            </div>
 
-                <!-- RIGHT: Side Panels -->
-                <div class="side-panel" id="createSection">
-
-                    <!-- Create Role -->
-                    <div class="panel-card">
-                        <div class="panel-card-header">
-                            <div class="ph-icon ph-create"><i class="bi bi-plus-circle-fill"></i></div>
-                            <h6>Create New Role</h6>
-                        </div>
-                        <div class="panel-card-body">
-                            <form th:action="@{/roles}" th:object="${createForm}" method="post">
-                                <div class="mb-3">
-                                    <label for="code" class="form-label">
-                                        <i class="bi bi-upc me-1"></i>Code
-                                        <span class="text-danger">*</span>
-                                    </label>
-                                    <input id="code" type="text" class="form-control" th:field="*{code}"
-                                        placeholder="e.g. ADMIN, MANAGER..." style="text-transform:uppercase">
-                                    <div class="form-text">Unique short identifier</div>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="name" class="form-label">
-                                        <i class="bi bi-shield me-1"></i>Name
-                                        <span class="text-danger">*</span>
-                                    </label>
-                                    <input id="name" type="text" class="form-control" th:field="*{name}"
-                                        placeholder="e.g. Administrator, Manager...">
-                                </div>
-                                <button type="submit" class="btn-panel-submit">
-                                    <i class="bi bi-save"></i>Save Role
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-
-                    <!-- Assign Permissions -->
-                    <div class="panel-card">
-                        <div class="panel-card-header">
-                            <div class="ph-icon ph-assign"><i class="bi bi-key-fill"></i></div>
-                            <h6>Assign Permissions to Role</h6>
-                        </div>
-                        <div class="panel-card-body">
-                            <form th:action="@{/roles/assign-permissions}" th:object="${assignForm}" method="post">
-                                <div class="mb-3">
-                                    <label for="roleId" class="form-label">
-                                        <i class="bi bi-shield me-1"></i>Role
-                                    </label>
-                                    <select id="roleId" class="form-select" th:field="*{roleId}">
-                                        <option value="">— Select role —</option>
-                                        <option th:each="r : ${roles}" th:value="${r.id}"
-                                            th:text="${r.code + ' – ' + r.name}">ROLE</option>
-                                    </select>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">
-                                        <i class="bi bi-key me-1"></i>Permissions
-                                    </label>
-                                    <select multiple class="form-select" th:field="*{permissionIds}">
-                                        <option th:each="p : ${permissions}" th:value="${p.id}" th:text="${p.code}">PERM
-                                        </option>
-                                    </select>
-                                    <div class="form-text mt-1">
-                                        Hold <kbd>Ctrl</kbd> / <kbd>⌘</kbd> to select multiple
+            <div class="table-card">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th style="width:42px">#</th>
+                            <th>ROLE</th>
+                            <th>CODE</th>
+                            <th>PERMISSIONS</th>
+                            <th style="width:80px">ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rolesBody">
+                        <tr th:each="r, stat : ${roles}" th:attr="data-name=${r.name}, data-code=${r.code}">
+                            <td class="text-muted" style="font-size:0.82rem" th:text="${stat.count}">1</td>
+                            <td>
+                                <div class="role-info">
+                                    <div class="role-icon">
+                                        <i class="bi bi-shield"></i>
+                                    </div>
+                                    <div>
+                                        <div class="role-name" th:text="${r.name}">Role Name</div>
                                     </div>
                                 </div>
-                                <button type="submit" class="btn-assign-submit">
-                                    <i class="bi bi-check2-circle"></i>Update Permissions
-                                </button>
-                            </form>
-                        </div>
+                            </td>
+                            <td>
+                                <span class="badge-code" th:text="${r.code}">CODE</span>
+                            </td>
+                            <td>
+                                <div class="perm-pills" th:if="${!#lists.isEmpty(r.permissions)}">
+                                    <span class="perm-pill" th:each="p, pStat : ${r.permissions}"
+                                        th:text="${p.code}" th:attr="data-idx=${pStat.index}">PERM</span>
+                                </div>
+                                <span class="perm-pill-empty" th:if="${#lists.isEmpty(r.permissions)}">
+                                    No permissions assigned
+                                </span>
+                            </td>
+                            <td>
+                                <div class="d-flex gap-1 align-items-center">
+                                    <button class="btn-act" type="button" title="Chỉnh sửa"
+                                        th:attr="data-rid=${r.id}, data-rname=${r.name}, data-rcode=${r.code}"
+                                        th:data-perms="${r.permissions != null ? r.permissions.![id] : {}}"
+                                        onclick="openEditModal(this)">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- Empty state -->
+                        <tr th:if="${#lists.isEmpty(roles)}">
+                            <td colspan="5">
+                                <div class="empty-state">
+                                    <div class="ei"><i class="bi bi-shield"></i></div>
+                                    <p style="color:#475569;font-weight:600;margin-bottom:4px">No roles yet</p>
+                                    <small>Click <strong>New Role</strong> to create the first role</small>
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- No search results -->
+                        <tr id="noResultRow" style="display:none">
+                            <td colspan="5">
+                                <div class="empty-state">
+                                    <div class="ei"><i class="bi bi-search"></i></div>
+                                    <p style="color:#475569;font-weight:600;margin-bottom:4px">No matching roles</p>
+                                    <small>Try a different keyword</small>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="table-footer">
+                    <span id="tableCount" th:text="${roles.size()} + ' role(s) total'">0 role(s) total</span>
+                </div>
+            </div>
+
+            <!-- Stat Cards (below table) -->
+            <div class="stat-row">
+                <div class="stat-card">
+                    <div class="stat-icon-wrap si-dark"><i class="bi bi-shield-check"></i></div>
+                    <div>
+                        <div class="stat-label">TOTAL ROLES</div>
+                        <div class="stat-value" th:text="${roles.size()}">0</div>
                     </div>
-
-                </div><!-- /.side-panel -->
-
-            </div><!-- /.roles-grid -->
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon-wrap si-blue"><i class="bi bi-key-fill"></i></div>
+                    <div>
+                        <div class="stat-label">TOTAL PERMISSIONS</div>
+                        <div class="stat-value" th:text="${permissions.size()}">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon-wrap si-green"><i class="bi bi-check2-circle"></i></div>
+                    <div>
+                        <div class="stat-label">ROLES WITH PERMS</div>
+                        <div class="stat-value" id="rolesWithPerms">0</div>
+                    </div>
+                </div>
+            </div>
 
         </div>
     </div><!-- /.wms-main -->
+    
+    <!-- ===== Add Role Modal ===== -->
+    <div class="modal fade" id="addRoleModal" tabindex="-1" aria-labelledby="addRoleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addRoleModalLabel">
+                        <i class="bi bi-plus-circle-fill me-2"></i>Create New Role
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form th:action="@{/roles}" th:object="${createForm}" method="post">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="code" class="form-label">
+                                <i class="bi bi-upc me-1 text-primary"></i>Code
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input id="code" type="text" class="form-control" th:field="*{code}"
+                                placeholder="e.g. ADMIN, MANAGER..." style="text-transform:uppercase" required>
+                            <div class="form-text">Unique short identifier</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="name" class="form-label">
+                                <i class="bi bi-shield me-1 text-primary"></i>Name
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input id="name" type="text" class="form-control" th:field="*{name}"
+                                placeholder="e.g. Administrator, Manager..." required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-cancel2" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn-save">
+                            <i class="bi bi-save me-1"></i>Save Role
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== Edit Role Modal (Assign Permissions) ===== -->
+    <div class="modal fade" id="editRoleModal" tabindex="-1" aria-labelledby="editRoleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editRoleModalLabel">
+                        <i class="bi bi-pencil-square me-2"></i>Edit Role Permissions
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form th:action="@{/roles/assign-permissions}" th:object="${assignForm}" method="post">
+                    <div class="modal-body">
+                        <!-- Hidden roleId field for Assign Form -->
+                        <input type="hidden" id="editRoleId" th:field="*{roleId}">
+                        <div class="mb-3">
+                            <label class="form-label">
+                                <i class="bi bi-upc me-1 text-primary"></i>Code
+                            </label>
+                            <input type="text" class="form-control" id="editRoleCode" readonly
+                                style="background:#f8fafc;color:#64748b">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">
+                                <i class="bi bi-shield me-1 text-primary"></i>Name
+                            </label>
+                            <input type="text" class="form-control" id="editRoleName" readonly
+                                style="background:#f8fafc;color:#64748b">
+                        </div>
+                        <div class="mb-1">
+                            <label class="form-label">
+                                <i class="bi bi-key me-1 text-primary"></i>Permissions
+                            </label>
+                            <select multiple class="form-select" th:field="*{permissionIds}" id="editPermissionIds" size="6">
+                                <option th:each="p : ${permissions}" th:value="${p.id}" th:text="${p.code}">PERM</option>
+                            </select>
+                            <div class="form-text mt-1">
+                                Hold <kbd>Ctrl</kbd> / <kbd>⌘</kbd> to select multiple
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-cancel2" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn-save">
+                            <i class="bi bi-check2-circle me-1"></i>Update Permissions
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -796,6 +753,37 @@
                 container.appendChild(btn);
             });
         })();
+
+        /* ── Edit Modal ── */
+        function openEditModal(btn) {
+            var rid = btn.getAttribute('data-rid');
+            var rname = btn.getAttribute('data-rname');
+            var rcode = btn.getAttribute('data-rcode');
+            var permsRaw = btn.getAttribute('data-perms'); // e.g. "[uuid1, uuid2]"
+
+            // Update modal fields
+            document.getElementById('editRoleId').value = rid;
+            document.getElementById('editRoleCode').value = rcode;
+            document.getElementById('editRoleName').value = rname;
+
+            // Parse permission IDs
+            var assignedIds = [];
+            if (permsRaw && permsRaw.length > 2) {
+                var inner = permsRaw.substring(1, permsRaw.length - 1);
+                assignedIds = inner.split(',').map(function (s) { return s.trim(); });
+            }
+
+            // Pre-select matching options
+            var select = document.getElementById('editPermissionIds');
+            for (var i = 0; i < select.options.length; i++) {
+                var opt = select.options[i];
+                opt.selected = assignedIds.indexOf(opt.value) !== -1;
+            }
+
+            // Open modal
+            var modal = new bootstrap.Modal(document.getElementById('editRoleModal'));
+            modal.show();
+        }
     </script>
 </body>
 
