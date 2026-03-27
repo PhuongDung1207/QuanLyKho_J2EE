@@ -180,6 +180,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/v1/green-warehouse/waste/**").hasAuthority("GREEN_WASTE_VIEW")
                         .anyRequest().authenticated()
                 )
+                // Keep /logout for LoginViewController so audit log can be written before session invalidation.
+                .logout(logout -> logout.logoutUrl("/perform-logout"))
                 .userDetailsService(customUserDetailsService)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

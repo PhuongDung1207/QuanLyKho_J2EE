@@ -3,6 +3,7 @@ package com.example.JavaQuanLyKho.controller;
 import com.example.JavaQuanLyKho.model.dto.AuthDtos;
 import com.example.JavaQuanLyKho.model.entity.User;
 import com.example.JavaQuanLyKho.repository.UserRepository;
+import com.example.JavaQuanLyKho.service.AuditLogService;
 import com.example.JavaQuanLyKho.service.AuthService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -24,11 +25,14 @@ public class LoginViewController {
     private final AuthService authService;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AuditLogService auditLogService;
 
-    public LoginViewController(AuthService authService, UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public LoginViewController(AuthService authService, UserRepository userRepository,
+                               PasswordEncoder passwordEncoder, AuditLogService auditLogService) {
         this.authService = authService;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.auditLogService = auditLogService;
     }
 
     public static class LoginForm {
@@ -109,6 +113,18 @@ public class LoginViewController {
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {
+        // Ghi audit log LOGOUT trước khi xoá session
+        String username = (String) session.getAttribute("AUTH_USERNAME");
+        if (username != null) {
+            try {
+                User user = userRepository.findByUsername(username).orElse(null);
+                if (user != null) {
+                    auditLogService.logAction(user.getId(), "LOGOUT", "User");
+                }
+            } catch (Exception ignored) {
+                // không để lỗi audit chặn logout
+            }
+        }
         session.invalidate();
         return "redirect:/login";
     }

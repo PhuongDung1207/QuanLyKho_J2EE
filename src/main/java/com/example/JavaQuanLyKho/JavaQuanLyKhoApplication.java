@@ -19,7 +19,7 @@ public class JavaQuanLyKhoApplication {
 			System.err.println("Warning: Could not load .env file: " + e.getMessage());
 		}
 
-		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+		TimeZone.setDefault(TimeZone.getTimeZone("Asia/Ho_Chi_Minh"));
 		SpringApplication.run(JavaQuanLyKhoApplication.class, args);
 	}
 

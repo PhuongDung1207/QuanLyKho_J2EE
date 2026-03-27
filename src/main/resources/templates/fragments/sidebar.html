@@ -498,6 +498,13 @@
                     Permissions
                 </a>
 
+                <a class="wms-nav-item"
+                    th:classappend="${currentUri != null and currentUri.startsWith('/audit-logs')} ? 'active'"
+                    href="/audit-logs">
+                    <span class="wms-nav-icon"><i class="bi bi-shield-lock"></i></span>
+                    Audit Logs
+                </a>
+
             </nav>
 
             <!-- User footer -->
