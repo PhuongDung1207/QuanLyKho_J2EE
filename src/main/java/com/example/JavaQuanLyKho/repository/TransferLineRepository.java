@@ -10,5 +10,7 @@ public interface TransferLineRepository extends JpaRepository<TransferLine, UUID
 
     List<TransferLine> findByTransferId(UUID transferId);
 
+    List<TransferLine> findByTransferIdIn(List<UUID> transferIds);
+
     void deleteByTransferId(UUID transferId);
 }

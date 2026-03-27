@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,9 +10,19 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
-        * { font-family: 'Inter', sans-serif; }
-        body { background-color: #f6f8fc; color: #1e293b; }
-        .tx-shell { padding: 1.25rem; }
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: #f6f8fc;
+            color: #1e293b;
+        }
+
+        .tx-shell {
+            padding: 1.25rem;
+        }
+
         .tx-hero {
             background: #fff;
             border: 1px solid #e2e8f0;
@@ -20,24 +31,39 @@
             padding: 1rem 1.1rem;
             margin-bottom: 1rem;
         }
-        .tx-hero h1 { font-size: 1.16rem; font-weight: 700; margin: 0; color: #1a1a2e; }
-        .tx-hero p { margin: 0.35rem 0 0; font-size: 0.82rem; color: #64748b; }
+
+        .tx-hero h1 {
+            font-size: 1.16rem;
+            font-weight: 700;
+            margin: 0;
+            color: #1a1a2e;
+        }
+
+        .tx-hero p {
+            margin: 0.35rem 0 0;
+            font-size: 0.82rem;
+            color: #64748b;
+        }
+
         .tx-stats .card {
             border-radius: 12px;
             border: 1px solid #e2e8f0;
             box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
         }
+
         .tx-filters .form-control,
         .tx-filters .form-select {
             border-radius: 9px;
             border-color: #e2e8f0;
             font-size: 0.84rem;
         }
+
         .tx-filters .form-control:focus,
         .tx-filters .form-select:focus {
             border-color: #f4a076;
             box-shadow: 0 0 0 3px rgba(242, 103, 34, 0.12);
         }
+
         .tx-table thead th {
             background: #f8fafc;
             font-size: 0.7rem;
@@ -47,18 +73,24 @@
             font-weight: 700;
             border-bottom: 1px solid #e2e8f0;
         }
+
         .tx-table tbody td {
             font-size: 0.86rem;
             vertical-align: middle;
             border-color: #eef2f7;
         }
-        .tx-table tbody tr:hover { background: #f9fbff; }
+
+        .tx-table tbody tr:hover {
+            background: #f9fbff;
+        }
+
         .tx-action-group {
             display: inline-flex;
             align-items: center;
             justify-content: flex-end;
             gap: 0.4rem;
         }
+
         .tx-action-btn {
             border-radius: 8px;
             font-size: 0.76rem;
@@ -70,20 +102,24 @@
             align-items: center;
             justify-content: center;
         }
+
         .tx-action-btn i {
             line-height: 1;
         }
+
         .tx-detail-modal .modal-content {
             border: 0;
             border-radius: 14px;
             box-shadow: 0 20px 40px rgba(15, 23, 42, 0.18);
         }
+
         .tx-detail-grid {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 0.7rem 1rem;
             margin-bottom: 0.85rem;
         }
+
         .tx-detail-field label {
             display: block;
             margin-bottom: 0.18rem;
@@ -93,12 +129,14 @@
             letter-spacing: 0.03em;
             color: #94a3b8;
         }
+
         .tx-detail-field .value {
             font-size: 0.86rem;
             color: #0f172a;
             font-weight: 600;
             min-height: 1.2rem;
         }
+
         .tx-detail-lines thead th {
             background: #f8fafc;
             font-size: 0.66rem;
@@ -106,15 +144,18 @@
             letter-spacing: 0.05em;
             color: #64748b;
         }
+
         .tx-detail-lines td {
             font-size: 0.82rem;
             vertical-align: middle;
         }
+
         .tx-detail-action-note {
             font-size: 0.76rem;
             color: #64748b;
             margin-right: auto;
         }
+
         .tx-detail-action-btn {
             border-radius: 9px;
             font-size: 0.78rem;
@@ -124,16 +165,19 @@
             align-items: center;
             gap: 0.36rem;
         }
+
         @media (max-width: 991.98px) {
             .tx-detail-grid {
                 grid-template-columns: 1fr;
             }
         }
+
         .tx-mono {
             font-family: "Consolas", "Courier New", monospace;
             font-weight: 700;
             color: #2563eb;
         }
+
         .tx-type-badge {
             font-size: 0.72rem;
             font-weight: 700;
@@ -144,6 +188,7 @@
             align-items: center;
             gap: 0.32rem;
         }
+
         .tx-type-badge::before {
             content: '';
             width: 6px;
@@ -151,9 +196,25 @@
             border-radius: 50%;
             background: currentColor;
         }
-        .tx-type-inbound { color: #15803d; background: #f0fdf4; border-color: #bbf7d0; }
-        .tx-type-outbound { color: #b91c1c; background: #fef2f2; border-color: #fecaca; }
-        .tx-type-transfer { color: #1d4ed8; background: #eff6ff; border-color: #bfdbfe; }
+
+        .tx-type-inbound {
+            color: #15803d;
+            background: #f0fdf4;
+            border-color: #bbf7d0;
+        }
+
+        .tx-type-outbound {
+            color: #b91c1c;
+            background: #fef2f2;
+            border-color: #fecaca;
+        }
+
+        .tx-type-transfer {
+            color: #1d4ed8;
+            background: #eff6ff;
+            border-color: #bfdbfe;
+        }
+
         .tx-status-badge {
             font-size: 0.72rem;
             font-weight: 700;
@@ -164,6 +225,7 @@
             align-items: center;
             gap: 0.32rem;
         }
+
         .tx-status-badge::before {
             content: '';
             width: 6px;
@@ -171,15 +233,60 @@
             border-radius: 50%;
             background: currentColor;
         }
-        .tx-status-draft { color: #475569; background: #f1f5f9; border-color: #cbd5e1; }
-        .tx-status-submitted { color: #92400e; background: #fffbeb; border-color: #fde68a; }
-        .tx-status-approved { color: #0369a1; background: #ecfeff; border-color: #bae6fd; }
-        .tx-status-issued { color: #9a3412; background: #fff7ed; border-color: #fed7aa; }
-        .tx-status-completed { color: #166534; background: #f0fdf4; border-color: #bbf7d0; }
-        .tx-status-cancelled { color: #b91c1c; background: #fef2f2; border-color: #fecaca; }
-        .tx-status-unknown { color: #334155; background: #f8fafc; border-color: #e2e8f0; }
-        .tx-empty-state { text-align: center; padding: 2.8rem 1rem; color: #94a3b8; }
-        .tx-empty-state i { font-size: 2rem; color: #cbd5e1; }
+
+        .tx-status-draft {
+            color: #475569;
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        .tx-status-submitted {
+            color: #92400e;
+            background: #fffbeb;
+            border-color: #fde68a;
+        }
+
+        .tx-status-approved {
+            color: #0369a1;
+            background: #ecfeff;
+            border-color: #bae6fd;
+        }
+
+        .tx-status-issued {
+            color: #9a3412;
+            background: #fff7ed;
+            border-color: #fed7aa;
+        }
+
+        .tx-status-completed {
+            color: #166534;
+            background: #f0fdf4;
+            border-color: #bbf7d0;
+        }
+
+        .tx-status-cancelled {
+            color: #b91c1c;
+            background: #fef2f2;
+            border-color: #fecaca;
+        }
+
+        .tx-status-unknown {
+            color: #334155;
+            background: #f8fafc;
+            border-color: #e2e8f0;
+        }
+
+        .tx-empty-state {
+            text-align: center;
+            padding: 2.8rem 1rem;
+            color: #94a3b8;
+        }
+
+        .tx-empty-state i {
+            font-size: 2rem;
+            color: #cbd5e1;
+        }
+
         .tx-pagination .page-link {
             border: none;
             color: #64748b;
@@ -187,10 +294,12 @@
             border-radius: 8px;
             margin: 0 2px;
         }
+
         .tx-pagination .page-item.active .page-link {
             background: #e0ecff;
             color: #1d4ed8;
         }
+
         .tx-card {
             border: 1px solid #e2e8f0;
             border-radius: 14px;
@@ -303,7 +412,7 @@
             margin-bottom: 0;
         }
 
-        .receipt-type-switch .btn-check:checked + .btn {
+        .receipt-type-switch .btn-check:checked+.btn {
             background: #fff;
             color: #f26722;
             box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
@@ -418,1708 +527,2003 @@
         }
 
         @media (max-width: 992px) {
-            .tx-shell { padding: 0.9rem; }
+            .tx-shell {
+                padding: 0.9rem;
+            }
         }
     </style>
 </head>
-<body>
-<div th:replace="fragments/sidebar :: sidebar"></div>
 
-<div class="wms-main">
-    <div class="tx-shell">
-        <div class="tx-hero">
-            <div class="d-flex flex-wrap align-items-start justify-content-between gap-3">
-                <div>
-                    <h1><i class="bi bi-truck me-2" style="color:#f26722"></i>Dispatch Operations</h1>
-                    <p>Integrated with API to track inbound, outbound, and transfer transactions in one screen.</p>
-                </div>
-                <div class="d-flex gap-2 flex-wrap">
-                    <button id="reloadBtn" class="btn btn-light border fw-semibold rounded-3 px-3">
-                        <i class="bi bi-arrow-repeat me-1"></i> Refresh
-                    </button>
-                    <button id="exportBtn" class="btn btn-light border fw-semibold rounded-3 px-3">
-                        <i class="bi bi-download me-1"></i> Export CSV
-                    </button>
-                    <button id="createDispatchBtn" type="button" class="btn text-white fw-semibold rounded-3 px-3 border-0 d-flex align-items-center"
+<body>
+    <div th:replace="fragments/sidebar :: sidebar"></div>
+
+    <div class="wms-main">
+        <div class="tx-shell">
+            <div class="tx-hero">
+                <div class="d-flex flex-wrap align-items-start justify-content-between gap-3">
+                    <div>
+                        <h1><i class="bi bi-truck me-2" style="color:#f26722"></i>Dispatch Operations</h1>
+                        <p>Integrated with API to track inbound, outbound, and transfer transactions in one screen.</p>
+                    </div>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <button id="reloadBtn" class="btn btn-light border fw-semibold rounded-3 px-3">
+                            <i class="bi bi-arrow-repeat me-1"></i> Refresh
+                        </button>
+                        <button id="exportBtn" class="btn btn-light border fw-semibold rounded-3 px-3">
+                            <i class="bi bi-download me-1"></i> Export CSV
+                        </button>
+                        <button id="createDispatchBtn" type="button"
+                            class="btn text-white fw-semibold rounded-3 px-3 border-0 d-flex align-items-center"
                             style="background:#f26722; box-shadow: 0 4px 12px rgba(242, 103, 34, 0.2);">
-                        <i class="bi bi-plus-circle me-2"></i> Create Dispatch
-                    </button>
+                            <i class="bi bi-plus-circle me-2"></i> Create Dispatch
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="row g-3 mb-3 tx-stats">
-            <div class="col-xl col-md-6"><div class="card bg-white h-100"><div class="card-body d-flex align-items-center"><div class="rounded-3 d-flex align-items-center justify-content-center me-3" style="width:48px;height:48px;background:rgba(59,130,246,.12);color:#3b82f6;"><i class="bi bi-collection" style="font-size:1.35rem"></i></div><div><div class="text-muted fw-semibold" style="font-size:.72rem; text-transform:uppercase;">Total Operations</div><div class="h4 mb-0 fw-bold" id="statTotalOps">0</div></div></div></div></div>
-            <div class="col-xl col-md-6"><div class="card bg-white h-100"><div class="card-body d-flex align-items-center"><div class="rounded-3 d-flex align-items-center justify-content-center me-3" style="width:48px;height:48px;background:rgba(16,185,129,.12);color:#10b981;"><i class="bi bi-box-arrow-in-right" style="font-size:1.35rem"></i></div><div><div class="text-muted fw-semibold" style="font-size:.72rem; text-transform:uppercase;">Inbound (Month)</div><div class="h4 mb-0 fw-bold" id="statInboundOps">0</div></div></div></div></div>
-            <div class="col-xl col-md-6"><div class="card bg-white h-100"><div class="card-body d-flex align-items-center"><div class="rounded-3 d-flex align-items-center justify-content-center me-3" style="width:48px;height:48px;background:rgba(239,68,68,.12);color:#ef4444;"><i class="bi bi-box-arrow-right" style="font-size:1.35rem"></i></div><div><div class="text-muted fw-semibold" style="font-size:.72rem; text-transform:uppercase;">Outbound (Month)</div><div class="h4 mb-0 fw-bold" id="statOutboundOps">0</div></div></div></div></div>
-            <div class="col-xl col-md-6"><div class="card bg-white h-100"><div class="card-body d-flex align-items-center"><div class="rounded-3 d-flex align-items-center justify-content-center me-3" style="width:48px;height:48px;background:rgba(29,78,216,.12);color:#1d4ed8;"><i class="bi bi-arrow-left-right" style="font-size:1.2rem"></i></div><div><div class="text-muted fw-semibold" style="font-size:.72rem; text-transform:uppercase;">Transfer (Month)</div><div class="h4 mb-0 fw-bold" id="statTransferOps">0</div></div></div></div></div>
-            <div class="col-xl col-md-6"><div class="card bg-white h-100"><div class="card-body d-flex align-items-center"><div class="rounded-3 d-flex align-items-center justify-content-center me-3" style="width:48px;height:48px;background:rgba(245,158,11,.12);color:#f59e0b;"><i class="bi bi-hourglass-split" style="font-size:1.35rem"></i></div><div><div class="text-muted fw-semibold" style="font-size:.72rem; text-transform:uppercase;">Pending</div><div class="h4 mb-0 fw-bold" id="statPendingOps">0</div></div></div></div></div>
-        </div>
-
-        <div class="card tx-card">
-            <div class="card-header bg-white border-bottom py-3 px-3 px-md-4 tx-filters">
-                <div class="row g-2 align-items-center">
-                    <div class="col-lg-6">
-                        <div class="input-group input-group-sm">
-                            <span class="input-group-text bg-light border"><i class="bi bi-search text-muted"></i></span>
-                            <input id="txSearchInput" type="text" class="form-control" placeholder="Search by code, warehouse, creator, or status...">
+            <div class="row g-3 mb-3 tx-stats">
+                <div class="col-xl col-md-6">
+                    <div class="card bg-white h-100">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="rounded-3 d-flex align-items-center justify-content-center me-3"
+                                style="width:48px;height:48px;background:rgba(59,130,246,.12);color:#3b82f6;"><i
+                                    class="bi bi-collection" style="font-size:1.35rem"></i></div>
+                            <div>
+                                <div class="text-muted fw-semibold" style="font-size:.72rem; text-transform:uppercase;">
+                                    Total Operations</div>
+                                <div class="h4 mb-0 fw-bold" id="statTotalOps">0</div>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-lg-3 col-md-6">
-                        <select id="txTypeFilter" class="form-select form-select-sm">
-                            <option value="">All Types</option>
-                            <option value="INBOUND">Inbound</option>
-                            <option value="OUTBOUND">Outbound</option>
-                            <option value="TRANSFER">Transfer</option>
-                        </select>
+                </div>
+                <div class="col-xl col-md-6">
+                    <div class="card bg-white h-100">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="rounded-3 d-flex align-items-center justify-content-center me-3"
+                                style="width:48px;height:48px;background:rgba(16,185,129,.12);color:#10b981;"><i
+                                    class="bi bi-box-arrow-in-right" style="font-size:1.35rem"></i></div>
+                            <div>
+                                <div class="text-muted fw-semibold" style="font-size:.72rem; text-transform:uppercase;">
+                                    Inbound (Month)</div>
+                                <div class="h4 mb-0 fw-bold" id="statInboundOps">0</div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-lg-3 col-md-6">
-                        <select id="txStatusFilter" class="form-select form-select-sm">
-                            <option value="">All Statuses</option>
-                        </select>
+                </div>
+                <div class="col-xl col-md-6">
+                    <div class="card bg-white h-100">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="rounded-3 d-flex align-items-center justify-content-center me-3"
+                                style="width:48px;height:48px;background:rgba(239,68,68,.12);color:#ef4444;"><i
+                                    class="bi bi-box-arrow-right" style="font-size:1.35rem"></i></div>
+                            <div>
+                                <div class="text-muted fw-semibold" style="font-size:.72rem; text-transform:uppercase;">
+                                    Outbound (Month)</div>
+                                <div class="h4 mb-0 fw-bold" id="statOutboundOps">0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl col-md-6">
+                    <div class="card bg-white h-100">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="rounded-3 d-flex align-items-center justify-content-center me-3"
+                                style="width:48px;height:48px;background:rgba(29,78,216,.12);color:#1d4ed8;"><i
+                                    class="bi bi-arrow-left-right" style="font-size:1.2rem"></i></div>
+                            <div>
+                                <div class="text-muted fw-semibold" style="font-size:.72rem; text-transform:uppercase;">
+                                    Transfer (Month)</div>
+                                <div class="h4 mb-0 fw-bold" id="statTransferOps">0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl col-md-6">
+                    <div class="card bg-white h-100">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="rounded-3 d-flex align-items-center justify-content-center me-3"
+                                style="width:48px;height:48px;background:rgba(245,158,11,.12);color:#f59e0b;"><i
+                                    class="bi bi-hourglass-split" style="font-size:1.35rem"></i></div>
+                            <div>
+                                <div class="text-muted fw-semibold" style="font-size:.72rem; text-transform:uppercase;">
+                                    Pending</div>
+                                <div class="h4 mb-0 fw-bold" id="statPendingOps">0</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div id="txApiAlert" class="alert rounded-0 mb-0 border-0 d-none" role="alert"></div>
-
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table tx-table table-hover align-middle mb-0">
-                        <thead>
-                        <tr>
-                            <th class="px-4 py-3">Code</th>
-                            <th class="px-4 py-3">Type</th>
-                            <th class="px-4 py-3">Warehouse Route</th>
-                            <th class="px-4 py-3">Created At</th>
-                            <th class="px-4 py-3">Creator</th>
-                            <th class="px-4 py-3 text-center">Lines</th>
-                            <th class="px-4 py-3">Status</th>
-                            <th class="px-4 py-3 text-end">Action</th>
-                        </tr>
-                        </thead>
-                        <tbody id="txTableBody">
-                        <tr>
-                            <td colspan="8" class="text-center py-5">
-                                <div class="spinner-border spinner-border-sm text-secondary me-2" role="status"></div>
-                                Loading transactions from API...
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+            <div class="card tx-card">
+                <div class="card-header bg-white border-bottom py-3 px-3 px-md-4 tx-filters">
+                    <div class="row g-2 align-items-center">
+                        <div class="col-lg-6">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text bg-light border"><i
+                                        class="bi bi-search text-muted"></i></span>
+                                <input id="txSearchInput" type="text" class="form-control"
+                                    placeholder="Search by code, warehouse, creator, or status...">
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <select id="txTypeFilter" class="form-select form-select-sm">
+                                <option value="">All Types</option>
+                                <option value="INBOUND">Inbound</option>
+                                <option value="OUTBOUND">Outbound</option>
+                                <option value="TRANSFER">Transfer</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <select id="txStatusFilter" class="form-select form-select-sm">
+                                <option value="">All Statuses</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
-                <div id="txEmptyState" class="tx-empty-state d-none">
-                    <i class="bi bi-inbox"></i>
-                    <h6 class="fw-bold mt-3 mb-1" style="color:#1e293b;">No transactions found</h6>
-                    <p class="mb-0 small">No inbound/outbound/transfer records match current filters.</p>
-                </div>
-            </div>
 
-            <div class="card-footer bg-white border-top py-3 px-3 px-md-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
-                <div class="small text-muted fw-medium" id="txSummaryText">Showing 0 - 0 of 0 results</div>
-                <nav aria-label="Transaction pagination">
-                    <ul id="txPagination" class="pagination pagination-sm mb-0 tx-pagination"></ul>
-                </nav>
+                <div id="txApiAlert" class="alert rounded-0 mb-0 border-0 d-none" role="alert"></div>
+
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table tx-table table-hover align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="px-4 py-3">Code</th>
+                                    <th class="px-4 py-3">Type</th>
+                                    <th class="px-4 py-3">Warehouse Route</th>
+                                    <th class="px-4 py-3">Created At</th>
+                                    <th class="px-4 py-3">Creator</th>
+                                    <th class="px-4 py-3 text-center">Lines</th>
+                                    <th class="px-4 py-3">Status</th>
+                                    <th class="px-4 py-3 text-end">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="txTableBody">
+                                <tr>
+                                    <td colspan="8" class="text-center py-5">
+                                        <div class="spinner-border spinner-border-sm text-secondary me-2" role="status">
+                                        </div>
+                                        Loading transactions from API...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="txEmptyState" class="tx-empty-state d-none">
+                        <i class="bi bi-inbox"></i>
+                        <h6 class="fw-bold mt-3 mb-1" style="color:#1e293b;">No transactions found</h6>
+                        <p class="mb-0 small">No inbound/outbound/transfer records match current filters.</p>
+                    </div>
+                </div>
+
+                <div
+                    class="card-footer bg-white border-top py-3 px-3 px-md-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <div class="small text-muted fw-medium" id="txSummaryText">Showing 0 - 0 of 0 results</div>
+                    <nav aria-label="Transaction pagination">
+                        <ul id="txPagination" class="pagination pagination-sm mb-0 tx-pagination"></ul>
+                    </nav>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<div class="modal fade receipt-modal" id="createReceiptModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <div>
-                    <h5 class="modal-title">Create Inbound / Outbound / Transfer Receipt</h5>
-                    <div class="modal-subtitle">Fill in the details to create a new receipt for the warehouse management system</div>
+    <div class="modal fade receipt-modal" id="createReceiptModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div>
+                        <h5 class="modal-title">Create Inbound / Outbound / Transfer Receipt</h5>
+                        <div class="modal-subtitle">Fill in the details to create a new receipt for the warehouse
+                            management system</div>
+                    </div>
+                    <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
-                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
 
-            <form id="receiptForm">
-                <div class="modal-body">
-                    <div id="receiptFormAlert" class="alert receipt-form-alert d-none"></div>
+                <form id="receiptForm">
+                    <div class="modal-body">
+                        <div id="receiptFormAlert" class="alert receipt-form-alert d-none"></div>
 
-                    <div class="receipt-panel">
-                        <div class="receipt-panel-title">
-                            <i class="bi bi-exclamation-circle-fill"></i>
-                            <span>General Information</span>
-                        </div>
+                        <div class="receipt-panel">
+                            <div class="receipt-panel-title">
+                                <i class="bi bi-exclamation-circle-fill"></i>
+                                <span>General Information</span>
+                            </div>
 
-                        <div class="row g-3">
-                            <div class="col-lg-3 col-md-6">
-                                <label>Receipt Type</label>
-                                <div class="receipt-type-switch">
-                                    <input class="btn-check" type="radio" name="receiptType" id="receiptTypeInbound" value="INBOUND" checked>
-                                    <label class="btn" for="receiptTypeInbound">Inbound</label>
-                                    <input class="btn-check" type="radio" name="receiptType" id="receiptTypeOutbound" value="OUTBOUND">
-                                    <label class="btn" for="receiptTypeOutbound">Outbound</label>
-                                    <input class="btn-check" type="radio" name="receiptType" id="receiptTypeTransfer" value="TRANSFER">
-                                    <label class="btn" for="receiptTypeTransfer">Transfer</label>
+                            <div class="row g-3">
+                                <div class="col-lg-3 col-md-6">
+                                    <label>Receipt Type</label>
+                                    <div class="receipt-type-switch">
+                                        <input class="btn-check" type="radio" name="receiptType" id="receiptTypeInbound"
+                                            value="INBOUND" checked>
+                                        <label class="btn" for="receiptTypeInbound">Inbound</label>
+                                        <input class="btn-check" type="radio" name="receiptType"
+                                            id="receiptTypeOutbound" value="OUTBOUND">
+                                        <label class="btn" for="receiptTypeOutbound">Outbound</label>
+                                        <input class="btn-check" type="radio" name="receiptType"
+                                            id="receiptTypeTransfer" value="TRANSFER">
+                                        <label class="btn" for="receiptTypeTransfer">Transfer</label>
+                                    </div>
+                                </div>
+
+                                <div id="receiptWarehouseGroup" class="col-lg-3 col-md-6">
+                                    <label id="receiptWarehouseLabel">Warehouse / Unit</label>
+                                    <select id="receiptWarehouse" class="form-select">
+                                        <option value="">Select warehouse</option>
+                                    </select>
+                                </div>
+
+                                <div id="receiptSectionGroup" class="col-lg-3 col-md-6">
+                                    <label>Section / Location</label>
+                                    <select id="receiptSection" class="form-select">
+                                        <option value="">— Select warehouse first —</option>
+                                    </select>
+                                </div>
+
+                                <div id="receiptFromWarehouseGroup" class="col-lg-3 col-md-6 d-none">
+                                    <label>From Warehouse</label>
+                                    <select id="receiptFromWarehouse" class="form-select">
+                                        <option value="">Select source warehouse</option>
+                                    </select>
+                                </div>
+
+                                <div id="receiptToWarehouseGroup" class="col-lg-3 col-md-6 d-none">
+                                    <label>To Warehouse</label>
+                                    <select id="receiptToWarehouse" class="form-select">
+                                        <option value="">Select destination warehouse</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-lg-3 col-md-6">
+                                    <label>Date Created</label>
+                                    <input id="receiptDateCreated" type="date" class="form-control" disabled>
+                                </div>
+
+                                <div id="receiptSupplierGroup" class="col-lg-3 col-md-6">
+                                    <label>Supplier</label>
+                                    <select id="receiptSupplier" class="form-select">
+                                        <option value="">Select supplier</option>
+                                    </select>
                                 </div>
                             </div>
+                        </div>
 
-                            <div id="receiptWarehouseGroup" class="col-lg-3 col-md-6">
-                                <label id="receiptWarehouseLabel">Warehouse / Unit</label>
-                                <select id="receiptWarehouse" class="form-select">
-                                    <option value="">Select warehouse</option>
-                                </select>
+                        <div class="receipt-panel">
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <div class="receipt-panel-title mb-0">
+                                    <i class="bi bi-card-list"></i>
+                                    <span>Item List</span>
+                                </div>
+                                <button id="addReceiptItemBtn" type="button" class="receipt-add-item-btn">
+                                    <i class="bi bi-plus-circle me-1"></i> Add Item
+                                </button>
                             </div>
 
-                            <div id="receiptFromWarehouseGroup" class="col-lg-3 col-md-6 d-none">
-                                <label>From Warehouse</label>
-                                <select id="receiptFromWarehouse" class="form-select">
-                                    <option value="">Select source warehouse</option>
-                                </select>
+                            <div class="table-responsive">
+                                <table class="table receipt-items-table align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th style="min-width:220px;">Item Name / Product</th>
+                                            <th style="width:100px;">Quantity</th>
+                                            <th style="width:110px;">Unit</th>
+                                            <th style="width:130px;">MFG</th>
+                                            <th style="width:110px;">Shelf Life (Months)</th>
+                                            <th style="width:130px;">EXP</th>
+                                            <th style="min-width:160px;">Notes</th>
+                                            <th style="width:52px;"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="receiptItemsBody"></tbody>
+                                </table>
                             </div>
+                        </div>
 
-                            <div id="receiptToWarehouseGroup" class="col-lg-3 col-md-6 d-none">
-                                <label>To Warehouse</label>
-                                <select id="receiptToWarehouse" class="form-select">
-                                    <option value="">Select destination warehouse</option>
-                                </select>
+                        <div class="receipt-panel mb-0">
+                            <div class="receipt-panel-title">
+                                <i class="bi bi-text-paragraph"></i>
+                                <span>General Notes</span>
                             </div>
-
-                            <div class="col-lg-3 col-md-6">
-                                <label>Date Created</label>
-                                <input id="receiptDateCreated" type="date" class="form-control" disabled>
-                            </div>
-
-                            <div id="receiptSupplierGroup" class="col-lg-3 col-md-6">
-                                <label>Supplier</label>
-                                <select id="receiptSupplier" class="form-select">
-                                    <option value="">Select supplier</option>
-                                </select>
-                            </div>
+                            <textarea id="receiptGeneralNotes" class="form-control receipt-note"
+                                placeholder="Enter general notes for this entire receipt (e.g., reason, contract number, cargo condition...)"></textarea>
                         </div>
                     </div>
 
-                    <div class="receipt-panel">
-                        <div class="d-flex align-items-center justify-content-between mb-2">
-                            <div class="receipt-panel-title mb-0">
-                                <i class="bi bi-card-list"></i>
-                                <span>Item List</span>
-                            </div>
-                            <button id="addReceiptItemBtn" type="button" class="receipt-add-item-btn">
-                                <i class="bi bi-plus-circle me-1"></i> Add Item
-                            </button>
-                        </div>
+                    <div class="modal-footer">
+                        <div class="receipt-footer-note">* Please double-check the information before saving the
+                            receipt.</div>
+                        <button type="button" class="receipt-cancel-btn" data-bs-dismiss="modal">Cancel</button>
+                        <button id="saveReceiptBtn" type="submit" class="receipt-save-btn">
+                            <i class="bi bi-floppy-fill me-1"></i> Save Receipt
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
-                        <div class="table-responsive">
-                            <table class="table receipt-items-table align-middle">
-                                <thead>
+    <div class="modal fade tx-detail-modal" id="txDetailModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0 pb-2">
+                    <div>
+                        <h5 class="modal-title fw-bold mb-1">Transaction Details</h5>
+                        <div class="small text-muted">Review dispatch information and item lines.</div>
+                    </div>
+                    <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body pt-0">
+                    <div class="tx-detail-grid">
+                        <div class="tx-detail-field">
+                            <label>Code</label>
+                            <div class="value tx-mono" id="txDetailCode">-</div>
+                        </div>
+                        <div class="tx-detail-field">
+                            <label>Type</label>
+                            <div class="value" id="txDetailType">-</div>
+                        </div>
+                        <div class="tx-detail-field">
+                            <label>Status</label>
+                            <div class="value" id="txDetailStatus">-</div>
+                        </div>
+                        <div class="tx-detail-field">
+                            <label>Business Type</label>
+                            <div class="value" id="txDetailBusinessType">-</div>
+                        </div>
+                        <div class="tx-detail-field">
+                            <label>Warehouse Route</label>
+                            <div class="value" id="txDetailWarehouse">-</div>
+                        </div>
+                        <div class="tx-detail-field">
+                            <label>Created At</label>
+                            <div class="value" id="txDetailCreatedAt">-</div>
+                        </div>
+                        <div class="tx-detail-field">
+                            <label>Created By</label>
+                            <div class="value" id="txDetailCreatedBy">-</div>
+                        </div>
+                        <div class="tx-detail-field">
+                            <label>Total Lines</label>
+                            <div class="value" id="txDetailLineCount">0</div>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-sm tx-detail-lines align-middle mb-0">
+                            <thead>
                                 <tr>
-                                    <th style="min-width:260px;">Item Name / Product</th>
-                                    <th style="width:130px;">Quantity</th>
-                                    <th style="width:130px;">Unit</th>
-                                    <th>Notes</th>
-                                    <th style="width:52px;"></th>
+                                    <th style="width:40px;">#</th>
+                                    <th>Product</th>
+                                    <th style="width:120px;">Quantity</th>
+                                    <th style="width:110px;">Unit</th>
                                 </tr>
-                                </thead>
-                                <tbody id="receiptItemsBody"></tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <div class="receipt-panel mb-0">
-                        <div class="receipt-panel-title">
-                            <i class="bi bi-text-paragraph"></i>
-                            <span>General Notes</span>
-                        </div>
-                        <textarea id="receiptGeneralNotes" class="form-control receipt-note" placeholder="Enter general notes for this entire receipt (e.g., reason, contract number, cargo condition...)"></textarea>
+                            </thead>
+                            <tbody id="txDetailLinesBody">
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted py-3">No line data.</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-
-                <div class="modal-footer">
-                    <div class="receipt-footer-note">* Please double-check the information before saving the receipt.</div>
-                    <button type="button" class="receipt-cancel-btn" data-bs-dismiss="modal">Cancel</button>
-                    <button id="saveReceiptBtn" type="submit" class="receipt-save-btn">
-                        <i class="bi bi-floppy-fill me-1"></i> Save Receipt
+                <div class="modal-footer border-0 pt-2">
+                    <div id="txDetailActionHint" class="tx-detail-action-note">You can approve or reject this
+                        transaction.</div>
+                    <button id="txDetailRejectBtn" type="button" class="btn btn-outline-danger tx-detail-action-btn"
+                        disabled>
+                        <i class="bi bi-x-circle"></i> Reject
+                    </button>
+                    <button id="txDetailApproveBtn" type="button" class="btn btn-success tx-detail-action-btn" disabled>
+                        <i class="bi bi-check-circle"></i> Approve
+                    </button>
+                    <button id="txDetailCancelBtn" type="button"
+                        class="btn btn-outline-danger tx-detail-action-btn d-none">
+                        <i class="bi bi-x-circle"></i> Reject
+                    </button>
+                    <button id="txDetailCompleteBtn" type="button" class="btn btn-primary tx-detail-action-btn d-none"
+                        disabled>
+                        <i class="bi bi-check2-square"></i> Complete
                     </button>
                 </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade tx-detail-modal" id="txDetailModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header border-0 pb-2">
-                <div>
-                    <h5 class="modal-title fw-bold mb-1">Transaction Details</h5>
-                    <div class="small text-muted">Review dispatch information and item lines.</div>
-                </div>
-                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body pt-0">
-                <div class="tx-detail-grid">
-                    <div class="tx-detail-field">
-                        <label>Code</label>
-                        <div class="value tx-mono" id="txDetailCode">-</div>
-                    </div>
-                    <div class="tx-detail-field">
-                        <label>Type</label>
-                        <div class="value" id="txDetailType">-</div>
-                    </div>
-                    <div class="tx-detail-field">
-                        <label>Status</label>
-                        <div class="value" id="txDetailStatus">-</div>
-                    </div>
-                    <div class="tx-detail-field">
-                        <label>Business Type</label>
-                        <div class="value" id="txDetailBusinessType">-</div>
-                    </div>
-                    <div class="tx-detail-field">
-                        <label>Warehouse Route</label>
-                        <div class="value" id="txDetailWarehouse">-</div>
-                    </div>
-                    <div class="tx-detail-field">
-                        <label>Created At</label>
-                        <div class="value" id="txDetailCreatedAt">-</div>
-                    </div>
-                    <div class="tx-detail-field">
-                        <label>Created By</label>
-                        <div class="value" id="txDetailCreatedBy">-</div>
-                    </div>
-                    <div class="tx-detail-field">
-                        <label>Total Lines</label>
-                        <div class="value" id="txDetailLineCount">0</div>
-                    </div>
-                </div>
-
-                <div class="table-responsive">
-                    <table class="table table-sm tx-detail-lines align-middle mb-0">
-                        <thead>
-                        <tr>
-                            <th style="width:40px;">#</th>
-                            <th>Product</th>
-                            <th style="width:120px;">Quantity</th>
-                            <th style="width:110px;">Unit</th>
-                        </tr>
-                        </thead>
-                        <tbody id="txDetailLinesBody">
-                        <tr><td colspan="4" class="text-center text-muted py-3">No line data.</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="modal-footer border-0 pt-2">
-                <div id="txDetailActionHint" class="tx-detail-action-note">You can approve or reject this transaction.</div>
-                <button id="txDetailRejectBtn" type="button" class="btn btn-outline-danger tx-detail-action-btn" disabled>
-                    <i class="bi bi-x-circle"></i> Reject
-                </button>
-                <button id="txDetailApproveBtn" type="button" class="btn btn-success tx-detail-action-btn" disabled>
-                    <i class="bi bi-check-circle"></i> Approve
-                </button>
-                <button id="txDetailCompleteBtn" type="button" class="btn btn-primary tx-detail-action-btn d-none" disabled>
-                    <i class="bi bi-check2-square"></i> Confirm Complete
-                </button>
             </div>
         </div>
     </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    (function () {
-        const state = {
-            records: [],
-            filtered: [],
-            warehouses: new Map(),
-            warehouseList: [],
-            suppliers: [],
-            products: [],
-            uoms: [],
-            currentPage: 1,
-            pageSize: 10,
-            isSubmittingReceipt: false,
-            isDetailActionBusy: false,
-            activeDetailId: '',
-            activeDetailSource: ''
-        };
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        (function () {
+            const state = {
+                records: [],
+                filtered: [],
+                warehouses: new Map(),
+                warehouseList: [],
+                suppliers: [],
+                products: [],
+                uoms: [],
+                outboundSectionProductIds: null,
+                outboundSectionProductCache: new Map(),
+                outboundSectionProductRequestSeq: 0,
+                isLoadingOutboundSectionProducts: false,
+                transferSourceProductIds: null,
+                transferSourceProductCache: new Map(),
+                transferSourceProductRequestSeq: 0,
+                isLoadingTransferSourceProducts: false,
+                currentPage: 1,
+                pageSize: 10,
+                isSubmittingReceipt: false,
+                isDetailActionBusy: false,
+                activeDetailId: '',
+                activeDetailSource: ''
+            };
 
-        const STATUS_META = {
-            DRAFT: {label: 'Draft', className: 'tx-status-draft'},
-            SUBMITTED: {label: 'Submitted', className: 'tx-status-submitted'},
-            APPROVED: {label: 'Approved', className: 'tx-status-approved'},
-            ISSUED: {label: 'Issued', className: 'tx-status-issued'},
-            COMPLETED: {label: 'Completed', className: 'tx-status-completed'},
-            CANCELLED: {label: 'Cancelled', className: 'tx-status-cancelled'},
-            UNKNOWN: {label: 'Unknown', className: 'tx-status-unknown'}
-        };
+            const STATUS_META = {
+                DRAFT: { label: 'Draft', className: 'tx-status-draft' },
+                SUBMITTED: { label: 'Submitted', className: 'tx-status-submitted' },
+                APPROVED: { label: 'Approved', className: 'tx-status-approved' },
+                ISSUED: { label: 'Issued', className: 'tx-status-issued' },
+                COMPLETED: { label: 'Completed', className: 'tx-status-completed' },
+                CANCELLED: { label: 'Cancelled', className: 'tx-status-cancelled' },
+                UNKNOWN: { label: 'Unknown', className: 'tx-status-unknown' }
+            };
 
-        const TYPE_META = {
-            INBOUND: {label: 'Inbound', className: 'tx-type-inbound'},
-            OUTBOUND: {label: 'Outbound', className: 'tx-type-outbound'},
-            TRANSFER: {label: 'Transfer', className: 'tx-type-transfer'}
-        };
+            const TYPE_META = {
+                INBOUND: { label: 'Inbound', className: 'tx-type-inbound' },
+                OUTBOUND: { label: 'Outbound', className: 'tx-type-outbound' },
+                TRANSFER: { label: 'Transfer', className: 'tx-type-transfer' }
+            };
 
-        const PENDING_STATUSES = new Set(['DRAFT', 'SUBMITTED', 'APPROVED', 'ISSUED']);
+            const PENDING_STATUSES = new Set(['DRAFT', 'SUBMITTED', 'APPROVED', 'ISSUED']);
 
-        const el = {
-            body: document.getElementById('txTableBody'),
-            empty: document.getElementById('txEmptyState'),
-            alert: document.getElementById('txApiAlert'),
-            search: document.getElementById('txSearchInput'),
-            type: document.getElementById('txTypeFilter'),
-            status: document.getElementById('txStatusFilter'),
-            pagination: document.getElementById('txPagination'),
-            summary: document.getElementById('txSummaryText'),
-            statTotal: document.getElementById('statTotalOps'),
-            statIn: document.getElementById('statInboundOps'),
-            statOut: document.getElementById('statOutboundOps'),
-            statTransfer: document.getElementById('statTransferOps'),
-            statPending: document.getElementById('statPendingOps'),
-            reload: document.getElementById('reloadBtn'),
-            exportBtn: document.getElementById('exportBtn'),
-            createBtn: document.getElementById('createDispatchBtn'),
-            receiptModal: document.getElementById('createReceiptModal'),
-            receiptForm: document.getElementById('receiptForm'),
-            receiptFormAlert: document.getElementById('receiptFormAlert'),
-            receiptWarehouseGroup: document.getElementById('receiptWarehouseGroup'),
-            receiptWarehouseLabel: document.getElementById('receiptWarehouseLabel'),
-            receiptWarehouse: document.getElementById('receiptWarehouse'),
-            receiptFromWarehouseGroup: document.getElementById('receiptFromWarehouseGroup'),
-            receiptFromWarehouse: document.getElementById('receiptFromWarehouse'),
-            receiptToWarehouseGroup: document.getElementById('receiptToWarehouseGroup'),
-            receiptToWarehouse: document.getElementById('receiptToWarehouse'),
-            receiptSupplierGroup: document.getElementById('receiptSupplierGroup'),
-            receiptSupplier: document.getElementById('receiptSupplier'),
-            receiptDateCreated: document.getElementById('receiptDateCreated'),
-            receiptItemsBody: document.getElementById('receiptItemsBody'),
-            addReceiptItemBtn: document.getElementById('addReceiptItemBtn'),
-            saveReceiptBtn: document.getElementById('saveReceiptBtn'),
-            detailModal: document.getElementById('txDetailModal'),
-            detailCode: document.getElementById('txDetailCode'),
-            detailType: document.getElementById('txDetailType'),
-            detailStatus: document.getElementById('txDetailStatus'),
-            detailBusinessType: document.getElementById('txDetailBusinessType'),
-            detailWarehouse: document.getElementById('txDetailWarehouse'),
-            detailCreatedAt: document.getElementById('txDetailCreatedAt'),
-            detailCreatedBy: document.getElementById('txDetailCreatedBy'),
-            detailLineCount: document.getElementById('txDetailLineCount'),
-            detailLinesBody: document.getElementById('txDetailLinesBody'),
-            detailActionHint: document.getElementById('txDetailActionHint'),
-            detailApproveBtn: document.getElementById('txDetailApproveBtn'),
-            detailRejectBtn: document.getElementById('txDetailRejectBtn'),
-            detailCompleteBtn: document.getElementById('txDetailCompleteBtn')
-        };
-        const receiptModalInstance = el.receiptModal ? new bootstrap.Modal(el.receiptModal) : null;
-        const detailModalInstance = el.detailModal ? new bootstrap.Modal(el.detailModal) : null;
-        const receiptTypeInputs = [...document.querySelectorAll('input[name="receiptType"]')];
+            const el = {
+                body: document.getElementById('txTableBody'),
+                empty: document.getElementById('txEmptyState'),
+                alert: document.getElementById('txApiAlert'),
+                search: document.getElementById('txSearchInput'),
+                type: document.getElementById('txTypeFilter'),
+                status: document.getElementById('txStatusFilter'),
+                pagination: document.getElementById('txPagination'),
+                summary: document.getElementById('txSummaryText'),
+                statTotal: document.getElementById('statTotalOps'),
+                statIn: document.getElementById('statInboundOps'),
+                statOut: document.getElementById('statOutboundOps'),
+                statTransfer: document.getElementById('statTransferOps'),
+                statPending: document.getElementById('statPendingOps'),
+                reload: document.getElementById('reloadBtn'),
+                exportBtn: document.getElementById('exportBtn'),
+                createBtn: document.getElementById('createDispatchBtn'),
+                receiptModal: document.getElementById('createReceiptModal'),
+                receiptForm: document.getElementById('receiptForm'),
+                receiptFormAlert: document.getElementById('receiptFormAlert'),
+                receiptWarehouseGroup: document.getElementById('receiptWarehouseGroup'),
+                receiptWarehouseLabel: document.getElementById('receiptWarehouseLabel'),
+                receiptWarehouse: document.getElementById('receiptWarehouse'),
+                receiptSection: document.getElementById('receiptSection'),
+                receiptSectionGroup: document.getElementById('receiptSectionGroup'),
+                receiptFromWarehouseGroup: document.getElementById('receiptFromWarehouseGroup'),
+                receiptFromWarehouse: document.getElementById('receiptFromWarehouse'),
+                receiptToWarehouseGroup: document.getElementById('receiptToWarehouseGroup'),
+                receiptToWarehouse: document.getElementById('receiptToWarehouse'),
+                receiptSupplierGroup: document.getElementById('receiptSupplierGroup'),
+                receiptSupplier: document.getElementById('receiptSupplier'),
+                receiptDateCreated: document.getElementById('receiptDateCreated'),
+                receiptItemsBody: document.getElementById('receiptItemsBody'),
+                addReceiptItemBtn: document.getElementById('addReceiptItemBtn'),
+                saveReceiptBtn: document.getElementById('saveReceiptBtn'),
+                detailModal: document.getElementById('txDetailModal'),
+                detailCode: document.getElementById('txDetailCode'),
+                detailType: document.getElementById('txDetailType'),
+                detailStatus: document.getElementById('txDetailStatus'),
+                detailBusinessType: document.getElementById('txDetailBusinessType'),
+                detailWarehouse: document.getElementById('txDetailWarehouse'),
+                detailCreatedAt: document.getElementById('txDetailCreatedAt'),
+                detailCreatedBy: document.getElementById('txDetailCreatedBy'),
+                detailLineCount: document.getElementById('txDetailLineCount'),
+                detailLinesBody: document.getElementById('txDetailLinesBody'),
+                detailActionHint: document.getElementById('txDetailActionHint'),
+                detailApproveBtn: document.getElementById('txDetailApproveBtn'),
+                detailRejectBtn: document.getElementById('txDetailRejectBtn'),
+                detailCompleteBtn: document.getElementById('txDetailCompleteBtn'),
+                detailCancelBtn: document.getElementById('txDetailCancelBtn')
+            };
+            const receiptModalInstance = el.receiptModal ? new bootstrap.Modal(el.receiptModal) : null;
+            const detailModalInstance = el.detailModal ? new bootstrap.Modal(el.detailModal) : null;
+            const receiptTypeInputs = [...document.querySelectorAll('input[name="receiptType"]')];
 
-        function escapeHtml(value) {
-            return String(value ?? '')
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#39;');
-        }
-
-        function shortUuid(uuid) {
-            if (!uuid) return '-';
-            const s = String(uuid);
-            return s.length > 10 ? s.slice(0, 8) + '...' : s;
-        }
-
-        function formatDate(value) {
-            if (!value) return '-';
-            const date = new Date(value);
-            if (Number.isNaN(date.getTime())) return String(value);
-            return date.toLocaleString('vi-VN', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-        }
-
-        function parseDate(value) {
-            const date = value ? new Date(value) : null;
-            return date && !Number.isNaN(date.getTime()) ? date : null;
-        }
-
-        function getWarehouseName(id) {
-            if (!id) return '-';
-            return state.warehouses.get(id) || shortUuid(id);
-        }
-
-        function getWarehouseLabel(record) {
-            if (record.source === 'TRANSFER') {
-                return getWarehouseName(record.warehouseId) + ' -> ' + getWarehouseName(record.toWarehouseId);
+            function escapeHtml(value) {
+                return String(value ?? '')
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#39;');
             }
-            return getWarehouseName(record.warehouseId);
-        }
 
-        function statusBadge(status) {
-            const key = String(status || 'UNKNOWN').toUpperCase();
-            const meta = STATUS_META[key] || STATUS_META.UNKNOWN;
-            return '<span class="tx-status-badge ' + meta.className + '">' + meta.label + '</span>';
-        }
-
-        function typeBadge(source) {
-            const key = String(source || 'INBOUND').toUpperCase();
-            const meta = TYPE_META[key] || TYPE_META.INBOUND;
-            return '<span class="tx-type-badge ' + meta.className + '">' + meta.label + '</span>';
-        }
-
-        function normalizedText(value) {
-            return String(value || '').trim().toUpperCase();
-        }
-
-        function businessTypeText(record) {
-            const rawBusinessType = String(record.businessType || '').trim();
-            if (!rawBusinessType) return '-';
-
-            const businessTypeKey = normalizedText(rawBusinessType);
-            const sourceKey = normalizedText(record.source);
-            const sourceLabelKey = TYPE_META[sourceKey] ? normalizedText(TYPE_META[sourceKey].label) : '';
-            if (businessTypeKey === sourceKey || (sourceLabelKey && businessTypeKey === sourceLabelKey)) {
-                return '-';
+            function shortUuid(uuid) {
+                if (!uuid) return '-';
+                const s = String(uuid);
+                return s.length > 10 ? s.slice(0, 8) + '...' : s;
             }
-            return rawBusinessType;
-        }
 
-        function findRecordByIdentity(id, source) {
-            const keyId = normalizeId(id);
-            const keySource = normalizedText(source);
-            return state.records.find((record) =>
-                normalizeId(record.id) === keyId && normalizedText(record.source) === keySource
-            ) || null;
-        }
+            function formatDate(value) {
+                if (!value) return '-';
+                const date = new Date(value);
+                if (Number.isNaN(date.getTime())) return String(value);
+                return date.toLocaleString('vi-VN', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            }
 
-        function productNameOf(id) {
-            const key = normalizeId(id);
-            if (!key) return '-';
-            const found = state.products.find((x) => normalizeId(x.id) === key);
-            if (!found) return shortUuid(key);
-            return found.name || found.code || found.sku || shortUuid(found.id);
-        }
+            function parseDate(value) {
+                const date = value ? new Date(value) : null;
+                return date && !Number.isNaN(date.getTime()) ? date : null;
+            }
 
-        function uomNameOf(id) {
-            const key = normalizeId(id);
-            if (!key) return '-';
-            const found = state.uoms.find((x) => normalizeId(x.id) === key);
-            if (!found) return shortUuid(key);
-            return found.name || found.code || shortUuid(found.id);
-        }
+            function getWarehouseName(id) {
+                if (!id) return '-';
+                return state.warehouses.get(id) || shortUuid(id);
+            }
 
-        function formatQuantity(value) {
-            const number = Number(value);
-            if (!Number.isFinite(number)) return '-';
-            return number.toLocaleString('vi-VN', {maximumFractionDigits: 6});
-        }
-
-        function approvalStepsFor(record) {
-            const id = encodeURIComponent(normalizeId(record.id));
-            const status = normalizedText(record.status);
-            const source = normalizedText(record.source);
-
-            if (source === 'INBOUND') {
-                if (status === 'DRAFT') {
-                    return ['/api/v1/inbounds/' + id + '/submit', '/api/v1/inbounds/' + id + '/approve'];
+            function getWarehouseLabel(record) {
+                if (record.source === 'TRANSFER') {
+                    return getWarehouseName(record.warehouseId) + ' -> ' + getWarehouseName(record.toWarehouseId);
                 }
-                if (status === 'SUBMITTED') {
-                    return ['/api/v1/inbounds/' + id + '/approve'];
+                return getWarehouseName(record.warehouseId);
+            }
+
+            function statusBadge(status) {
+                const key = String(status || 'UNKNOWN').toUpperCase();
+                const meta = STATUS_META[key] || STATUS_META.UNKNOWN;
+                return '<span class="tx-status-badge ' + meta.className + '">' + meta.label + '</span>';
+            }
+
+            function typeBadge(source) {
+                const key = String(source || 'INBOUND').toUpperCase();
+                const meta = TYPE_META[key] || TYPE_META.INBOUND;
+                return '<span class="tx-type-badge ' + meta.className + '">' + meta.label + '</span>';
+            }
+
+            function normalizedText(value) {
+                return String(value || '').trim().toUpperCase();
+            }
+
+            function businessTypeText(record) {
+                const rawBusinessType = String(record.businessType || '').trim();
+                if (!rawBusinessType) return '-';
+
+                const businessTypeKey = normalizedText(rawBusinessType);
+                const sourceKey = normalizedText(record.source);
+                const sourceLabelKey = TYPE_META[sourceKey] ? normalizedText(TYPE_META[sourceKey].label) : '';
+                if (businessTypeKey === sourceKey || (sourceLabelKey && businessTypeKey === sourceLabelKey)) {
+                    return '-';
                 }
+                return rawBusinessType;
+            }
+
+            function findRecordByIdentity(id, source) {
+                const keyId = normalizeId(id);
+                const keySource = normalizedText(source);
+                return state.records.find((record) =>
+                    normalizeId(record.id) === keyId && normalizedText(record.source) === keySource
+                ) || null;
+            }
+
+            function productNameOf(id) {
+                const key = normalizeId(id);
+                if (!key) return '-';
+                const found = state.products.find((x) => normalizeId(x.id) === key);
+                if (!found) return shortUuid(key);
+                return found.name || found.code || found.sku || shortUuid(found.id);
+            }
+
+            function uomNameOf(id) {
+                const key = normalizeId(id);
+                if (!key) return '-';
+                const found = state.uoms.find((x) => normalizeId(x.id) === key);
+                if (!found) return shortUuid(key);
+                return found.name || found.code || shortUuid(found.id);
+            }
+
+            function formatQuantity(value) {
+                const number = Number(value);
+                if (!Number.isFinite(number)) return '-';
+                return number.toLocaleString('vi-VN', { maximumFractionDigits: 6 });
+            }
+
+            function approvalStepsFor(record) {
+                const id = encodeURIComponent(normalizeId(record.id));
+                const status = normalizedText(record.status);
+                const source = normalizedText(record.source);
+
+                if (source === 'INBOUND') {
+                    if (status === 'DRAFT') {
+                        return ['/api/v1/inbounds/' + id + '/submit', '/api/v1/inbounds/' + id + '/approve'];
+                    }
+                    if (status === 'SUBMITTED') {
+                        return ['/api/v1/inbounds/' + id + '/approve'];
+                    }
+                    return [];
+                }
+
+                if (source === 'OUTBOUND') {
+                    if (status === 'DRAFT') {
+                        return ['/api/v1/outbounds/' + id + '/submit', '/api/v1/outbounds/' + id + '/approve'];
+                    }
+                    if (status === 'SUBMITTED') {
+                        return ['/api/v1/outbounds/' + id + '/approve'];
+                    }
+                    return [];
+                }
+
+                if (source === 'TRANSFER') {
+                    if (status === 'DRAFT') {
+                        return ['/api/v1/transfers/' + id + '/approve'];
+                    }
+                    return [];
+                }
+
                 return [];
             }
 
-            if (source === 'OUTBOUND') {
-                if (status === 'DRAFT') {
-                    return ['/api/v1/outbounds/' + id + '/submit', '/api/v1/outbounds/' + id + '/approve'];
+            function rejectEndpointFor(record) {
+                const id = encodeURIComponent(normalizeId(record.id));
+                const status = normalizedText(record.status);
+                const source = normalizedText(record.source);
+
+                if (source === 'INBOUND') {
+                    return ['DRAFT', 'SUBMITTED', 'APPROVED'].includes(status)
+                        ? '/api/v1/inbounds/' + id + '/reject'
+                        : '';
                 }
-                if (status === 'SUBMITTED') {
-                    return ['/api/v1/outbounds/' + id + '/approve'];
+
+                if (source === 'OUTBOUND') {
+                    return ['DRAFT', 'SUBMITTED', 'APPROVED'].includes(status)
+                        ? '/api/v1/outbounds/' + id + '/reject'
+                        : '';
                 }
+
+                if (source === 'TRANSFER') {
+                    return ['DRAFT', 'APPROVED'].includes(status)
+                        ? '/api/v1/transfers/' + id + '/reject'
+                        : '';
+                }
+
+                return '';
+            }
+
+            function completeStepsFor(record) {
+                const id = encodeURIComponent(normalizeId(record.id));
+                const status = normalizedText(record.status);
+                const source = normalizedText(record.source);
+
+                if (source === 'INBOUND') {
+                    return status === 'APPROVED' ? ['/api/v1/inbounds/' + id + '/receive'] : [];
+                }
+
+                if (source === 'OUTBOUND') {
+                    return status === 'APPROVED' ? ['/api/v1/outbounds/' + id + '/complete'] : [];
+                }
+
+                if (source === 'TRANSFER') {
+                    if (status === 'APPROVED') {
+                        return ['/api/v1/transfers/' + id + '/issue', '/api/v1/transfers/' + id + '/receive'];
+                    }
+                }
+
                 return [];
             }
 
-            if (source === 'TRANSFER') {
-                if (status === 'DRAFT') {
-                    return ['/api/v1/transfers/' + id + '/approve'];
+            function getActiveDetailRecord() {
+                if (!state.activeDetailId || !state.activeDetailSource) return null;
+                return findRecordByIdentity(state.activeDetailId, state.activeDetailSource);
+            }
+
+            function syncDetailActionButtons(record) {
+                if (!el.detailApproveBtn || !el.detailRejectBtn || !el.detailCompleteBtn || !el.detailActionHint) return;
+                const target = record || getActiveDetailRecord();
+                const busy = state.isDetailActionBusy;
+                const canApprove = !!target && approvalStepsFor(target).length > 0;
+                const canReject = !!target && !!rejectEndpointFor(target);
+                const canComplete = !!target && completeStepsFor(target).length > 0;
+                const status = target ? normalizedText(target.status) : '';
+
+                const showComplete = !!target && canComplete;
+                const showApprove = !!target && !showComplete && canApprove;
+                const showReject = !!target && !showComplete && canReject;
+
+                el.detailApproveBtn.classList.toggle('d-none', !showApprove);
+                el.detailRejectBtn.classList.toggle('d-none', !showReject);
+                el.detailCompleteBtn.classList.toggle('d-none', !showComplete);
+                if (el.detailCancelBtn) el.detailCancelBtn.classList.toggle('d-none', !showComplete);
+
+                el.detailApproveBtn.disabled = busy || !canApprove;
+                el.detailRejectBtn.disabled = busy || !canReject;
+                el.detailCompleteBtn.disabled = busy || !canComplete;
+                if (el.detailCancelBtn) el.detailCancelBtn.disabled = busy || !canReject;
+
+                if (busy) {
+                    el.detailActionHint.textContent = 'Processing action...';
+                    return;
                 }
-                return [];
-            }
-
-            return [];
-        }
-
-        function rejectEndpointFor(record) {
-            const id = encodeURIComponent(normalizeId(record.id));
-            const status = normalizedText(record.status);
-            const source = normalizedText(record.source);
-
-            if (source === 'INBOUND') {
-                return ['DRAFT', 'SUBMITTED', 'APPROVED'].includes(status)
-                    ? '/api/v1/inbounds/' + id + '/reject'
-                    : '';
-            }
-
-            if (source === 'OUTBOUND') {
-                return ['DRAFT', 'SUBMITTED', 'APPROVED'].includes(status)
-                    ? '/api/v1/outbounds/' + id + '/reject'
-                    : '';
-            }
-
-            if (source === 'TRANSFER') {
-                return ['DRAFT', 'APPROVED'].includes(status)
-                    ? '/api/v1/transfers/' + id + '/reject'
-                    : '';
-            }
-
-            return '';
-        }
-
-        function completeStepsFor(record) {
-            const id = encodeURIComponent(normalizeId(record.id));
-            const status = normalizedText(record.status);
-            const source = normalizedText(record.source);
-
-            if (source === 'INBOUND') {
-                return status === 'APPROVED' ? ['/api/v1/inbounds/' + id + '/receive'] : [];
-            }
-
-            if (source === 'OUTBOUND') {
-                return status === 'APPROVED' ? ['/api/v1/outbounds/' + id + '/complete'] : [];
-            }
-
-            if (source === 'TRANSFER') {
-                if (status === 'APPROVED') {
-                    return ['/api/v1/transfers/' + id + '/issue', '/api/v1/transfers/' + id + '/receive'];
+                if (!target) {
+                    el.detailActionHint.textContent = 'No transaction is selected.';
+                    return;
                 }
-            }
-
-            return [];
-        }
-
-        function getActiveDetailRecord() {
-            if (!state.activeDetailId || !state.activeDetailSource) return null;
-            return findRecordByIdentity(state.activeDetailId, state.activeDetailSource);
-        }
-
-        function syncDetailActionButtons(record) {
-            if (!el.detailApproveBtn || !el.detailRejectBtn || !el.detailCompleteBtn || !el.detailActionHint) return;
-            const target = record || getActiveDetailRecord();
-            const busy = state.isDetailActionBusy;
-            const canApprove = !!target && approvalStepsFor(target).length > 0;
-            const canReject = !!target && !!rejectEndpointFor(target);
-            const canComplete = !!target && completeStepsFor(target).length > 0;
-            const status = target ? normalizedText(target.status) : '';
-
-            const showComplete = !!target && canComplete;
-            const showApprove = !!target && !showComplete && canApprove;
-            const showReject = !!target && !showComplete && canReject;
-
-            el.detailApproveBtn.classList.toggle('d-none', !showApprove);
-            el.detailRejectBtn.classList.toggle('d-none', !showReject);
-            el.detailCompleteBtn.classList.toggle('d-none', !showComplete);
-
-            el.detailApproveBtn.disabled = busy || !canApprove;
-            el.detailRejectBtn.disabled = busy || !canReject;
-            el.detailCompleteBtn.disabled = busy || !canComplete;
-
-            if (busy) {
-                el.detailActionHint.textContent = 'Processing action...';
-                return;
-            }
-            if (!target) {
-                el.detailActionHint.textContent = 'No transaction is selected.';
-                return;
-            }
-            if (showComplete) {
-                el.detailActionHint.textContent = 'This transaction is approved. Confirm completion when finished.';
-                return;
-            }
-            if (showApprove && showReject) {
-                el.detailActionHint.textContent = 'You can approve or reject this transaction.';
-                return;
-            }
-            if (showApprove) {
-                el.detailActionHint.textContent = 'Only approve is available for this status.';
-                return;
-            }
-            if (showReject) {
-                el.detailActionHint.textContent = 'Only reject is available for this status.';
-                return;
-            }
-            if (status === 'CANCELLED') {
-                el.detailActionHint.textContent = 'This transaction has been rejected/cancelled.';
-                return;
-            }
-            if (status === 'COMPLETED') {
-                el.detailActionHint.textContent = 'This transaction is already completed.';
-                return;
-            }
-            el.detailActionHint.textContent = 'No action available for current status.';
-        }
-
-        async function postAction(endpoint, fallbackMessage) {
-            const response = await fetch(endpoint, {
-                method: 'POST',
-                headers: {'Accept': 'application/json'},
-                credentials: 'same-origin'
-            });
-
-            if (response.ok) return;
-
-            let errorMessage = '';
-            try {
-                const errorBody = await response.json();
-                errorMessage = errorBody.message || errorBody.error || '';
-            } catch (ignore) {
-                errorMessage = '';
-            }
-            throw new Error(errorMessage || fallbackMessage || ('Action failed (HTTP ' + response.status + ').'));
-        }
-
-        function openDetailModal(record) {
-            if (!detailModalInstance) {
-                showAlert('warning', 'Detail modal is unavailable.');
-                return;
-            }
-
-            el.detailCode.textContent = record.code || shortUuid(record.id);
-            el.detailType.innerHTML = typeBadge(record.source);
-            el.detailStatus.innerHTML = statusBadge(record.status);
-            el.detailBusinessType.textContent = businessTypeText(record);
-            el.detailWarehouse.textContent = getWarehouseLabel(record);
-            el.detailCreatedAt.textContent = formatDate(record.createdAt);
-            el.detailCreatedBy.textContent = shortUuid(record.createdBy);
-
-            const lines = Array.isArray(record.lines) ? record.lines : [];
-            el.detailLineCount.textContent = String(lines.length);
-            if (lines.length === 0) {
-                el.detailLinesBody.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-3">No line data.</td></tr>';
-            } else {
-                el.detailLinesBody.innerHTML = lines.map((line, index) => [
-                    '<tr>',
-                    '<td class="text-muted">', String(index + 1), '</td>',
-                    '<td>', escapeHtml(productNameOf(line.productId)), '</td>',
-                    '<td>', escapeHtml(formatQuantity(line.quantity)), '</td>',
-                    '<td>', escapeHtml(uomNameOf(line.uomId)), '</td>',
-                    '</tr>'
-                ].join('')).join('');
-            }
-
-            state.activeDetailId = normalizeId(record.id);
-            state.activeDetailSource = normalizedText(record.source);
-            syncDetailActionButtons(record);
-            detailModalInstance.show();
-        }
-
-        async function approveTransaction(record) {
-            const steps = approvalStepsFor(record);
-            if (steps.length === 0) {
-                showAlert('warning', 'This transaction cannot be approved at current status.');
-                syncDetailActionButtons(record);
-                return;
-            }
-
-            const code = record.code || shortUuid(record.id);
-            if (!window.confirm('Approve transaction "' + code + '"?')) {
-                return;
-            }
-
-            state.isDetailActionBusy = true;
-            syncDetailActionButtons(record);
-            try {
-                for (const endpoint of steps) {
-                    await postAction(endpoint, 'Failed to approve transaction.');
+                if (showComplete) {
+                    el.detailActionHint.textContent = 'This transaction is approved. Confirm completion when finished.';
+                    return;
                 }
-                showAlert('info', 'Transaction approved successfully.');
-                if (detailModalInstance) {
-                    detailModalInstance.hide();
+                if (showApprove && showReject) {
+                    el.detailActionHint.textContent = 'You can approve or reject this transaction.';
+                    return;
                 }
-                await loadData();
-            } catch (error) {
-                showAlert('danger', error.message || 'Failed to approve transaction.');
-            } finally {
-                state.isDetailActionBusy = false;
-                syncDetailActionButtons(getActiveDetailRecord());
-            }
-        }
-
-        async function rejectTransaction(record) {
-            const endpoint = rejectEndpointFor(record);
-            if (!endpoint) {
-                showAlert('warning', 'This transaction cannot be rejected at current status.');
-                syncDetailActionButtons(record);
-                return;
-            }
-
-            const code = record.code || shortUuid(record.id);
-            if (!window.confirm('Reject transaction "' + code + '"?')) {
-                return;
-            }
-
-            state.isDetailActionBusy = true;
-            syncDetailActionButtons(record);
-            try {
-                await postAction(endpoint, 'Failed to reject transaction.');
-                showAlert('info', 'Transaction rejected successfully.');
-                if (detailModalInstance) {
-                    detailModalInstance.hide();
+                if (showApprove) {
+                    el.detailActionHint.textContent = 'Only approve is available for this status.';
+                    return;
                 }
-                await loadData();
-            } catch (error) {
-                showAlert('danger', error.message || 'Failed to reject transaction.');
-            } finally {
-                state.isDetailActionBusy = false;
-                syncDetailActionButtons(getActiveDetailRecord());
-            }
-        }
-
-        async function completeTransaction(record) {
-            const steps = completeStepsFor(record);
-            if (steps.length === 0) {
-                showAlert('warning', 'This transaction cannot be completed at current status.');
-                syncDetailActionButtons(record);
-                return;
-            }
-
-            const code = record.code || shortUuid(record.id);
-            if (!window.confirm('Confirm completion for transaction "' + code + '"?')) {
-                return;
-            }
-
-            state.isDetailActionBusy = true;
-            syncDetailActionButtons(record);
-            try {
-                for (const endpoint of steps) {
-                    await postAction(endpoint, 'Failed to complete transaction.');
+                if (showReject) {
+                    el.detailActionHint.textContent = 'Only reject is available for this status.';
+                    return;
                 }
-                showAlert('info', 'Transaction marked as completed.');
-                if (detailModalInstance) {
-                    detailModalInstance.hide();
+                if (status === 'CANCELLED') {
+                    el.detailActionHint.textContent = 'This transaction has been rejected/cancelled.';
+                    return;
                 }
-                await loadData();
-            } catch (error) {
-                showAlert('danger', error.message || 'Failed to complete transaction.');
-            } finally {
-                state.isDetailActionBusy = false;
-                syncDetailActionButtons(getActiveDetailRecord());
-            }
-        }
-
-        function deleteEndpointFor(record) {
-            const id = normalizeId(record.id);
-            if (!id) return '';
-            const encodedId = encodeURIComponent(id);
-            if (record.source === 'INBOUND') return '/api/v1/inbounds/' + encodedId;
-            if (record.source === 'OUTBOUND') return '/api/v1/outbounds/' + encodedId;
-            if (record.source === 'TRANSFER') return '/api/v1/transfers/' + encodedId;
-            return '';
-        }
-
-        async function deleteTransaction(record) {
-            const endpoint = deleteEndpointFor(record);
-            if (!endpoint) {
-                showAlert('danger', 'Delete API is not mapped for this transaction type.');
-                return;
+                if (status === 'COMPLETED') {
+                    el.detailActionHint.textContent = 'This transaction is already completed.';
+                    return;
+                }
+                el.detailActionHint.textContent = 'No action available for current status.';
             }
 
-            const code = record.code || shortUuid(record.id);
-            const accepted = window.confirm('Delete transaction "' + code + '"?');
-            if (!accepted) return;
-
-            try {
+            async function postAction(endpoint, fallbackMessage) {
                 const response = await fetch(endpoint, {
-                    method: 'DELETE',
-                    headers: {'Accept': 'application/json'},
+                    method: 'POST',
+                    headers: { 'Accept': 'application/json' },
                     credentials: 'same-origin'
                 });
 
+                if (response.ok) return;
+
                 let errorMessage = '';
-                if (!response.ok) {
-                    try {
-                        const errorBody = await response.json();
-                        errorMessage = errorBody.message || errorBody.error || '';
-                    } catch (ignore) {
-                        errorMessage = '';
-                    }
-                    if (!errorMessage && (response.status === 404 || response.status === 405)) {
-                        errorMessage = 'Delete API is not implemented for this transaction yet.';
-                    }
-                    throw new Error(errorMessage || ('Delete failed (HTTP ' + response.status + ').'));
+                try {
+                    const errorBody = await response.json();
+                    errorMessage = errorBody.message || errorBody.error || '';
+                } catch (ignore) {
+                    errorMessage = '';
+                }
+                throw new Error(errorMessage || fallbackMessage || ('Action failed (HTTP ' + response.status + ').'));
+            }
+
+            function openDetailModal(record) {
+                if (!detailModalInstance) {
+                    showAlert('warning', 'Detail modal is unavailable.');
+                    return;
                 }
 
-                showAlert('info', 'Transaction deleted successfully.');
-                await loadData();
-            } catch (error) {
-                showAlert('danger', error.message || 'Failed to delete transaction.');
-            }
-        }
+                el.detailCode.textContent = record.code || shortUuid(record.id);
+                el.detailType.innerHTML = typeBadge(record.source);
+                el.detailStatus.innerHTML = statusBadge(record.status);
+                el.detailBusinessType.textContent = businessTypeText(record);
+                el.detailWarehouse.textContent = getWarehouseLabel(record);
+                el.detailCreatedAt.textContent = formatDate(record.createdAt);
+                el.detailCreatedBy.textContent = shortUuid(record.createdBy);
 
-        function showAlert(kind, message) {
-            if (!message) {
-                el.alert.className = 'alert rounded-0 mb-0 border-0 d-none';
-                el.alert.textContent = '';
-                return;
-            }
-            const alertClass = kind === 'danger' ? 'alert-danger' : kind === 'warning' ? 'alert-warning' : 'alert-info';
-            el.alert.className = 'alert ' + alertClass + ' rounded-0 mb-0 border-0';
-            el.alert.textContent = message;
-        }
-
-        async function fetchJson(url) {
-            const response = await fetch(url, {
-                method: 'GET',
-                headers: {'Accept': 'application/json'},
-                credentials: 'same-origin'
-            });
-            if (!response.ok) {
-                const error = new Error('HTTP ' + response.status + ' at ' + url);
-                error.status = response.status;
-                throw error;
-            }
-            return response.json();
-        }
-
-        async function fetchAllPages(baseUrl) {
-            const pageSize = 200;
-            const all = [];
-            let page = 0;
-            let totalPages = 1;
-
-            while (page < totalPages) {
-                const separator = baseUrl.includes('?') ? '&' : '?';
-                const url = baseUrl + separator + 'page=' + page + '&size=' + pageSize;
-                const data = await fetchJson(url);
-                const content = Array.isArray(data.content) ? data.content : [];
-                all.push(...content);
-
-                const apiTotalPages = Number.isFinite(data.totalPages) ? data.totalPages : 1;
-                totalPages = Math.max(apiTotalPages, 1);
-                if (apiTotalPages === 0) break;
-                page += 1;
-            }
-            return all;
-        }
-
-        function normalizeInbound(item) {
-            const lines = Array.isArray(item.lines) ? item.lines.map((line) => ({
-                id: line.id,
-                productId: line.productId,
-                uomId: line.uomId,
-                quantity: line.quantity,
-                locationId: line.locationId
-            })) : [];
-            return {
-                id: item.id,
-                source: 'INBOUND',
-                code: item.code || shortUuid(item.id),
-                businessType: item.type || '',
-                warehouseId: item.warehouseId,
-                toWarehouseId: null,
-                createdAt: item.createdAt,
-                createdBy: item.createdBy,
-                status: (item.status || 'UNKNOWN').toUpperCase(),
-                lines: lines,
-                lineCount: lines.length
-            };
-        }
-
-        function normalizeOutbound(item) {
-            const lines = Array.isArray(item.lines) ? item.lines.map((line) => ({
-                id: line.id,
-                productId: line.productId,
-                uomId: line.uomId,
-                quantity: line.quantity,
-                locationId: line.locationId
-            })) : [];
-            return {
-                id: item.id,
-                source: 'OUTBOUND',
-                code: item.code || shortUuid(item.id),
-                businessType: item.type || '',
-                warehouseId: item.warehouseId,
-                toWarehouseId: null,
-                createdAt: item.createdAt,
-                createdBy: item.createdBy,
-                status: (item.status || 'UNKNOWN').toUpperCase(),
-                lines: lines,
-                lineCount: lines.length
-            };
-        }
-
-        function normalizeTransfer(item) {
-            const lines = Array.isArray(item.lines) ? item.lines.map((line) => ({
-                id: line.id,
-                productId: line.productId,
-                uomId: line.uomId,
-                quantity: line.quantity,
-                fromLocationId: line.fromLocationId,
-                toLocationId: line.toLocationId
-            })) : [];
-            return {
-                id: item.id,
-                source: 'TRANSFER',
-                code: item.code || shortUuid(item.id),
-                businessType: 'INTERNAL_TRANSFER',
-                warehouseId: item.fromWarehouseId,
-                toWarehouseId: item.toWarehouseId,
-                createdAt: item.createdAt,
-                createdBy: item.createdBy,
-                status: (item.status || 'UNKNOWN').toUpperCase(),
-                lines: lines,
-                lineCount: lines.length
-            };
-        }
-
-        function updateStatusOptions() {
-            const options = [''];
-            const preferred = ['DRAFT', 'SUBMITTED', 'APPROVED', 'ISSUED', 'COMPLETED', 'CANCELLED'];
-            const existing = new Set(state.records.map((x) => x.status));
-            preferred.forEach((status) => {
-                if (existing.has(status)) options.push(status);
-            });
-            existing.forEach((status) => {
-                if (!preferred.includes(status)) options.push(status);
-            });
-
-            const currentValue = el.status.value;
-            el.status.innerHTML = '<option value="">All Statuses</option>';
-            options.filter(Boolean).forEach((status) => {
-                const option = document.createElement('option');
-                option.value = status;
-                option.textContent = STATUS_META[status] ? STATUS_META[status].label : status;
-                el.status.appendChild(option);
-            });
-            if ([...el.status.options].some((o) => o.value === currentValue)) {
-                el.status.value = currentValue;
-            }
-        }
-
-        function updateStats() {
-            const now = new Date();
-            const month = now.getMonth();
-            const year = now.getFullYear();
-
-            const inboundMonth = state.records.filter((x) => {
-                if (x.source !== 'INBOUND') return false;
-                const date = parseDate(x.createdAt);
-                return date && date.getMonth() === month && date.getFullYear() === year;
-            }).length;
-
-            const outboundMonth = state.records.filter((x) => {
-                if (x.source !== 'OUTBOUND') return false;
-                const date = parseDate(x.createdAt);
-                return date && date.getMonth() === month && date.getFullYear() === year;
-            }).length;
-
-            const transferMonth = state.records.filter((x) => {
-                if (x.source !== 'TRANSFER') return false;
-                const date = parseDate(x.createdAt);
-                return date && date.getMonth() === month && date.getFullYear() === year;
-            }).length;
-
-            const pending = state.records.filter((x) => PENDING_STATUSES.has(x.status)).length;
-
-            el.statTotal.textContent = String(state.records.length);
-            el.statIn.textContent = String(inboundMonth);
-            el.statOut.textContent = String(outboundMonth);
-            if (el.statTransfer) {
-                el.statTransfer.textContent = String(transferMonth);
-            }
-            el.statPending.textContent = String(pending);
-        }
-
-        function applyFilters(resetPage) {
-            if (resetPage) state.currentPage = 1;
-
-            const q = (el.search.value || '').trim().toLowerCase();
-            const typeFilter = el.type.value;
-            const statusFilter = el.status.value;
-
-            state.filtered = state.records.filter((record) => {
-                if (typeFilter && record.source !== typeFilter) return false;
-                if (statusFilter && record.status !== statusFilter) return false;
-                if (!q) return true;
-
-                const searchable = [
-                    record.code,
-                    record.source,
-                    record.businessType,
-                    getWarehouseLabel(record),
-                    record.status,
-                    shortUuid(record.createdBy)
-                ].join(' ').toLowerCase();
-                return searchable.includes(q);
-            });
-
-            renderTable();
-            renderPagination();
-            updateSummary();
-        }
-
-        function updateSummary() {
-            const total = state.filtered.length;
-            const start = total === 0 ? 0 : (state.currentPage - 1) * state.pageSize + 1;
-            const end = total === 0 ? 0 : Math.min(total, state.currentPage * state.pageSize);
-            el.summary.textContent = 'Showing ' + start + ' - ' + end + ' of ' + total + ' results';
-        }
-
-        function renderTable() {
-            const total = state.filtered.length;
-            const totalPages = Math.max(1, Math.ceil(total / state.pageSize));
-            if (state.currentPage > totalPages) state.currentPage = totalPages;
-
-            if (total === 0) {
-                el.body.innerHTML = '';
-                el.empty.classList.remove('d-none');
-                return;
-            }
-
-            el.empty.classList.add('d-none');
-
-            const from = (state.currentPage - 1) * state.pageSize;
-            const rows = state.filtered.slice(from, from + state.pageSize);
-
-            el.body.innerHTML = rows.map((record) => {
-                const code = escapeHtml(record.code || shortUuid(record.id));
-                const warehouseLabel = escapeHtml(getWarehouseLabel(record));
-                const createdAt = escapeHtml(formatDate(record.createdAt));
-                const creator = escapeHtml(shortUuid(record.createdBy));
-                const lines = Number.isFinite(record.lineCount) ? record.lineCount : 0;
-                const recordId = escapeHtml(normalizeId(record.id));
-                const recordSource = escapeHtml(record.source || '');
-                const canDelete = String(record.status || '').toUpperCase() === 'DRAFT';
-                const deleteDisabled = canDelete ? '' : ' disabled';
-                const deleteTitle = canDelete ? 'Delete this draft transaction' : 'Only DRAFT transactions can be deleted';
-
-                return [
-                    '<tr>',
-                    '<td class="px-4 py-3"><span class="tx-mono">', code, '</span></td>',
-                    '<td class="px-4 py-3">', typeBadge(record.source), '</td>',
-                    '<td class="px-4 py-3 fw-medium">', warehouseLabel, '</td>',
-                    '<td class="px-4 py-3 text-muted">', createdAt, '</td>',
-                    '<td class="px-4 py-3 text-muted">', creator, '</td>',
-                    '<td class="px-4 py-3 text-center"><span class="badge text-bg-light border">', String(lines), '</span></td>',
-                    '<td class="px-4 py-3">', statusBadge(record.status), '</td>',
-                    '<td class="px-4 py-3 text-end"><div class="tx-action-group">',
-                    '<button type="button" class="btn btn-sm btn-outline-primary tx-action-btn" title="View details" data-tx-action="detail" data-record-id="', recordId, '" data-record-source="', recordSource, '"><i class="bi bi-eye"></i></button>',
-                    '<button type="button" class="btn btn-sm btn-outline-danger tx-action-btn" data-tx-action="delete" data-record-id="', recordId, '" data-record-source="', recordSource, '" title="', deleteTitle, '"', deleteDisabled, '><i class="bi bi-trash"></i></button>',
-                    '</div></td>',
-                    '</tr>'
-                ].join('');
-            }).join('');
-        }
-
-        function pageItem(label, page, disabled, active) {
-            const disabledClass = disabled ? 'disabled' : '';
-            const activeClass = active ? 'active' : '';
-            const safePage = disabled ? '' : 'data-page="' + page + '"';
-            return '<li class="page-item ' + disabledClass + ' ' + activeClass + '"><button class="page-link" type="button" ' + safePage + '>' + label + '</button></li>';
-        }
-
-        function renderPagination() {
-            const total = state.filtered.length;
-            const totalPages = Math.max(1, Math.ceil(total / state.pageSize));
-            const current = Math.min(state.currentPage, totalPages);
-            state.currentPage = current;
-
-            if (total === 0) {
-                el.pagination.innerHTML = '';
-                return;
-            }
-
-            let html = '';
-            html += pageItem('<i class="bi bi-chevron-left"></i>', current - 1, current === 1, false);
-
-            const windowSize = 5;
-            let start = Math.max(1, current - Math.floor(windowSize / 2));
-            let end = Math.min(totalPages, start + windowSize - 1);
-            if (end - start + 1 < windowSize) {
-                start = Math.max(1, end - windowSize + 1);
-            }
-
-            for (let p = start; p <= end; p += 1) {
-                html += pageItem(String(p), p, false, p === current);
-            }
-
-            html += pageItem('<i class="bi bi-chevron-right"></i>', current + 1, current === totalPages, false);
-            el.pagination.innerHTML = html;
-        }
-
-        function csvEscape(value) {
-            const text = String(value ?? '');
-            if (text.includes(',') || text.includes('"') || text.includes('\n')) {
-                return '"' + text.replace(/"/g, '""') + '"';
-            }
-            return text;
-        }
-
-        function normalizeId(value) {
-            return value ? String(value).trim() : '';
-        }
-
-        function todayInputValue() {
-            const now = new Date();
-            const yyyy = now.getFullYear();
-            const mm = String(now.getMonth() + 1).padStart(2, '0');
-            const dd = String(now.getDate()).padStart(2, '0');
-            return yyyy + '-' + mm + '-' + dd;
-        }
-
-        function setReceiptFormAlert(kind, message) {
-            if (!message) {
-                el.receiptFormAlert.className = 'alert receipt-form-alert d-none';
-                el.receiptFormAlert.textContent = '';
-                return;
-            }
-            const alertClass = kind === 'danger' ? 'alert-danger'
-                : kind === 'warning' ? 'alert-warning'
-                    : kind === 'success' ? 'alert-success'
-                        : 'alert-info';
-            el.receiptFormAlert.className = 'alert ' + alertClass + ' receipt-form-alert';
-            el.receiptFormAlert.textContent = message;
-        }
-
-        function syncReceiptSaveButton() {
-            const selectedType = getSelectedReceiptType();
-            const supplierReady = selectedType !== 'INBOUND' || state.suppliers.length > 0;
-            const isReady = state.warehouseList.length > 0 && state.products.length > 0 && state.uoms.length > 0 && supplierReady;
-            el.saveReceiptBtn.disabled = state.isSubmittingReceipt || !isReady;
-            return isReady;
-        }
-
-        function buildWarehouseOptionsHtml(selectedValue, placeholder) {
-            const selected = normalizeId(selectedValue);
-            const options = ['<option value="">' + escapeHtml(placeholder || 'Select warehouse') + '</option>'];
-            state.warehouseList.forEach((warehouse) => {
-                const id = normalizeId(warehouse.id);
-                const selectedAttr = selected && selected === id ? ' selected' : '';
-                const label = escapeHtml((warehouse.name || '') + (warehouse.code ? ' (' + warehouse.code + ')' : ''));
-                options.push('<option value="' + id + '"' + selectedAttr + '>' + label + '</option>');
-            });
-            return options.join('');
-        }
-
-        function populateWarehouseSelect(selectElement, selectedValue, placeholder) {
-            if (!selectElement) return;
-            selectElement.innerHTML = buildWarehouseOptionsHtml(selectedValue, placeholder);
-        }
-
-        function buildSupplierOptionsHtml(selectedValue, placeholder) {
-            const selected = normalizeId(selectedValue);
-            const options = ['<option value="">' + escapeHtml(placeholder || 'Select supplier') + '</option>'];
-            state.suppliers.forEach((supplier) => {
-                const id = normalizeId(supplier.id);
-                const selectedAttr = selected && selected === id ? ' selected' : '';
-                const label = escapeHtml((supplier.name || '') + (supplier.code ? ' (' + supplier.code + ')' : ''));
-                options.push('<option value="' + id + '"' + selectedAttr + '>' + label + '</option>');
-            });
-            return options.join('');
-        }
-
-        function populateSupplierSelect(selectElement, selectedValue, placeholder) {
-            if (!selectElement) return;
-            selectElement.innerHTML = buildSupplierOptionsHtml(selectedValue, placeholder);
-        }
-
-        function renderReceiptTypeFields() {
-            const type = getSelectedReceiptType();
-            const isTransfer = type === 'TRANSFER';
-            const isInbound = type === 'INBOUND';
-            const isOutbound = type === 'OUTBOUND';
-
-            if (el.receiptWarehouseGroup) {
-                el.receiptWarehouseGroup.classList.toggle('d-none', isTransfer);
-            }
-            if (el.receiptFromWarehouseGroup) {
-                el.receiptFromWarehouseGroup.classList.toggle('d-none', !isTransfer);
-            }
-            if (el.receiptToWarehouseGroup) {
-                el.receiptToWarehouseGroup.classList.toggle('d-none', !isTransfer);
-            }
-            if (el.receiptSupplierGroup) {
-                el.receiptSupplierGroup.classList.toggle('d-none', !isInbound);
-            }
-            if (el.receiptWarehouseLabel) {
-                el.receiptWarehouseLabel.textContent = isOutbound ? 'Warehouse / Source Unit' : 'Warehouse / Unit';
-            }
-            if (el.receiptWarehouse) {
-                const placeholder = isOutbound ? 'Select source warehouse' : 'Select warehouse';
-                populateWarehouseSelect(el.receiptWarehouse, el.receiptWarehouse.value, placeholder);
-            }
-            if (el.receiptFromWarehouse) {
-                populateWarehouseSelect(el.receiptFromWarehouse, el.receiptFromWarehouse.value, 'Select source warehouse');
-            }
-            if (el.receiptToWarehouse) {
-                populateWarehouseSelect(el.receiptToWarehouse, el.receiptToWarehouse.value, 'Select destination warehouse');
-            }
-            if (el.receiptSupplier) {
-                populateSupplierSelect(el.receiptSupplier, el.receiptSupplier.value, 'Select supplier');
-            }
-            syncReceiptSaveButton();
-        }
-
-        function buildProductOptions(selectedValue) {
-            const selected = normalizeId(selectedValue);
-            const options = ['<option value="">Select product</option>'];
-            state.products.forEach((product) => {
-                const id = normalizeId(product.id);
-                const selectedAttr = selected && selected === id ? ' selected' : '';
-                const productLabel = (product.name || shortUuid(product.id)) + (product.sku ? ' (' + product.sku + ')' : '');
-                options.push('<option value="' + id + '"' + selectedAttr + '>' + escapeHtml(productLabel) + '</option>');
-            });
-            return options.join('');
-        }
-
-        function buildUomOptions(selectedValue) {
-            const selected = normalizeId(selectedValue);
-            const options = ['<option value="">Select unit</option>'];
-            state.uoms.forEach((uom) => {
-                const id = normalizeId(uom.id);
-                const selectedAttr = selected && selected === id ? ' selected' : '';
-                const uomLabel = (uom.name || shortUuid(uom.id)) + (uom.code ? ' (' + uom.code + ')' : '');
-                options.push('<option value="' + id + '"' + selectedAttr + '>' + escapeHtml(uomLabel) + '</option>');
-            });
-            return options.join('');
-        }
-
-        function findProductById(productId) {
-            const id = normalizeId(productId);
-            return state.products.find((p) => normalizeId(p.id) === id) || null;
-        }
-
-        function createItemRow(defaults) {
-            const data = defaults || {};
-            const row = document.createElement('tr');
-            row.innerHTML = [
-                '<td><select class="form-select receipt-item-product">', buildProductOptions(data.productId), '</select></td>',
-                '<td><input type="number" class="form-control receipt-item-qty" min="0.000001" step="0.000001" value="', escapeHtml(data.quantity || '1'), '" /></td>',
-                '<td><select class="form-select receipt-item-uom">', buildUomOptions(data.uomId), '</select></td>',
-                '<td><input type="text" class="form-control receipt-item-note" value="', escapeHtml(data.note || ''), '" placeholder="Product notes..." /></td>',
-                '<td class="text-end"><button type="button" class="receipt-remove-item" title="Remove item"><i class="bi bi-trash"></i></button></td>'
-            ].join('');
-
-            const productSelect = row.querySelector('.receipt-item-product');
-            const uomSelect = row.querySelector('.receipt-item-uom');
-            if (productSelect && !normalizeId(uomSelect.value)) {
-                const p = findProductById(productSelect.value);
-                if (p && p.baseUomId) {
-                    uomSelect.value = normalizeId(p.baseUomId);
-                }
-            }
-            return row;
-        }
-
-        function resetReceiptForm() {
-            if (!el.receiptForm) return;
-            el.receiptForm.reset();
-            setReceiptFormAlert('', '');
-            el.receiptDateCreated.value = todayInputValue();
-            if (el.receiptWarehouse) el.receiptWarehouse.value = '';
-            if (el.receiptFromWarehouse) el.receiptFromWarehouse.value = '';
-            if (el.receiptToWarehouse) el.receiptToWarehouse.value = '';
-            if (el.receiptSupplier) el.receiptSupplier.value = '';
-            renderReceiptTypeFields();
-            el.receiptItemsBody.innerHTML = '';
-            el.receiptItemsBody.appendChild(createItemRow());
-
-            if (!syncReceiptSaveButton()) {
-                setReceiptFormAlert('warning', 'Master data is not ready yet. Please refresh API data and try again.');
-            }
-        }
-
-        function getSelectedReceiptType() {
-            const checked = document.querySelector('input[name="receiptType"]:checked');
-            return checked ? checked.value : 'INBOUND';
-        }
-
-        function collectReceiptLines(receiptType) {
-            const rows = [...el.receiptItemsBody.querySelectorAll('tr')];
-            if (rows.length === 0) {
-                throw new Error('Please add at least one item.');
-            }
-
-            return rows.map((row, index) => {
-                const productId = normalizeId(row.querySelector('.receipt-item-product')?.value);
-                const uomId = normalizeId(row.querySelector('.receipt-item-uom')?.value);
-                const qtyRaw = String(row.querySelector('.receipt-item-qty')?.value || '').trim();
-                const quantity = Number(qtyRaw);
-                const rowNumber = index + 1;
-
-                if (!productId) throw new Error('Row ' + rowNumber + ': please select a product.');
-                if (!uomId) throw new Error('Row ' + rowNumber + ': please select a unit.');
-                if (!Number.isFinite(quantity) || quantity <= 0) {
-                    throw new Error('Row ' + rowNumber + ': quantity must be greater than 0.');
-                }
-
-                const base = {
-                    productId: productId,
-                    uomId: uomId,
-                    quantity: quantity
-                };
-                if (receiptType === 'TRANSFER') {
-                    return {...base, fromLocationId: null, toLocationId: null};
-                }
-                return {...base, locationId: null};
-            });
-        }
-
-        async function submitReceiptForm(event) {
-            event.preventDefault();
-            setReceiptFormAlert('', '');
-
-            try {
-                const type = getSelectedReceiptType();
-                const lines = collectReceiptLines(type);
-                let endpoint = '/api/v1/inbounds';
-                let payload;
-
-                if (type === 'TRANSFER') {
-                    const fromWarehouseId = normalizeId(el.receiptFromWarehouse?.value);
-                    const toWarehouseId = normalizeId(el.receiptToWarehouse?.value);
-                    if (!fromWarehouseId) {
-                        throw new Error('Please select source warehouse.');
-                    }
-                    if (!toWarehouseId) {
-                        throw new Error('Please select destination warehouse.');
-                    }
-                    if (fromWarehouseId === toWarehouseId) {
-                        throw new Error('Source and destination warehouse must be different.');
-                    }
-                    payload = {
-                        fromWarehouseId: fromWarehouseId,
-                        toWarehouseId: toWarehouseId,
-                        lines: lines
-                    };
-                    endpoint = '/api/v1/transfers';
+                const lines = Array.isArray(record.lines) ? record.lines : [];
+                el.detailLineCount.textContent = String(lines.length);
+                if (lines.length === 0) {
+                    el.detailLinesBody.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-3">No line data.</td></tr>';
                 } else {
-                    const warehouseId = normalizeId(el.receiptWarehouse?.value);
-                    if (!warehouseId) {
-                        throw new Error('Please select warehouse.');
-                    }
-                    const supplierId = normalizeId(el.receiptSupplier?.value);
-                    if (type === 'INBOUND' && !supplierId) {
-                        throw new Error('Please select supplier for inbound receipt.');
-                    }
-                    payload = {
-                        warehouseId: warehouseId,
-                        type: type,
-                        lines: lines
-                    };
-                    if (type === 'INBOUND') {
-                        payload.supplierId = supplierId;
-                    }
-                    endpoint = type === 'OUTBOUND' ? '/api/v1/outbounds' : '/api/v1/inbounds';
+                    el.detailLinesBody.innerHTML = lines.map((line, index) => [
+                        '<tr>',
+                        '<td class="text-muted">', String(index + 1), '</td>',
+                        '<td>', escapeHtml(productNameOf(line.productId)), '</td>',
+                        '<td>', escapeHtml(formatQuantity(line.quantity)), '</td>',
+                        '<td>', escapeHtml(uomNameOf(line.uomId)), '</td>',
+                        '</tr>'
+                    ].join('')).join('');
                 }
 
-                state.isSubmittingReceipt = true;
-                syncReceiptSaveButton();
-                el.saveReceiptBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>Saving...';
+                state.activeDetailId = normalizeId(record.id);
+                state.activeDetailSource = normalizedText(record.source);
+                syncDetailActionButtons(record);
+                detailModalInstance.show();
+            }
 
-                const response = await fetch(endpoint, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
-                    credentials: 'same-origin',
-                    body: JSON.stringify(payload)
+            async function approveTransaction(record) {
+                const steps = approvalStepsFor(record);
+                if (steps.length === 0) {
+                    showAlert('warning', 'This transaction cannot be approved at current status.');
+                    syncDetailActionButtons(record);
+                    return;
+                }
+
+                const code = record.code || shortUuid(record.id);
+                if (!window.confirm('Approve transaction "' + code + '"?')) {
+                    return;
+                }
+
+                state.isDetailActionBusy = true;
+                syncDetailActionButtons(record);
+                try {
+                    for (const endpoint of steps) {
+                        await postAction(endpoint, 'Failed to approve transaction.');
+                    }
+                    showAlert('info', 'Transaction approved successfully.');
+                    if (detailModalInstance) {
+                        detailModalInstance.hide();
+                    }
+                    await loadData();
+                } catch (error) {
+                    showAlert('danger', error.message || 'Failed to approve transaction.');
+                } finally {
+                    state.isDetailActionBusy = false;
+                    syncDetailActionButtons(getActiveDetailRecord());
+                }
+            }
+
+            async function rejectTransaction(record) {
+                const endpoint = rejectEndpointFor(record);
+                if (!endpoint) {
+                    showAlert('warning', 'This transaction cannot be rejected at current status.');
+                    syncDetailActionButtons(record);
+                    return;
+                }
+
+                const code = record.code || shortUuid(record.id);
+                if (!window.confirm('Reject transaction "' + code + '"?')) {
+                    return;
+                }
+
+                state.isDetailActionBusy = true;
+                syncDetailActionButtons(record);
+                try {
+                    await postAction(endpoint, 'Failed to reject transaction.');
+                    showAlert('info', 'Transaction rejected successfully.');
+                    if (detailModalInstance) {
+                        detailModalInstance.hide();
+                    }
+                    await loadData();
+                } catch (error) {
+                    showAlert('danger', error.message || 'Failed to reject transaction.');
+                } finally {
+                    state.isDetailActionBusy = false;
+                    syncDetailActionButtons(getActiveDetailRecord());
+                }
+            }
+
+            async function completeTransaction(record) {
+                const steps = completeStepsFor(record);
+                if (steps.length === 0) {
+                    showAlert('warning', 'This transaction cannot be completed at current status.');
+                    syncDetailActionButtons(record);
+                    return;
+                }
+
+                const code = record.code || shortUuid(record.id);
+                if (!window.confirm('Confirm completion for transaction "' + code + '"?')) {
+                    return;
+                }
+
+                state.isDetailActionBusy = true;
+                syncDetailActionButtons(record);
+                try {
+                    for (const endpoint of steps) {
+                        await postAction(endpoint, 'Failed to complete transaction.');
+                    }
+                    showAlert('info', 'Transaction marked as completed.');
+                    if (detailModalInstance) {
+                        detailModalInstance.hide();
+                    }
+                    await loadData();
+                } catch (error) {
+                    showAlert('danger', error.message || 'Failed to complete transaction.');
+                } finally {
+                    state.isDetailActionBusy = false;
+                    syncDetailActionButtons(getActiveDetailRecord());
+                }
+            }
+
+            function deleteEndpointFor(record) {
+                const id = normalizeId(record.id);
+                if (!id) return '';
+                const encodedId = encodeURIComponent(id);
+                if (record.source === 'INBOUND') return '/api/v1/inbounds/' + encodedId;
+                if (record.source === 'OUTBOUND') return '/api/v1/outbounds/' + encodedId;
+                if (record.source === 'TRANSFER') return '/api/v1/transfers/' + encodedId;
+                return '';
+            }
+
+            async function deleteTransaction(record) {
+                const status = String(record.status || '').toUpperCase();
+                if (status !== 'DRAFT') {
+                    showAlert('warning', 'Only DRAFT transactions can be deleted.');
+                    return;
+                }
+
+                const endpoint = deleteEndpointFor(record);
+                if (!endpoint) {
+                    showAlert('danger', 'Delete API is not mapped for this transaction type.');
+                    return;
+                }
+
+                const code = record.code || shortUuid(record.id);
+                const accepted = window.confirm('Delete transaction "' + code + '"?');
+                if (!accepted) return;
+
+                try {
+                    const response = await fetch(endpoint, {
+                        method: 'DELETE',
+                        headers: { 'Accept': 'application/json' },
+                        credentials: 'same-origin'
+                    });
+
+                    let errorMessage = '';
+                    if (!response.ok) {
+                        try {
+                            const errorBody = await response.json();
+                            errorMessage = errorBody.message || errorBody.error || '';
+                        } catch (ignore) {
+                            errorMessage = '';
+                        }
+                        if (!errorMessage && (response.status === 404 || response.status === 405)) {
+                            errorMessage = 'Delete API is not implemented for this transaction yet.';
+                        }
+                        throw new Error(errorMessage || ('Delete failed (HTTP ' + response.status + ').'));
+                    }
+
+                    showAlert('info', 'Transaction deleted successfully.');
+                    await loadData();
+                } catch (error) {
+                    showAlert('danger', error.message || 'Failed to delete transaction.');
+                }
+            }
+
+            function showAlert(kind, message) {
+                if (!message) {
+                    el.alert.className = 'alert rounded-0 mb-0 border-0 d-none';
+                    el.alert.textContent = '';
+                    return;
+                }
+                const alertClass = kind === 'danger' ? 'alert-danger' : kind === 'warning' ? 'alert-warning' : 'alert-info';
+                el.alert.className = 'alert ' + alertClass + ' rounded-0 mb-0 border-0';
+                el.alert.textContent = message;
+            }
+
+            async function fetchJson(url) {
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: { 'Accept': 'application/json' },
+                    credentials: 'same-origin'
                 });
-
-                let errorMessage = '';
                 if (!response.ok) {
-                    try {
-                        const errorBody = await response.json();
-                        errorMessage = errorBody.message || errorBody.error || '';
-                    } catch (ignore) {
-                        errorMessage = '';
-                    }
-                    throw new Error(errorMessage || ('Create receipt failed (HTTP ' + response.status + ').'));
+                    const error = new Error('HTTP ' + response.status + ' at ' + url);
+                    error.status = response.status;
+                    throw error;
                 }
-
-                setReceiptFormAlert('success', 'Receipt created successfully.');
-                showAlert('info', 'Receipt created successfully. Transaction list is refreshing...');
-                if (receiptModalInstance) {
-                    setTimeout(() => receiptModalInstance.hide(), 450);
-                }
-                await loadData();
-            } catch (error) {
-                setReceiptFormAlert('danger', error.message || 'Failed to create receipt.');
-            } finally {
-                state.isSubmittingReceipt = false;
-                syncReceiptSaveButton();
-                el.saveReceiptBtn.innerHTML = '<i class="bi bi-floppy-fill me-1"></i> Save Receipt';
-            }
-        }
-
-        function exportCsv() {
-            if (state.filtered.length === 0) {
-                showAlert('warning', 'No data to export.');
-                return;
+                return response.json();
             }
 
-            const header = ['Code', 'Source', 'BusinessType', 'WarehouseRoute', 'CreatedAt', 'CreatedBy', 'Lines', 'Status'];
-            const rows = state.filtered.map((record) => [
-                record.code || shortUuid(record.id),
-                TYPE_META[record.source] ? TYPE_META[record.source].label : record.source,
-                record.businessType || '',
-                getWarehouseLabel(record),
-                formatDate(record.createdAt),
-                shortUuid(record.createdBy),
-                String(record.lineCount || 0),
-                STATUS_META[record.status] ? STATUS_META[record.status].label : record.status
-            ]);
-
-            const csv = [header, ...rows].map((row) => row.map(csvEscape).join(',')).join('\n');
-            const blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
-            const url = URL.createObjectURL(blob);
-            const anchor = document.createElement('a');
-            anchor.href = url;
-            anchor.download = 'dispatch_transactions_' + new Date().toISOString().slice(0, 10) + '.csv';
-            document.body.appendChild(anchor);
-            anchor.click();
-            document.body.removeChild(anchor);
-            URL.revokeObjectURL(url);
-        }
-
-        async function loadData() {
-            showAlert('info', 'Loading transactions from APIs...');
-            el.body.innerHTML = '<tr><td colspan="8" class="text-center py-5"><div class="spinner-border spinner-border-sm text-secondary me-2" role="status"></div>Loading transactions from API...</td></tr>';
-            el.empty.classList.add('d-none');
-
-            const [warehousesRes, suppliersRes, productsRes, uomsRes, inboundsRes, outboundsRes, transfersRes] = await Promise.allSettled([
-                fetchAllPages('/api/v1/warehouses'),
-                fetchAllPages('/api/v1/suppliers'),
-                fetchAllPages('/api/v1/products'),
-                fetchAllPages('/api/v1/uoms'),
-                fetchAllPages('/api/v1/inbounds'),
-                fetchAllPages('/api/v1/outbounds'),
-                fetchAllPages('/api/v1/transfers')
-            ]);
-
-            const warnings = [];
-            state.warehouses.clear();
-            state.warehouseList = [];
-            state.suppliers = [];
-            state.products = [];
-            state.uoms = [];
-
-            if (warehousesRes.status === 'fulfilled') {
-                state.warehouseList = warehousesRes.value.slice().sort((a, b) =>
-                    String(a.name || a.code || '').localeCompare(String(b.name || b.code || ''), 'vi'));
-                state.warehouseList.forEach((warehouse) => {
-                    state.warehouses.set(warehouse.id, warehouse.name || warehouse.code || shortUuid(warehouse.id));
+            function updateStatusOptions() {
+                const options = [''];
+                const preferred = ['DRAFT', 'SUBMITTED', 'APPROVED', 'ISSUED', 'COMPLETED', 'CANCELLED'];
+                const existing = new Set(state.records.map((x) => x.status));
+                preferred.forEach((status) => {
+                    if (existing.has(status)) options.push(status);
                 });
-            } else {
-                warnings.push('Could not load warehouse names. Showing warehouse IDs.');
+                existing.forEach((status) => {
+                    if (!preferred.includes(status)) options.push(status);
+                });
+
+                const currentValue = el.status.value;
+                el.status.innerHTML = '<option value="">All Statuses</option>';
+                options.filter(Boolean).forEach((status) => {
+                    const option = document.createElement('option');
+                    option.value = status;
+                    option.textContent = STATUS_META[status] ? STATUS_META[status].label : status;
+                    el.status.appendChild(option);
+                });
+                if ([...el.status.options].some((o) => o.value === currentValue)) {
+                    el.status.value = currentValue;
+                }
             }
 
-            if (productsRes.status === 'fulfilled') {
-                state.products = productsRes.value
-                    .filter((p) => String(p.status || '').toUpperCase() !== 'LOCKED')
-                    .sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''), 'vi'));
-            } else {
-                warnings.push('Could not load product list for receipt form.');
+            function updateStats() {
+                const now = new Date();
+                const month = now.getMonth();
+                const year = now.getFullYear();
+
+                const inboundMonth = state.records.filter((x) => {
+                    if (x.source !== 'INBOUND') return false;
+                    const date = parseDate(x.createdAt);
+                    return date && date.getMonth() === month && date.getFullYear() === year;
+                }).length;
+
+                const outboundMonth = state.records.filter((x) => {
+                    if (x.source !== 'OUTBOUND') return false;
+                    const date = parseDate(x.createdAt);
+                    return date && date.getMonth() === month && date.getFullYear() === year;
+                }).length;
+
+                const transferMonth = state.records.filter((x) => {
+                    if (x.source !== 'TRANSFER') return false;
+                    const date = parseDate(x.createdAt);
+                    return date && date.getMonth() === month && date.getFullYear() === year;
+                }).length;
+
+                const pending = state.records.filter((x) => PENDING_STATUSES.has(x.status)).length;
+
+                el.statTotal.textContent = String(state.records.length);
+                el.statIn.textContent = String(inboundMonth);
+                el.statOut.textContent = String(outboundMonth);
+                if (el.statTransfer) {
+                    el.statTransfer.textContent = String(transferMonth);
+                }
+                el.statPending.textContent = String(pending);
             }
 
-            if (suppliersRes.status === 'fulfilled') {
-                state.suppliers = suppliersRes.value
-                    .filter((supplier) => String(supplier.status || '').toUpperCase() !== 'LOCKED')
-                    .sort((a, b) => String(a.name || a.code || '').localeCompare(String(b.name || b.code || ''), 'vi'));
-            } else {
-                warnings.push('Could not load supplier list for inbound receipt form.');
+            function applyFilters(resetPage) {
+                if (resetPage) state.currentPage = 1;
+
+                const q = (el.search.value || '').trim().toLowerCase();
+                const typeFilter = el.type.value;
+                const statusFilter = el.status.value;
+
+                state.filtered = state.records.filter((record) => {
+                    if (typeFilter && record.source !== typeFilter) return false;
+                    if (statusFilter && record.status !== statusFilter) return false;
+                    if (!q) return true;
+
+                    const searchable = [
+                        record.code,
+                        record.source,
+                        record.businessType,
+                        getWarehouseLabel(record),
+                        record.status,
+                        shortUuid(record.createdBy)
+                    ].join(' ').toLowerCase();
+                    return searchable.includes(q);
+                });
+
+                renderTable();
+                renderPagination();
+                updateSummary();
             }
 
-            if (uomsRes.status === 'fulfilled') {
-                state.uoms = uomsRes.value
-                    .slice()
-                    .sort((a, b) => String(a.name || a.code || '').localeCompare(String(b.name || b.code || ''), 'vi'));
-            } else {
-                warnings.push('Could not load UOM list for receipt form.');
+            function updateSummary() {
+                const total = state.filtered.length;
+                const start = total === 0 ? 0 : (state.currentPage - 1) * state.pageSize + 1;
+                const end = total === 0 ? 0 : Math.min(total, state.currentPage * state.pageSize);
+                el.summary.textContent = 'Showing ' + start + ' - ' + end + ' of ' + total + ' results';
             }
 
-            const records = [];
+            function renderTable() {
+                const total = state.filtered.length;
+                const totalPages = Math.max(1, Math.ceil(total / state.pageSize));
+                if (state.currentPage > totalPages) state.currentPage = totalPages;
 
-            if (inboundsRes.status === 'fulfilled') {
-                records.push(...inboundsRes.value.map(normalizeInbound));
-            } else {
-                warnings.push('Inbound API is unavailable or access denied.');
+                if (total === 0) {
+                    el.body.innerHTML = '';
+                    el.empty.classList.remove('d-none');
+                    return;
+                }
+
+                el.empty.classList.add('d-none');
+
+                const from = (state.currentPage - 1) * state.pageSize;
+                const rows = state.filtered.slice(from, from + state.pageSize);
+
+                el.body.innerHTML = rows.map((record) => {
+                    const code = escapeHtml(record.code || shortUuid(record.id));
+                    const warehouseLabel = escapeHtml(getWarehouseLabel(record));
+                    const createdAt = escapeHtml(formatDate(record.createdAt));
+                    const creator = escapeHtml(shortUuid(record.createdBy));
+                    const lines = Number.isFinite(record.lineCount) ? record.lineCount : 0;
+                    const recordId = escapeHtml(normalizeId(record.id));
+                    const recordSource = escapeHtml(record.source || '');
+                    const canDelete = String(record.status || '').toUpperCase() === 'DRAFT';
+                    const deleteTitle = canDelete ? 'Delete this draft transaction' : 'Only DRAFT transactions can be deleted';
+
+                    return [
+                        '<tr>',
+                        '<td class="px-4 py-3"><span class="tx-mono">', code, '</span></td>',
+                        '<td class="px-4 py-3">', typeBadge(record.source), '</td>',
+                        '<td class="px-4 py-3 fw-medium">', warehouseLabel, '</td>',
+                        '<td class="px-4 py-3 text-muted">', createdAt, '</td>',
+                        '<td class="px-4 py-3 text-muted">', creator, '</td>',
+                        '<td class="px-4 py-3 text-center"><span class="badge text-bg-light border">', String(lines), '</span></td>',
+                        '<td class="px-4 py-3">', statusBadge(record.status), '</td>',
+                        '<td class="px-4 py-3 text-end"><div class="tx-action-group">',
+                        '<button type="button" class="btn btn-sm btn-outline-primary tx-action-btn" title="View details" data-tx-action="detail" data-record-id="', recordId, '" data-record-source="', recordSource, '"><i class="bi bi-eye"></i></button>',
+                        '<button type="button" class="btn btn-sm btn-outline-danger tx-action-btn" data-tx-action="delete" data-record-id="', recordId, '" data-record-source="', recordSource, '" title="', deleteTitle, '"><i class="bi bi-trash"></i></button>',
+                        '</div></td>',
+                        '</tr>'
+                    ].join('');
+                }).join('');
             }
 
-            if (outboundsRes.status === 'fulfilled') {
-                records.push(...outboundsRes.value.map(normalizeOutbound));
-            } else {
-                warnings.push('Outbound API is unavailable or access denied.');
+            function pageItem(label, page, disabled, active) {
+                const disabledClass = disabled ? 'disabled' : '';
+                const activeClass = active ? 'active' : '';
+                const safePage = disabled ? '' : 'data-page="' + page + '"';
+                return '<li class="page-item ' + disabledClass + ' ' + activeClass + '"><button class="page-link" type="button" ' + safePage + '>' + label + '</button></li>';
             }
 
-            if (transfersRes.status === 'fulfilled') {
-                records.push(...transfersRes.value.map(normalizeTransfer));
-            } else {
-                warnings.push('Transfer API is unavailable or access denied.');
+            function renderPagination() {
+                const total = state.filtered.length;
+                const totalPages = Math.max(1, Math.ceil(total / state.pageSize));
+                const current = Math.min(state.currentPage, totalPages);
+                state.currentPage = current;
+
+                if (total === 0) {
+                    el.pagination.innerHTML = '';
+                    return;
+                }
+
+                let html = '';
+                html += pageItem('<i class="bi bi-chevron-left"></i>', current - 1, current === 1, false);
+
+                const windowSize = 5;
+                let start = Math.max(1, current - Math.floor(windowSize / 2));
+                let end = Math.min(totalPages, start + windowSize - 1);
+                if (end - start + 1 < windowSize) {
+                    start = Math.max(1, end - windowSize + 1);
+                }
+
+                for (let p = start; p <= end; p += 1) {
+                    html += pageItem(String(p), p, false, p === current);
+                }
+
+                html += pageItem('<i class="bi bi-chevron-right"></i>', current + 1, current === totalPages, false);
+                el.pagination.innerHTML = html;
             }
 
-            records.sort((a, b) => {
-                const ta = parseDate(a.createdAt) ? parseDate(a.createdAt).getTime() : 0;
-                const tb = parseDate(b.createdAt) ? parseDate(b.createdAt).getTime() : 0;
-                return tb - ta;
-            });
-
-            state.records = records;
-            updateStatusOptions();
-            updateStats();
-            applyFilters(true);
-            syncReceiptSaveButton();
-            renderReceiptTypeFields();
-
-            if (records.length === 0 && warnings.length > 0) {
-                showAlert('danger', 'Failed to load transaction data. ' + warnings.join(' '));
-                return;
+            function csvEscape(value) {
+                const text = String(value ?? '');
+                if (text.includes(',') || text.includes('"') || text.includes('\n')) {
+                    return '"' + text.replace(/"/g, '""') + '"';
+                }
+                return text;
             }
 
-            if (warnings.length > 0) {
-                showAlert('warning', warnings.join(' '));
-            } else {
-                showAlert('', '');
+            function normalizeId(value) {
+                return value ? String(value).trim() : '';
             }
-        }
 
-        el.search.addEventListener('input', () => applyFilters(true));
-        el.type.addEventListener('change', () => applyFilters(true));
-        el.status.addEventListener('change', () => applyFilters(true));
-        el.reload.addEventListener('click', loadData);
-        el.exportBtn.addEventListener('click', exportCsv);
-
-        el.createBtn.addEventListener('click', () => {
-            if (!receiptModalInstance) {
-                showAlert('danger', 'Create modal is unavailable.');
-                return;
+            function todayInputValue() {
+                const now = new Date();
+                const yyyy = now.getFullYear();
+                const mm = String(now.getMonth() + 1).padStart(2, '0');
+                const dd = String(now.getDate()).padStart(2, '0');
+                return yyyy + '-' + mm + '-' + dd;
             }
-            resetReceiptForm();
-            receiptModalInstance.show();
-        });
 
-        receiptTypeInputs.forEach((input) => {
-            input.addEventListener('change', () => {
+            function setReceiptFormAlert(kind, message) {
+                if (!message) {
+                    el.receiptFormAlert.className = 'alert receipt-form-alert d-none';
+                    el.receiptFormAlert.textContent = '';
+                    return;
+                }
+                const alertClass = kind === 'danger' ? 'alert-danger'
+                    : kind === 'warning' ? 'alert-warning'
+                        : kind === 'success' ? 'alert-success'
+                            : 'alert-info';
+                el.receiptFormAlert.className = 'alert ' + alertClass + ' receipt-form-alert';
+                el.receiptFormAlert.textContent = message;
+            }
+
+            function syncReceiptSaveButton() {
+                const selectedType = getSelectedReceiptType();
+                const supplierReady = selectedType !== 'INBOUND' || state.suppliers.length > 0;
+                const isReady = state.warehouseList.length > 0 && state.products.length > 0 && state.uoms.length > 0 && supplierReady;
+                el.saveReceiptBtn.disabled = state.isSubmittingReceipt || !isReady;
+                return isReady;
+            }
+
+            function buildWarehouseOptionsHtml(selectedValue, placeholder, excludedIds) {
+                const selected = normalizeId(selectedValue);
+                const excluded = excludedIds instanceof Set ? excludedIds : new Set();
+                const options = ['<option value="">' + escapeHtml(placeholder || 'Select warehouse') + '</option>'];
+                state.warehouseList.forEach((warehouse) => {
+                    const id = normalizeId(warehouse.id);
+                    if (excluded.has(id)) return;
+                    const selectedAttr = selected && selected === id ? ' selected' : '';
+                    const label = escapeHtml((warehouse.name || '') + (warehouse.code ? ' (' + warehouse.code + ')' : ''));
+                    options.push('<option value="' + id + '"' + selectedAttr + '>' + label + '</option>');
+                });
+                return options.join('');
+            }
+
+            function populateWarehouseSelect(selectElement, selectedValue, placeholder, excludedIds) {
+                if (!selectElement) return;
+                selectElement.innerHTML = buildWarehouseOptionsHtml(selectedValue, placeholder, excludedIds);
+            }
+
+            function populateTransferWarehouseSelects() {
+                if (el.receiptFromWarehouse) {
+                    populateWarehouseSelect(el.receiptFromWarehouse, el.receiptFromWarehouse.value, 'Select source warehouse');
+                }
+                if (!el.receiptToWarehouse) return;
+
+                const fromWarehouseId = normalizeId(el.receiptFromWarehouse?.value);
+                const excluded = new Set();
+                if (fromWarehouseId) excluded.add(fromWarehouseId);
+                populateWarehouseSelect(el.receiptToWarehouse, el.receiptToWarehouse.value, 'Select destination warehouse', excluded);
+
+                if (fromWarehouseId && normalizeId(el.receiptToWarehouse.value) === fromWarehouseId) {
+                    el.receiptToWarehouse.value = '';
+                }
+            }
+
+            function buildSupplierOptionsHtml(selectedValue, placeholder) {
+                const selected = normalizeId(selectedValue);
+                const options = ['<option value="">' + escapeHtml(placeholder || 'Select supplier') + '</option>'];
+                state.suppliers.forEach((supplier) => {
+                    const id = normalizeId(supplier.id);
+                    const selectedAttr = selected && selected === id ? ' selected' : '';
+                    const label = escapeHtml((supplier.name || '') + (supplier.code ? ' (' + supplier.code + ')' : ''));
+                    options.push('<option value="' + id + '"' + selectedAttr + '>' + label + '</option>');
+                });
+                return options.join('');
+            }
+
+            function populateSupplierSelect(selectElement, selectedValue, placeholder) {
+                if (!selectElement) return;
+                selectElement.innerHTML = buildSupplierOptionsHtml(selectedValue, placeholder);
+            }
+
+            async function loadSectionsForWarehouse(warehouseId) {
+                if (!el.receiptSection) return;
+                if (!warehouseId) {
+                    el.receiptSection.innerHTML = '<option value="">— Select warehouse first —</option>';
+                    return;
+                }
+                el.receiptSection.innerHTML = '<option value="">Loading...</option>';
+                try {
+                    const sections = await fetchJson('/api/v1/warehouses/' + encodeURIComponent(warehouseId) + '/sections');
+                    if (!Array.isArray(sections) || sections.length === 0) {
+                        el.receiptSection.innerHTML = '<option value="">— No sections found —</option>';
+                        return;
+                    }
+                    const options = ['<option value="">Select section (optional)</option>'];
+                    sections.forEach((s) => {
+                        const id = escapeHtml(String(s.id || ''));
+                        const label = escapeHtml((s.code || '') + (s.type ? ' [' + s.type + ']' : ''));
+                        options.push('<option value="' + id + '">' + label + '</option>');
+                    });
+                    el.receiptSection.innerHTML = options.join('');
+                } catch (err) {
+                    el.receiptSection.innerHTML = '<option value="">— Failed to load sections —</option>';
+                }
+            }
+
+            function renderReceiptTypeFields() {
+                const type = getSelectedReceiptType();
+                const isTransfer = type === 'TRANSFER';
+                const isInbound = type === 'INBOUND';
+                const isOutbound = type === 'OUTBOUND';
+
+                if (el.receiptWarehouseGroup) {
+                    el.receiptWarehouseGroup.classList.toggle('d-none', isTransfer);
+                }
+                if (el.receiptSectionGroup) {
+                    el.receiptSectionGroup.classList.toggle('d-none', isTransfer);
+                }
+                if (el.receiptFromWarehouseGroup) {
+                    el.receiptFromWarehouseGroup.classList.toggle('d-none', !isTransfer);
+                }
+                if (el.receiptToWarehouseGroup) {
+                    el.receiptToWarehouseGroup.classList.toggle('d-none', !isTransfer);
+                }
+                if (el.receiptSupplierGroup) {
+                    el.receiptSupplierGroup.classList.toggle('d-none', !isInbound);
+                }
+                if (el.receiptWarehouseLabel) {
+                    el.receiptWarehouseLabel.textContent = isOutbound ? 'Warehouse / Source Unit' : 'Warehouse / Unit';
+                }
+                if (el.receiptWarehouse) {
+                    const placeholder = isOutbound ? 'Select source warehouse' : 'Select warehouse';
+                    populateWarehouseSelect(el.receiptWarehouse, el.receiptWarehouse.value, placeholder);
+                }
+                if (isTransfer) {
+                    populateTransferWarehouseSelects();
+                } else {
+                    if (el.receiptFromWarehouse) {
+                        populateWarehouseSelect(el.receiptFromWarehouse, el.receiptFromWarehouse.value, 'Select source warehouse');
+                    }
+                    if (el.receiptToWarehouse) {
+                        populateWarehouseSelect(el.receiptToWarehouse, el.receiptToWarehouse.value, 'Select destination warehouse');
+                    }
+                }
+                if (el.receiptSupplier) {
+                    populateSupplierSelect(el.receiptSupplier, el.receiptSupplier.value, 'Select supplier');
+                }
+                // Reset section list when switching to TRANSFER
+                if (isTransfer && el.receiptSection) {
+                    el.receiptSection.innerHTML = '<option value="">— Select warehouse first —</option>';
+                }
+                loadOutboundProductsForSection(el.receiptWarehouse?.value, el.receiptSection?.value);
+                loadTransferProductsForSourceWarehouse(isTransfer ? el.receiptFromWarehouse?.value : el.receiptWarehouse?.value);
+                syncReceiptSaveButton();
+            }
+
+            function getReceiptProductsForCurrentContext() {
+                const receiptType = getSelectedReceiptType();
+                const isOutbound = receiptType === 'OUTBOUND';
+                const sectionId = normalizeId(el.receiptSection?.value);
+                const sectionVisible = !el.receiptSectionGroup || !el.receiptSectionGroup.classList.contains('d-none');
+                const shouldFilterBySection = isOutbound && sectionVisible && !!sectionId;
+                if (shouldFilterBySection) {
+                    if (!(state.outboundSectionProductIds instanceof Set)) return [];
+                    const allowedProductIds = state.outboundSectionProductIds;
+                    return state.products.filter((product) => allowedProductIds.has(normalizeId(product.id)));
+                }
+
+                if (receiptType === 'TRANSFER' || (isOutbound && !shouldFilterBySection)) {
+                    const sourceWarehouseId = normalizeId(receiptType === 'TRANSFER' ? el.receiptFromWarehouse?.value : el.receiptWarehouse?.value);
+                    if (!sourceWarehouseId) return [];
+                    if (!(state.transferSourceProductIds instanceof Set)) return [];
+                    const allowedProductIds = state.transferSourceProductIds;
+                    return state.products.filter((product) => allowedProductIds.has(normalizeId(product.id)));
+                }
+
+                return state.products;
+            }
+
+            function refreshReceiptItemProductOptions() {
+                if (!el.receiptItemsBody) return;
+                const rows = [...el.receiptItemsBody.querySelectorAll('tr')];
+                rows.forEach((row) => {
+                    const productSelect = row.querySelector('.receipt-item-product');
+                    if (!productSelect) return;
+
+                    const selectedProductId = normalizeId(productSelect.value);
+                    productSelect.innerHTML = buildProductOptions(selectedProductId);
+                    if (selectedProductId && normalizeId(productSelect.value) !== selectedProductId) {
+                        productSelect.value = '';
+                    }
+
+                    const uomSelect = row.querySelector('.receipt-item-uom');
+                    if (!uomSelect) return;
+                    if (!normalizeId(productSelect.value)) {
+                        uomSelect.value = '';
+                        return;
+                    }
+
+                    const product = findProductById(productSelect.value);
+                    if (product && product.baseUomId && !normalizeId(uomSelect.value)) {
+                        uomSelect.value = normalizeId(product.baseUomId);
+                    }
+                });
+            }
+
+            async function loadOutboundProductsForSection(warehouseId, sectionId) {
+                const normalizedWarehouseId = normalizeId(warehouseId);
+                const normalizedSectionId = normalizeId(sectionId);
+                const sectionVisible = !el.receiptSectionGroup || !el.receiptSectionGroup.classList.contains('d-none');
+                const isOutbound = getSelectedReceiptType() === 'OUTBOUND';
+                const requestSeq = ++state.outboundSectionProductRequestSeq;
+
+                if (!isOutbound || !sectionVisible || !normalizedWarehouseId || !normalizedSectionId) {
+                    state.isLoadingOutboundSectionProducts = false;
+                    state.outboundSectionProductIds = null;
+                    refreshReceiptItemProductOptions();
+                    return;
+                }
+
+                const cacheKey = normalizedWarehouseId + '::' + normalizedSectionId;
+                if (state.outboundSectionProductCache.has(cacheKey)) {
+                    state.isLoadingOutboundSectionProducts = false;
+                    state.outboundSectionProductIds = state.outboundSectionProductCache.get(cacheKey);
+                    refreshReceiptItemProductOptions();
+                    return;
+                }
+
+                state.isLoadingOutboundSectionProducts = true;
+                state.outboundSectionProductIds = null;
+                refreshReceiptItemProductOptions();
+
+                try {
+                    const response = await fetchJson(
+                        '/transactions/outbound-section-products'
+                        + '?warehouseId=' + encodeURIComponent(normalizedWarehouseId)
+                        + '&sectionId=' + encodeURIComponent(normalizedSectionId)
+                    );
+                    if (requestSeq !== state.outboundSectionProductRequestSeq) return;
+
+                    const productIds = new Set();
+                    const rawIds = Array.isArray(response) ? response : [];
+                    rawIds.forEach((id) => {
+                        const productId = normalizeId(id);
+                        if (productId) productIds.add(productId);
+                    });
+
+                    state.outboundSectionProductCache.set(cacheKey, productIds);
+                    state.outboundSectionProductIds = productIds;
+                    state.isLoadingOutboundSectionProducts = false;
+                    refreshReceiptItemProductOptions();
+                } catch (error) {
+                    if (requestSeq !== state.outboundSectionProductRequestSeq) return;
+                    state.isLoadingOutboundSectionProducts = false;
+                    state.outboundSectionProductIds = null;
+                    refreshReceiptItemProductOptions();
+                }
+            }
+
+            async function loadTransferProductsForSourceWarehouse(warehouseId) {
+                const normalizedWarehouseId = normalizeId(warehouseId);
+                const receiptType = getSelectedReceiptType();
+                const isValidType = receiptType === 'TRANSFER' || receiptType === 'OUTBOUND';
+                const requestSeq = ++state.transferSourceProductRequestSeq;
+
+                if (!isValidType || !normalizedWarehouseId) {
+                    state.isLoadingTransferSourceProducts = false;
+                    state.transferSourceProductIds = null;
+                    refreshReceiptItemProductOptions();
+                    return;
+                }
+
+                if (state.transferSourceProductCache.has(normalizedWarehouseId)) {
+                    state.isLoadingTransferSourceProducts = false;
+                    state.transferSourceProductIds = state.transferSourceProductCache.get(normalizedWarehouseId);
+                    refreshReceiptItemProductOptions();
+                    return;
+                }
+
+                state.isLoadingTransferSourceProducts = true;
+                state.transferSourceProductIds = null;
+                refreshReceiptItemProductOptions();
+
+                try {
+                    const response = await fetchJson(
+                        '/transactions/transfer-source-products?warehouseId=' + encodeURIComponent(normalizedWarehouseId)
+                    );
+                    if (requestSeq !== state.transferSourceProductRequestSeq) return;
+
+                    const productIds = new Set();
+                    const rawIds = Array.isArray(response) ? response : [];
+                    rawIds.forEach((id) => {
+                        const productId = normalizeId(id);
+                        if (productId) productIds.add(productId);
+                    });
+
+                    state.transferSourceProductCache.set(normalizedWarehouseId, productIds);
+                    state.transferSourceProductIds = productIds;
+                    state.isLoadingTransferSourceProducts = false;
+                    refreshReceiptItemProductOptions();
+                } catch (error) {
+                    if (requestSeq !== state.transferSourceProductRequestSeq) return;
+                    state.isLoadingTransferSourceProducts = false;
+                    state.transferSourceProductIds = null;
+                    refreshReceiptItemProductOptions();
+                }
+            }
+
+            function buildProductOptions(selectedValue) {
+                const selected = normalizeId(selectedValue);
+                const options = ['<option value="">Select product</option>'];
+                const productsForContext = getReceiptProductsForCurrentContext();
+                productsForContext.forEach((product) => {
+                    const id = normalizeId(product.id);
+                    const selectedAttr = selected && selected === id ? ' selected' : '';
+                    const productLabel = (product.name || shortUuid(product.id)) + (product.sku ? ' (' + product.sku + ')' : '');
+                    options.push('<option value="' + id + '"' + selectedAttr + '>' + escapeHtml(productLabel) + '</option>');
+                });
+                const sectionId = normalizeId(el.receiptSection?.value);
+                const isOutbound = getSelectedReceiptType() === 'OUTBOUND';
+                const shouldFilterBySection = isOutbound
+                    && !!sectionId
+                    && (!el.receiptSectionGroup || !el.receiptSectionGroup.classList.contains('d-none'));
+                const isTransfer = getSelectedReceiptType() === 'TRANSFER';
+                const sourceWarehouseId = normalizeId(isTransfer ? el.receiptFromWarehouse?.value : (isOutbound ? el.receiptWarehouse?.value : ''));
+                const shouldFilterBySourceWarehouse = (isTransfer || (!shouldFilterBySection && isOutbound)) && !!sourceWarehouseId;
+                if (shouldFilterBySection && state.isLoadingOutboundSectionProducts) {
+                    options.push('<option value="" disabled>Loading section products...</option>');
+                } else if (shouldFilterBySection && productsForContext.length === 0) {
+                    options.push('<option value="" disabled>No products in selected section</option>');
+                } else if ((isTransfer || isOutbound) && !sourceWarehouseId) {
+                    options.push('<option value="" disabled>Select warehouse first</option>');
+                } else if (shouldFilterBySourceWarehouse && state.isLoadingTransferSourceProducts) {
+                    options.push('<option value="" disabled>Loading warehouse products...</option>');
+                } else if (shouldFilterBySourceWarehouse && productsForContext.length === 0) {
+                    options.push('<option value="" disabled>No products in selected warehouse</option>');
+                }
+                return options.join('');
+            }
+
+            function buildUomOptions(selectedValue) {
+                const selected = normalizeId(selectedValue);
+                const options = ['<option value="">Select unit</option>'];
+                state.uoms.forEach((uom) => {
+                    const id = normalizeId(uom.id);
+                    const selectedAttr = selected && selected === id ? ' selected' : '';
+                    const uomLabel = (uom.name || shortUuid(uom.id)) + (uom.code ? ' (' + uom.code + ')' : '');
+                    options.push('<option value="' + id + '"' + selectedAttr + '>' + escapeHtml(uomLabel) + '</option>');
+                });
+                return options.join('');
+            }
+
+            function findProductById(productId) {
+                const id = normalizeId(productId);
+                return state.products.find((p) => normalizeId(p.id) === id) || null;
+            }
+
+            function createItemRow(defaults) {
+                const data = defaults || {};
+                const row = document.createElement('tr');
+                row.innerHTML = [
+                    '<td><select class="form-select receipt-item-product">', buildProductOptions(data.productId), '</select></td>',
+                    '<td><input type="number" class="form-control receipt-item-qty" min="0.000001" step="0.000001" value="', escapeHtml(data.quantity || '1'), '" /></td>',
+                    '<td><select class="form-select receipt-item-uom">', buildUomOptions(data.uomId), '</select></td>',
+                    '<td><input type="date" class="form-control receipt-item-mfg-date" value="', escapeHtml(data.mfgDate || ''), '" required /></td>',
+                    '<td><input type="number" class="form-control receipt-item-shelf-life" min="0" placeholder="Tháng" value="', escapeHtml(data.shelfLife || ''), '" /></td>',
+                    '<td><input type="date" class="form-control receipt-item-exp-date" value="', escapeHtml(data.expDate || ''), '" /></td>',
+                    '<td><input type="text" class="form-control receipt-item-note" value="', escapeHtml(data.note || ''), '" placeholder="Product notes..." /></td>',
+                    '<td class="text-end"><button type="button" class="receipt-remove-item" title="Remove item"><i class="bi bi-trash"></i></button></td>'
+                ].join('');
+
+                const productSelect = row.querySelector('.receipt-item-product');
+                const uomSelect = row.querySelector('.receipt-item-uom');
+                if (productSelect && !normalizeId(uomSelect.value)) {
+                    const p = findProductById(productSelect.value);
+                    if (p && p.baseUomId) {
+                        uomSelect.value = normalizeId(p.baseUomId);
+                    }
+                }
+
+                const mfgInput = row.querySelector('.receipt-item-mfg-date');
+                const shelfInput = row.querySelector('.receipt-item-shelf-life');
+                const expInput = row.querySelector('.receipt-item-exp-date');
+
+                function calculateExp() {
+                    const mfg = mfgInput.value;
+                    const shelf = shelfInput.value;
+                    if (mfg && shelf) {
+                        const date = new Date(mfg);
+                        date.setMonth(date.getMonth() + parseInt(shelf));
+                        const yyyy = date.getFullYear();
+                        const mm = String(date.getMonth() + 1).padStart(2, '0');
+                        const dd = String(date.getDate()).padStart(2, '0');
+                        expInput.value = `${yyyy}-${mm}-${dd}`;
+                    }
+                }
+
+                mfgInput.addEventListener('input', calculateExp);
+                shelfInput.addEventListener('input', calculateExp);
+
+                return row;
+            }
+
+            function resetReceiptForm() {
+                if (!el.receiptForm) return;
+                el.receiptForm.reset();
+                setReceiptFormAlert('', '');
+                el.receiptDateCreated.value = todayInputValue();
+                if (el.receiptWarehouse) el.receiptWarehouse.value = '';
+                if (el.receiptFromWarehouse) el.receiptFromWarehouse.value = '';
+                if (el.receiptToWarehouse) el.receiptToWarehouse.value = '';
+                if (el.receiptSupplier) el.receiptSupplier.value = '';
+                if (el.receiptSection) el.receiptSection.innerHTML = '<option value="">— Select warehouse first —</option>';
                 renderReceiptTypeFields();
-                setReceiptFormAlert('', '');
-                syncReceiptSaveButton();
-            });
-        });
-
-        el.pagination.addEventListener('click', (event) => {
-            const btn = event.target.closest('button[data-page]');
-            if (!btn) return;
-            const page = Number(btn.dataset.page);
-            if (!Number.isFinite(page) || page < 1) return;
-            state.currentPage = page;
-            renderTable();
-            renderPagination();
-            updateSummary();
-        });
-
-        el.body.addEventListener('click', (event) => {
-            const actionButton = event.target.closest('button[data-tx-action]');
-            if (!actionButton) return;
-
-            const action = actionButton.dataset.txAction;
-            const recordId = actionButton.dataset.recordId;
-            const recordSource = actionButton.dataset.recordSource;
-            const record = findRecordByIdentity(recordId, recordSource);
-            if (!record) {
-                showAlert('warning', 'Transaction not found. Please refresh and try again.');
-                return;
-            }
-
-            if (action === 'detail') {
-                openDetailModal(record);
-                return;
-            }
-
-            if (action === 'delete') {
-                deleteTransaction(record);
-            }
-        });
-
-        if (el.detailApproveBtn) {
-            el.detailApproveBtn.addEventListener('click', async () => {
-                const record = getActiveDetailRecord();
-                if (!record) {
-                    showAlert('warning', 'Transaction not found. Please refresh and try again.');
-                    return;
-                }
-                await approveTransaction(record);
-            });
-        }
-
-        if (el.detailRejectBtn) {
-            el.detailRejectBtn.addEventListener('click', async () => {
-                const record = getActiveDetailRecord();
-                if (!record) {
-                    showAlert('warning', 'Transaction not found. Please refresh and try again.');
-                    return;
-                }
-                await rejectTransaction(record);
-            });
-        }
-
-        if (el.detailCompleteBtn) {
-            el.detailCompleteBtn.addEventListener('click', async () => {
-                const record = getActiveDetailRecord();
-                if (!record) {
-                    showAlert('warning', 'Transaction not found. Please refresh and try again.');
-                    return;
-                }
-                await completeTransaction(record);
-            });
-        }
-
-        if (el.detailModal) {
-            el.detailModal.addEventListener('hidden.bs.modal', () => {
-                state.activeDetailId = '';
-                state.activeDetailSource = '';
-                state.isDetailActionBusy = false;
-                syncDetailActionButtons(null);
-            });
-        }
-
-        el.addReceiptItemBtn.addEventListener('click', () => {
-            el.receiptItemsBody.appendChild(createItemRow());
-        });
-
-        el.receiptItemsBody.addEventListener('click', (event) => {
-            const removeBtn = event.target.closest('.receipt-remove-item');
-            if (!removeBtn) return;
-            const row = removeBtn.closest('tr');
-            if (!row) return;
-            row.remove();
-            if (el.receiptItemsBody.querySelectorAll('tr').length === 0) {
+                el.receiptItemsBody.innerHTML = '';
                 el.receiptItemsBody.appendChild(createItemRow());
+
+                if (!syncReceiptSaveButton()) {
+                    setReceiptFormAlert('warning', 'Master data is not ready yet. Please refresh API data and try again.');
+                }
             }
-        });
 
-        el.receiptItemsBody.addEventListener('change', (event) => {
-            const productSelect = event.target.closest('.receipt-item-product');
-            if (!productSelect) return;
-            const row = productSelect.closest('tr');
-            const uomSelect = row ? row.querySelector('.receipt-item-uom') : null;
-            if (!uomSelect) return;
-
-            const product = findProductById(productSelect.value);
-            if (product && product.baseUomId && !normalizeId(uomSelect.value)) {
-                uomSelect.value = normalizeId(product.baseUomId);
+            function getSelectedReceiptType() {
+                const checked = document.querySelector('input[name="receiptType"]:checked');
+                return checked ? checked.value : 'INBOUND';
             }
-        });
 
-        el.receiptForm.addEventListener('submit', submitReceiptForm);
+            function collectReceiptLines(receiptType) {
+                const rows = [...el.receiptItemsBody.querySelectorAll('tr')];
+                if (rows.length === 0) {
+                    throw new Error('Please add at least one item.');
+                }
 
-        if (el.receiptModal) {
-            el.receiptModal.addEventListener('hidden.bs.modal', () => {
-                state.isSubmittingReceipt = false;
-                syncReceiptSaveButton();
-                el.saveReceiptBtn.innerHTML = '<i class="bi bi-floppy-fill me-1"></i> Save Receipt';
+                const sectionId = (!el.receiptSectionGroup.classList.contains('d-none') && el.receiptSection) ? normalizeId(el.receiptSection.value) : null;
+
+                return rows.map((row, index) => {
+                    const productId = normalizeId(row.querySelector('.receipt-item-product')?.value);
+                    const uomId = normalizeId(row.querySelector('.receipt-item-uom')?.value);
+                    const qtyRaw = String(row.querySelector('.receipt-item-qty')?.value || '').trim();
+                    const quantity = Number(qtyRaw);
+                    const rowNumber = index + 1;
+
+                    if (!productId) throw new Error('Row ' + rowNumber + ': please select a product.');
+                    if (!uomId) throw new Error('Row ' + rowNumber + ': please select a unit.');
+                    if (!Number.isFinite(quantity) || quantity <= 0) {
+                        throw new Error('Row ' + rowNumber + ': quantity must be greater than 0.');
+                    }
+
+                    const mfgDate = row.querySelector('.receipt-item-mfg-date')?.value;
+                    const shelfLife = row.querySelector('.receipt-item-shelf-life')?.value;
+                    const expDate = row.querySelector('.receipt-item-exp-date')?.value;
+
+                    if (!mfgDate) throw new Error('Row ' + rowNumber + ': vui lòng nhập ngày sản xuất.');
+
+                    const base = {
+                        productId: productId,
+                        uomId: uomId,
+                        quantity: quantity,
+                        mfgDate: mfgDate
+                    };
+                    if (shelfLife) base.shelfLife = Number(shelfLife);
+                    if (expDate) base.expDate = expDate;
+
+                    if (receiptType === 'TRANSFER') {
+                        return { ...base, fromLocationId: null, toLocationId: null };
+                    }
+                    return { ...base, locationId: sectionId };
+                });
+            }
+
+            async function submitReceiptForm(event) {
+                event.preventDefault();
                 setReceiptFormAlert('', '');
-            });
-        }
 
-        syncDetailActionButtons(null);
-        loadData();
-    })();
-</script>
+                try {
+                    const type = getSelectedReceiptType();
+                    const lines = collectReceiptLines(type);
+                    let endpoint = '/api/v1/inbounds';
+                    let payload;
+
+                    if (type === 'TRANSFER') {
+                        const fromWarehouseId = normalizeId(el.receiptFromWarehouse?.value);
+                        const toWarehouseId = normalizeId(el.receiptToWarehouse?.value);
+                        if (!fromWarehouseId) {
+                            throw new Error('Please select source warehouse.');
+                        }
+                        if (!toWarehouseId) {
+                            throw new Error('Please select destination warehouse.');
+                        }
+                        if (fromWarehouseId === toWarehouseId) {
+                            throw new Error('Source and destination warehouse must be different.');
+                        }
+                        payload = {
+                            fromWarehouseId: fromWarehouseId,
+                            toWarehouseId: toWarehouseId,
+                            lines: lines
+                        };
+                        endpoint = '/api/v1/transfers';
+                    } else {
+                        const warehouseId = normalizeId(el.receiptWarehouse?.value);
+                        if (!warehouseId) {
+                            throw new Error('Please select warehouse.');
+                        }
+                        const supplierId = normalizeId(el.receiptSupplier?.value);
+                        if (type === 'INBOUND' && !supplierId) {
+                            throw new Error('Please select supplier for inbound receipt.');
+                        }
+                        payload = {
+                            warehouseId: warehouseId,
+                            type: type,
+                            lines: lines
+                        };
+                        if (type === 'INBOUND') {
+                            payload.supplierId = supplierId;
+                        }
+                        endpoint = type === 'OUTBOUND' ? '/api/v1/outbounds' : '/api/v1/inbounds';
+                    }
+
+                    state.isSubmittingReceipt = true;
+                    syncReceiptSaveButton();
+                    el.saveReceiptBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>Saving...';
+
+                    const response = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                        credentials: 'same-origin',
+                        body: JSON.stringify(payload)
+                    });
+
+                    let errorMessage = '';
+                    if (!response.ok) {
+                        try {
+                            const errorBody = await response.json();
+                            errorMessage = errorBody.message || errorBody.error || '';
+                        } catch (ignore) {
+                            errorMessage = '';
+                        }
+                        throw new Error(errorMessage || ('Create receipt failed (HTTP ' + response.status + ').'));
+                    }
+
+                    setReceiptFormAlert('success', 'Receipt created successfully.');
+                    showAlert('info', 'Receipt created successfully. Transaction list is refreshing...');
+                    if (receiptModalInstance) {
+                        setTimeout(() => receiptModalInstance.hide(), 450);
+                    }
+                    await loadData();
+                } catch (error) {
+                    setReceiptFormAlert('danger', error.message || 'Failed to create receipt.');
+                } finally {
+                    state.isSubmittingReceipt = false;
+                    syncReceiptSaveButton();
+                    el.saveReceiptBtn.innerHTML = '<i class="bi bi-floppy-fill me-1"></i> Save Receipt';
+                }
+            }
+
+            function exportCsv() {
+                if (state.filtered.length === 0) {
+                    showAlert('warning', 'No data to export.');
+                    return;
+                }
+
+                const header = ['Code', 'Source', 'BusinessType', 'WarehouseRoute', 'CreatedAt', 'CreatedBy', 'Lines', 'Status'];
+                const rows = state.filtered.map((record) => [
+                    record.code || shortUuid(record.id),
+                    TYPE_META[record.source] ? TYPE_META[record.source].label : record.source,
+                    record.businessType || '',
+                    getWarehouseLabel(record),
+                    formatDate(record.createdAt),
+                    shortUuid(record.createdBy),
+                    String(record.lineCount || 0),
+                    STATUS_META[record.status] ? STATUS_META[record.status].label : record.status
+                ]);
+
+                const csv = [header, ...rows].map((row) => row.map(csvEscape).join(',')).join('\n');
+                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const anchor = document.createElement('a');
+                anchor.href = url;
+                anchor.download = 'dispatch_transactions_' + new Date().toISOString().slice(0, 10) + '.csv';
+                document.body.appendChild(anchor);
+                anchor.click();
+                document.body.removeChild(anchor);
+                URL.revokeObjectURL(url);
+            }
+
+            async function loadData() {
+                showAlert('info', 'Loading transactions from backend...');
+                el.body.innerHTML = '<tr><td colspan="8" class="text-center py-5"><div class="spinner-border spinner-border-sm text-secondary me-2" role="status"></div>Loading transactions...</td></tr>';
+                el.empty.classList.add('d-none');
+
+                state.warehouses.clear();
+                state.warehouseList = [];
+                state.suppliers = [];
+                state.products = [];
+                state.uoms = [];
+                state.outboundSectionProductIds = null;
+                state.outboundSectionProductCache.clear();
+                state.outboundSectionProductRequestSeq += 1;
+                state.isLoadingOutboundSectionProducts = false;
+                state.transferSourceProductIds = null;
+                state.transferSourceProductCache.clear();
+                state.transferSourceProductRequestSeq += 1;
+                state.isLoadingTransferSourceProducts = false;
+
+                try {
+                    const payload = await fetchJson('/transactions/payload');
+
+                    state.warehouseList = Array.isArray(payload.warehouses) ? payload.warehouses : [];
+                    state.suppliers = Array.isArray(payload.suppliers) ? payload.suppliers : [];
+                    state.products = Array.isArray(payload.products) ? payload.products : [];
+                    state.uoms = Array.isArray(payload.uoms) ? payload.uoms : [];
+                    state.records = Array.isArray(payload.records) ? payload.records.map((record) => {
+                        const lines = Array.isArray(record.lines) ? record.lines : [];
+                        const lineCount = Number.isFinite(record.lineCount) ? record.lineCount : lines.length;
+                        return {
+                            ...record,
+                            lines: lines,
+                            lineCount: lineCount,
+                            source: String(record.source || '').toUpperCase(),
+                            status: String(record.status || 'UNKNOWN').toUpperCase()
+                        };
+                    }) : [];
+
+                    state.warehouseList.forEach((warehouse) => {
+                        state.warehouses.set(warehouse.id, warehouse.name || warehouse.code || shortUuid(warehouse.id));
+                    });
+
+                    state.records.sort((a, b) => {
+                        const ta = parseDate(a.createdAt) ? parseDate(a.createdAt).getTime() : 0;
+                        const tb = parseDate(b.createdAt) ? parseDate(b.createdAt).getTime() : 0;
+                        return tb - ta;
+                    });
+
+                    updateStatusOptions();
+                    updateStats();
+                    applyFilters(true);
+                    syncReceiptSaveButton();
+                    renderReceiptTypeFields();
+                    showAlert('', '');
+                } catch (error) {
+                    state.records = [];
+                    updateStatusOptions();
+                    updateStats();
+                    applyFilters(true);
+                    syncReceiptSaveButton();
+                    renderReceiptTypeFields();
+                    showAlert('danger', error.message || 'Failed to load transaction data from backend.');
+                }
+            }
+
+            el.search.addEventListener('input', () => applyFilters(true));
+            el.type.addEventListener('change', () => applyFilters(true));
+            el.status.addEventListener('change', () => applyFilters(true));
+            el.reload.addEventListener('click', loadData);
+            el.exportBtn.addEventListener('click', exportCsv);
+
+            el.createBtn.addEventListener('click', () => {
+                if (!receiptModalInstance) {
+                    showAlert('danger', 'Create modal is unavailable.');
+                    return;
+                }
+                resetReceiptForm();
+                receiptModalInstance.show();
+            });
+
+            receiptTypeInputs.forEach((input) => {
+                input.addEventListener('change', () => {
+                    renderReceiptTypeFields();
+                    setReceiptFormAlert('', '');
+                    syncReceiptSaveButton();
+                });
+            });
+
+            if (el.receiptWarehouse) {
+                el.receiptWarehouse.addEventListener('change', async () => {
+                    const warehouseId = normalizeId(el.receiptWarehouse.value);
+                    await loadSectionsForWarehouse(warehouseId);
+                    if (el.receiptSection) {
+                        el.receiptSection.value = '';
+                    }
+                    await loadOutboundProductsForSection(warehouseId, '');
+                    if (getSelectedReceiptType() === 'OUTBOUND') {
+                        await loadTransferProductsForSourceWarehouse(warehouseId);
+                    }
+                });
+            }
+
+            if (el.receiptSection) {
+                el.receiptSection.addEventListener('change', () => {
+                    loadOutboundProductsForSection(el.receiptWarehouse?.value, el.receiptSection.value);
+                });
+            }
+
+            if (el.receiptFromWarehouse) {
+                el.receiptFromWarehouse.addEventListener('change', () => {
+                    populateTransferWarehouseSelects();
+                    loadTransferProductsForSourceWarehouse(el.receiptFromWarehouse.value);
+                });
+            }
+
+            el.pagination.addEventListener('click', (event) => {
+                const btn = event.target.closest('button[data-page]');
+                if (!btn) return;
+                const page = Number(btn.dataset.page);
+                if (!Number.isFinite(page) || page < 1) return;
+                state.currentPage = page;
+                renderTable();
+                renderPagination();
+                updateSummary();
+            });
+
+            el.body.addEventListener('click', (event) => {
+                const actionButton = event.target.closest('button[data-tx-action]');
+                if (!actionButton) return;
+
+                const action = actionButton.dataset.txAction;
+                const recordId = actionButton.dataset.recordId;
+                const recordSource = actionButton.dataset.recordSource;
+                const record = findRecordByIdentity(recordId, recordSource);
+                if (!record) {
+                    showAlert('warning', 'Transaction not found. Please refresh and try again.');
+                    return;
+                }
+
+                if (action === 'detail') {
+                    openDetailModal(record);
+                    return;
+                }
+
+                if (action === 'delete') {
+                    deleteTransaction(record);
+                }
+            });
+
+            if (el.detailApproveBtn) {
+                el.detailApproveBtn.addEventListener('click', async () => {
+                    const record = getActiveDetailRecord();
+                    if (!record) {
+                        showAlert('warning', 'Transaction not found. Please refresh and try again.');
+                        return;
+                    }
+                    await approveTransaction(record);
+                });
+            }
+
+            if (el.detailRejectBtn) {
+                el.detailRejectBtn.addEventListener('click', async () => {
+                    const record = getActiveDetailRecord();
+                    if (!record) {
+                        showAlert('warning', 'Transaction not found. Please refresh and try again.');
+                        return;
+                    }
+                    await rejectTransaction(record);
+                });
+            }
+
+            if (el.detailCompleteBtn) {
+                el.detailCompleteBtn.addEventListener('click', async () => {
+                    const record = getActiveDetailRecord();
+                    if (!record) {
+                        showAlert('warning', 'Transaction not found. Please refresh and try again.');
+                        return;
+                    }
+                    await completeTransaction(record);
+                });
+            }
+
+            if (el.detailCancelBtn) {
+                el.detailCancelBtn.addEventListener('click', async () => {
+                    const record = getActiveDetailRecord();
+                    if (!record) {
+                        showAlert('warning', 'Transaction not found. Please refresh and try again.');
+                        return;
+                    }
+                    await rejectTransaction(record);
+                });
+            }
+
+            if (el.detailModal) {
+                el.detailModal.addEventListener('hidden.bs.modal', () => {
+                    state.activeDetailId = '';
+                    state.activeDetailSource = '';
+                    state.isDetailActionBusy = false;
+                    syncDetailActionButtons(null);
+                });
+            }
+
+            el.addReceiptItemBtn.addEventListener('click', () => {
+                el.receiptItemsBody.appendChild(createItemRow());
+            });
+
+            el.receiptItemsBody.addEventListener('click', (event) => {
+                const removeBtn = event.target.closest('.receipt-remove-item');
+                if (!removeBtn) return;
+                const row = removeBtn.closest('tr');
+                if (!row) return;
+                row.remove();
+                if (el.receiptItemsBody.querySelectorAll('tr').length === 0) {
+                    el.receiptItemsBody.appendChild(createItemRow());
+                }
+            });
+
+            el.receiptItemsBody.addEventListener('change', (event) => {
+                const productSelect = event.target.closest('.receipt-item-product');
+                if (!productSelect) return;
+                const row = productSelect.closest('tr');
+                const uomSelect = row ? row.querySelector('.receipt-item-uom') : null;
+                if (!uomSelect) return;
+
+                const product = findProductById(productSelect.value);
+                if (product && product.baseUomId && !normalizeId(uomSelect.value)) {
+                    uomSelect.value = normalizeId(product.baseUomId);
+                }
+            });
+
+            el.receiptForm.addEventListener('submit', submitReceiptForm);
+
+            if (el.receiptModal) {
+                el.receiptModal.addEventListener('hidden.bs.modal', () => {
+                    state.isSubmittingReceipt = false;
+                    syncReceiptSaveButton();
+                    el.saveReceiptBtn.innerHTML = '<i class="bi bi-floppy-fill me-1"></i> Save Receipt';
+                    setReceiptFormAlert('', '');
+                });
+            }
+
+            syncDetailActionButtons(null);
+            loadData();
+        })();
+    </script>
 </body>
+
 </html>

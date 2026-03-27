@@ -24,9 +24,38 @@ import java.util.Map;
 @EnableMethodSecurity
 public class SecurityConfig {
 
+    @org.springframework.beans.factory.annotation.Value("${jwt.secret:}")
+    private String jwtSecret;
+
+    @org.springframework.beans.factory.annotation.Value("${jwt.expire:86400}")
+    private String jwtExpire;
+
     @Bean
     public JwtService jwtService() {
-        return new JwtService(3600);
+        long expireSeconds;
+        try {
+            if (jwtExpire.endsWith("d")) {
+                expireSeconds = Long.parseLong(jwtExpire.substring(0, jwtExpire.length() - 1)) * 24 * 3600;
+            } else if (jwtExpire.endsWith("h")) {
+                expireSeconds = Long.parseLong(jwtExpire.substring(0, jwtExpire.length() - 1)) * 3600;
+            } else {
+                expireSeconds = Long.parseLong(jwtExpire);
+            }
+        } catch (NumberFormatException e) {
+            expireSeconds = 86400; // 1 day default
+        }
+        
+        // Use default secret if not provided in .env
+        String secret = (jwtSecret == null || jwtSecret.isEmpty()) 
+            ? "defaultSecretKey_must_be_at_least_32_characters_long_for_HS256" 
+            : jwtSecret;
+            
+        // Ensure secret is long enough for HS256 (32 bytes / 256 bits)
+        if (secret.length() < 32) {
+            secret = String.format("%-32s", secret).replace(' ', '0');
+        }
+        
+        return new JwtService(secret, expireSeconds);
     }
 
     @Bean
@@ -88,8 +117,10 @@ public class SecurityConfig {
                         .requestMatchers("/uoms/**").permitAll()
                         .requestMatchers("/categories/**").permitAll()
                         .requestMatchers("/products/**").permitAll()
+                        .requestMatchers("/api/v1/labels/**").permitAll()
+                        .requestMatchers("/labels/**").permitAll()
                         .requestMatchers("/dispatch/**").permitAll()
-                        .requestMatchers("/locations/**").permitAll()
+                        .requestMatchers("/sections/**").permitAll()
                         // Users - Thymeleaf views
                         .requestMatchers(HttpMethod.GET, "/users").hasAuthority("USER_VIEW")
                         .requestMatchers(HttpMethod.POST, "/users").hasAuthority("USER_CREATE")
@@ -134,8 +165,19 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/v1/suppliers").hasAuthority("SUPPLIER_CREATE")
                         .requestMatchers(HttpMethod.PUT, "/api/v1/suppliers/**").hasAuthority("SUPPLIER_UPDATE")
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/suppliers/**").hasAuthority("SUPPLIER_DELETE")
-                        .requestMatchers(HttpMethod.GET, "/api/v1/warehouses/*/locations/**").hasAuthority("LOCATION_VIEW")
-                        .requestMatchers(HttpMethod.POST, "/api/v1/warehouses/*/locations/**").hasAuthority("LOCATION_CREATE")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/warehouses/*/sections/**").hasAuthority("LOCATION_VIEW")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/warehouses/*/sections/**").hasAuthority("LOCATION_CREATE")
+                        // Green Warehouse - Thymeleaf views
+                        .requestMatchers(HttpMethod.GET, "/green-warehouse/dashboard").hasAnyAuthority("GREEN_AGING_VIEW", "GREEN_SLOW_VIEW", "GREEN_EXPIRY_VIEW", "GREEN_WASTE_VIEW")
+                        .requestMatchers(HttpMethod.GET, "/green-warehouse/aging").hasAuthority("GREEN_AGING_VIEW")
+                        .requestMatchers(HttpMethod.GET, "/green-warehouse/slow-moving").hasAuthority("GREEN_SLOW_VIEW")
+                        .requestMatchers(HttpMethod.GET, "/green-warehouse/expiring").hasAuthority("GREEN_EXPIRY_VIEW")
+                        .requestMatchers(HttpMethod.GET, "/green-warehouse/waste").hasAuthority("GREEN_WASTE_VIEW")
+                        // Green Warehouse - REST API
+                        .requestMatchers(HttpMethod.GET, "/api/v1/green-warehouse/aging").hasAuthority("GREEN_AGING_VIEW")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/green-warehouse/slow-moving").hasAuthority("GREEN_SLOW_VIEW")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/green-warehouse/expiring").hasAuthority("GREEN_EXPIRY_VIEW")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/green-warehouse/waste/**").hasAuthority("GREEN_WASTE_VIEW")
                         .anyRequest().authenticated()
                 )
                 .userDetailsService(customUserDetailsService)

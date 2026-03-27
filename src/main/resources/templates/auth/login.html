@@ -2,34 +2,191 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Đăng nhập</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dang nhap</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        :root {
+            --accent: #f26722;
+            --ink: #0f172a;
+            --muted: #64748b;
+            --panel: #ffffff;
+        }
+
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        body.login-page {
+            background: radial-gradient(circle at top left, #ffe7db 0%, #f4f7fb 42%, #eef3fb 100%);
+            min-height: 100vh;
+        }
+
+        .login-shell {
+            width: min(1080px, 100%);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 24px 48px rgba(15, 23, 42, 0.12);
+            background: var(--panel);
+        }
+
+        .welcome-panel {
+            color: #fff;
+            background: linear-gradient(145deg, #f26722 0%, #fb923c 55%, #f59e0b 100%);
+        }
+
+        .welcome-title {
+            font-size: clamp(1.6rem, 2.4vw, 2.4rem);
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 0.9rem;
+        }
+
+        .welcome-text {
+            color: rgba(255, 255, 255, 0.92);
+            font-size: 0.97rem;
+            max-width: 32ch;
+            margin-bottom: 1.4rem;
+        }
+
+        .welcome-feature {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.92rem;
+            margin-bottom: 0.6rem;
+        }
+
+        .welcome-feature i {
+            font-size: 1rem;
+        }
+
+        .login-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.34rem 0.72rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.22);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            margin-bottom: 1rem;
+            width: fit-content;
+        }
+
+        .form-panel {
+            background: var(--panel);
+        }
+
+        .form-title {
+            font-size: 1.7rem;
+            font-weight: 800;
+            color: var(--ink);
+            margin-bottom: 0.3rem;
+        }
+
+        .form-subtitle {
+            color: var(--muted);
+            font-size: 0.9rem;
+            margin-bottom: 1.4rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #334155;
+        }
+
+        .form-control {
+            border-radius: 10px;
+            border: 1px solid #dbe4ef;
+            min-height: 44px;
+        }
+
+        .form-control:focus {
+            border-color: #f4a076;
+            box-shadow: 0 0 0 0.2rem rgba(242, 103, 34, 0.16);
+        }
+
+        .btn-login {
+            border: 0;
+            border-radius: 10px;
+            font-weight: 700;
+            min-height: 44px;
+            background: var(--accent);
+            box-shadow: 0 10px 20px rgba(242, 103, 34, 0.22);
+        }
+
+        .btn-login:hover {
+            background: #de5719;
+        }
+
+        .login-note {
+            font-size: 0.83rem;
+            color: #94a3b8;
+        }
+
+        @media (max-width: 991.98px) {
+            .welcome-text {
+                max-width: none;
+            }
+        }
+    </style>
 </head>
-<body class="bg-light">
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-4">
-            <div class="card mt-5 shadow-sm">
-                <div class="card-body">
-                    <h1 class="h4 mb-3 text-center">Đăng nhập</h1>
-                    <div class="alert alert-danger" th:if="${error != null}" th:text="${error}"></div>
-                    <form th:action="@{/login}" th:object="${loginForm}" method="post">
-                        <div class="mb-3">
-                            <label for="username" class="form-label">Tài khoản</label>
-                            <input id="username" type="text" class="form-control" th:field="*{username}">
-                        </div>
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Mật khẩu</label>
-                            <input id="password" type="password" class="form-control" th:field="*{password}">
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100">Đăng nhập</button>
-                    </form>
+<body class="login-page">
+<div class="container-fluid min-vh-100 d-flex align-items-center justify-content-center p-3 p-md-4">
+    <div class="login-shell row g-0">
+        <div class="col-lg-6 p-4 p-md-5 welcome-panel d-flex flex-column justify-content-center">
+            <span class="login-badge"><i class="bi bi-box-seam"></i> Storage Management System</span>
+            <h1 class="welcome-title">Welcome back!</h1>
+            <p class="welcome-text">
+                Manage inventory, track receipts and issues, and optimize warehouse operations in one place.
+            </p>
+            <div class="welcome-feature"><i class="bi bi-check2-circle"></i> Track inventory levels in real-time</div>
+            <div class="welcome-feature"><i class="bi bi-check2-circle"></i> Manage warehouse layouts and storage areas</div>
+            <div class="welcome-feature"><i class="bi bi-check2-circle"></i> Optimize receipt and issue processes</div>
+        </div>
+
+        <div class="col-lg-6 p-4 p-md-5 form-panel d-flex flex-column justify-content-center">
+            <h2 class="form-title">Login</h2>
+            <p class="form-subtitle">Please login to continue.</p>
+            <form id="loginForm" th:action="@{/login}" th:object="${loginForm}" method="post">
+                <div class="alert alert-danger" th:if="${#fields.hasGlobalErrors()}">
+                    <div th:each="err : ${#fields.globalErrors()}" th:text="${err}">Login failed.</div>
                 </div>
-            </div>
-            <p class="text-center text-muted small mt-3">Tài khoản mặc định: admin / Admin@123</p>
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input id="username" type="text" class="form-control" th:field="*{username}"
+                           th:classappend="${#fields.hasErrors('username')} ? ' is-invalid' : ''"
+                           autocomplete="username" required
+                           oninvalid="this.setCustomValidity('Please enter your username.')"
+                           oninput="this.setCustomValidity('')">
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">
+                        Please enter your username.
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input id="password" type="password" class="form-control" th:field="*{password}"
+                           th:classappend="${#fields.hasErrors('password')} ? ' is-invalid' : ''"
+                           autocomplete="current-password" required
+                           oninvalid="this.setCustomValidity('Please enter your password.')"
+                           oninput="this.setCustomValidity('')">
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">
+                        Please enter your password.
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-login text-white w-100">Login</button>
+            </form>
+            <p class="login-note text-center mt-3 mb-0">Default account: admin / Admin@123</p>
         </div>
     </div>
-    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

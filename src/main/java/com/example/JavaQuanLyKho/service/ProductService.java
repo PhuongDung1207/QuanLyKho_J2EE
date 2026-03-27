@@ -12,6 +12,8 @@ public interface ProductService {
 
     Product findById(UUID id);
 
+    Product findByBarcode(String barcode);
+
     Product create(Product product);
 
     Product update(UUID id, Product product);

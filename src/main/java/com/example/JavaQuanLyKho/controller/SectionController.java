@@ -10,25 +10,24 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/warehouses/{warehouseId}/locations")
-public class LocationController {
+@RequestMapping("/api/v1/warehouses/{warehouseId}/sections")
+public class SectionController {
 
     private final LocationService locationService;
 
-    public LocationController(LocationService locationService) {
+    public SectionController(LocationService locationService) {
         this.locationService = locationService;
     }
 
     @GetMapping
-    public ResponseEntity<List<Location>> getLocations(@PathVariable("warehouseId") UUID warehouseId) {
+    public ResponseEntity<List<Location>> getSections(@PathVariable("warehouseId") UUID warehouseId) {
         return ResponseEntity.ok(locationService.findByWarehouse(warehouseId));
     }
 
     @PostMapping
-    public ResponseEntity<Location> createLocation(@PathVariable("warehouseId") UUID warehouseId,
-                                                   @Valid @RequestBody Location location) {
-        location.setWarehouseId(warehouseId);
-        return ResponseEntity.ok(locationService.create(location));
+    public ResponseEntity<Location> createSection(@PathVariable("warehouseId") UUID warehouseId,
+                                                  @Valid @RequestBody Location section) {
+        section.setWarehouseId(warehouseId);
+        return ResponseEntity.ok(locationService.create(section));
     }
 }
-

@@ -363,7 +363,10 @@
                 </div>
                 <div class="wms-brand-text">
                     <div class="wms-brand-name">Storage Solutions</div>
-                    <div class="wms-brand-role">Facility Admin</div>
+                    <div class="wms-brand-role"
+                         th:text="${session.AUTH_USERNAME != null ? session.AUTH_USERNAME : 'Warehouse Management'}">
+                        Warehouse Management
+                    </div>
                 </div>
             </a>
 
@@ -372,8 +375,9 @@
 
                 <div class="wms-nav-label">Main Menu</div>
 
-                <a class="wms-nav-item" href="#" onclick="return false"
-                    style="opacity:0.45; cursor:not-allowed; pointer-events:all;" title="Coming soon">
+                <a class="wms-nav-item"
+                    th:classappend="${currentUri != null and currentUri.startsWith('/dashboard')} ? 'active'"
+                    href="/dashboard">
                     <span class="wms-nav-icon"><i class="bi bi-bar-chart"></i></span>
                     Dashboard
                 </a>
@@ -392,6 +396,38 @@
                     Transactions
                 </a>
 
+                <div class="wms-nav-label">Green Warehouse</div>
+                <a class="wms-nav-item"
+                    th:classappend="${currentUri != null and currentUri.startsWith('/green-warehouse/dashboard')} ? 'active'"
+                    href="/green-warehouse/dashboard">
+                    <span class="wms-nav-icon"><i class="bi bi-speedometer2"></i></span>
+                    Green Dashboard
+                </a>
+                <a class="wms-nav-item"
+                    th:classappend="${currentUri != null and currentUri.startsWith('/green-warehouse/aging')} ? 'active'"
+                    href="/green-warehouse/aging">
+                    <span class="wms-nav-icon"><i class="bi bi-clock-history"></i></span>
+                    Inventory Aging
+                </a>
+                <a class="wms-nav-item"
+                    th:classappend="${currentUri != null and currentUri.startsWith('/green-warehouse/slow-moving')} ? 'active'"
+                    href="/green-warehouse/slow-moving">
+                    <span class="wms-nav-icon"><i class="bi bi-exclamation-diamond"></i></span>
+                    Slow-Moving Alert
+                </a>
+                <a class="wms-nav-item"
+                    th:classappend="${currentUri != null and currentUri.startsWith('/green-warehouse/expiring')} ? 'active'"
+                    href="/green-warehouse/expiring">
+                    <span class="wms-nav-icon"><i class="bi bi-calendar-x"></i></span>
+                    Expiry Alert
+                </a>
+                <a class="wms-nav-item"
+                    th:classappend="${currentUri != null and currentUri.startsWith('/green-warehouse/waste')} ? 'active'"
+                    href="/green-warehouse/waste">
+                    <span class="wms-nav-icon"><i class="bi bi-trash3"></i></span>
+                    Waste & Damaged
+                </a>
+
                 <div class="wms-nav-label">Management</div>
                 <a class="wms-nav-item"
                     th:classappend="${currentUri != null and currentUri.startsWith('/warehouses')} ? 'active'"
@@ -401,8 +437,8 @@
                 </a>
 
                 <a class="wms-nav-item"
-                    th:classappend="${currentUri != null and currentUri.startsWith('/locations')} ? 'active'"
-                    href="/locations">
+                    th:classappend="${currentUri != null and currentUri.startsWith('/sections')} ? 'active'"
+                    href="/sections">
                     <span class="wms-nav-icon"><i class="bi bi-house-door"></i></span>
                     Sections
                 </a>
@@ -434,9 +470,10 @@
                     UOMs
                 </a>
 
-                <a class="wms-nav-item" href="#" onclick="return false"
-                    style="opacity:0.45; cursor:not-allowed; pointer-events:all;" title="Coming soon">
-                    <span class="wms-nav-icon"><i class="bi bi-clipboard"></i></span>
+                <a class="wms-nav-item"
+                    th:classappend="${currentUri != null and currentUri.startsWith('/reports')} ? 'active'"
+                    href="/reports">
+                    <span class="wms-nav-icon"><i class="bi bi-clipboard-data"></i></span>
                     Reports
                 </a>
 

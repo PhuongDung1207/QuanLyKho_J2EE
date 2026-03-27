@@ -170,6 +170,7 @@ public class OutboundServiceImpl implements OutboundService {
             StockKey key = entry.getKey();
             InventoryBalance balance = balances.get(key);
             balance.setQtyOnHand(safe(balance.getQtyOnHand()).subtract(entry.getValue()));
+            balance.setLastOutboundDate(OffsetDateTime.now());
             inventoryBalanceRepository.save(balance);
         }
 
@@ -223,6 +224,9 @@ public class OutboundServiceImpl implements OutboundService {
             line.setUomId(reqLine.getUomId());
             line.setQuantity(reqLine.getQuantity());
             line.setLocationId(reqLine.getLocationId());
+            line.setMfgDate(reqLine.getMfgDate());
+            line.setShelfLife(reqLine.getShelfLife());
+            line.setExpDate(reqLine.getExpDate());
             lines.add(line);
         }
         return lines;
