@@ -31,17 +31,17 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product findById(UUID id) {
-        return productRepository.findById(id)
+        Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found: " + id));
+        populateUomName(product);
+        return product;
     }
 
     @Override
     public Product findByBarcode(String barcode) {
         Product product = productRepository.findByBarcode(barcode)
                 .orElseThrow(() -> new RuntimeException("Product not found with barcode: " + barcode));
-        if (product.getBaseUomId() != null) {
-            uomRepository.findById(product.getBaseUomId()).ifPresent(u -> product.setUomName(u.getName()));
-        }
+        populateUomName(product);
         return product;
     }
 
@@ -97,5 +97,11 @@ public class ProductServiceImpl implements ProductService {
             product.setStatus("ACTIVE");
         }
         return productRepository.save(product);
+    }
+
+    private void populateUomName(Product product) {
+        if (product.getBaseUomId() != null) {
+            uomRepository.findById(product.getBaseUomId()).ifPresent(u -> product.setUomName(u.getName()));
+        }
     }
 }

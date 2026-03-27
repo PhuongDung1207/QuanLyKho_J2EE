@@ -699,10 +699,62 @@
                         <div>
                             <h6 id="resProductName" class="mb-1" style="font-weight:700;">Product Name</h6>
                             <div class="text-muted" style="font-size:0.85rem;">SKU: <span id="resProductSku" class="mono-badge"></span> | Barcode: <span id="resProductBarcode" class="mono-badge"></span></div>
+                            <div id="resScanMeta" class="text-muted mt-2" style="font-size:0.8rem;">Loai ma: -- | DVT: -- | Batch: --</div>
                         </div>
                         <div class="ms-auto text-end" style="background:#fff; border:1px solid #e2e8f0; border-radius:8px; padding:0.4rem 0.8rem; box-shadow:0 2px 4px rgba(0,0,0,0.02);">
                             <div style="font-size:0.7rem; color:#64748b; font-weight:700; text-transform:uppercase; letter-spacing:0.5px;">Tổng tồn kho</div>
                             <div id="resProductTotalStock" style="font-size:1.3rem; font-weight:800; color:#0f172a; line-height:1.2;">0</div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-4">
+                            <div class="p-3 h-100" style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:10px;">
+                                <div style="font-size:0.74rem; color:#1d4ed8; font-weight:700; text-transform:uppercase;">Reserved</div>
+                                <div id="resReservedStock" style="font-size:1.2rem; font-weight:800; color:#1e3a8a;">0</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-3 h-100" style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:10px;">
+                                <div style="font-size:0.74rem; color:#15803d; font-weight:700; text-transform:uppercase;">Available</div>
+                                <div id="resAvailableStock" style="font-size:1.2rem; font-weight:800; color:#166534;">0</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-3 h-100" style="background:#fff7ed; border:1px solid #fed7aa; border-radius:10px;">
+                                <div style="font-size:0.74rem; color:#c2410c; font-weight:700; text-transform:uppercase;">Storage Points</div>
+                                <div id="resInventoryCount" style="font-size:1.2rem; font-weight:800; color:#9a3412;">0</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 p-3" style="background:#fff; border:1px solid #e2e8f0; border-radius:10px;">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                            <div>
+                                <h6 class="mb-1" style="font-weight:700;">Chi tiet ton theo kho / vi tri</h6>
+                                <div class="text-muted" style="font-size:0.8rem;">Hien thi ton kho thuc te, giu cho va kha dung cho tung vi tri.</div>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-sm align-middle mb-0" style="font-size:0.82rem;">
+                                <thead style="background:#f8fafc;">
+                                    <tr>
+                                        <th>Kho</th>
+                                        <th>Vi tri</th>
+                                        <th>On Hand</th>
+                                        <th>Reserved</th>
+                                        <th>Available</th>
+                                        <th>Min / Max</th>
+                                        <th>HSD</th>
+                                        <th>Trang thai</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="inventoryBreakdownBody">
+                                    <tr>
+                                        <td colspan="8" class="text-center text-muted py-3">Chua co du lieu ton kho.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
 
@@ -822,32 +874,91 @@
 
     // --- Advanced Features Integration ---
     const btnSearchBarcode = document.getElementById('btnSearchBarcode');
-    const scanInputModal = document.getElementById('scanInput'); // renamed from scanInput to scanInputModal because searchInput exists
+    const scanInputModal = document.getElementById('scanInput');
     const scanResultArea = document.getElementById('scanResultArea');
     const scanErrorArea = document.getElementById('scanErrorArea');
-    let currentProductId = null;
+    const btnToggleCamera = document.getElementById('btnToggleCamera');
+    const qrReaderDiv = document.getElementById('qr-reader');
+    const scanModalEl = document.getElementById('scanBarcodeModal');
+    const numberFormatter = new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 3 });
+    let html5QrCode = null;
+    let isScanning = false;
 
-    // Trigger search when pressing Enter (standard for hardware scanners)
-    scanInputModal.addEventListener('keypress', (e) => {
+    function formatQuantity(value, uomName) {
+        const amount = Number(value ?? 0);
+        const text = numberFormatter.format(Number.isFinite(amount) ? amount : 0);
+        return uomName ? `${text} ${uomName}` : text;
+    }
+
+    function formatDateTime(value) {
+        if (!value) return 'N/A';
+        const date = new Date(value);
+        return Number.isNaN(date.getTime()) ? 'N/A' : date.toLocaleString('vi-VN');
+    }
+
+    function formatDateOnly(value) {
+        if (!value) return 'N/A';
+        const date = new Date(`${value}T00:00:00`);
+        return Number.isNaN(date.getTime()) ? value : date.toLocaleDateString('vi-VN');
+    }
+
+    function statusClass(status) {
+        if (status === 'Out') return 'status-out';
+        if (status === 'Low') return 'status-low';
+        return 'status-normal';
+    }
+
+    function eventLabel(eventType) {
+        if (eventType === 'INBOUND') return 'Nhap kho';
+        if (eventType === 'OUTBOUND') return 'Xuat kho';
+        if (eventType === 'TRANSFER') return 'Dieu chuyen';
+        return eventType || 'Khac';
+    }
+
+    function clearScanError() {
+        scanErrorArea.style.display = 'none';
+        scanErrorArea.textContent = '';
+    }
+
+    function showScanError(message) {
+        scanResultArea.style.display = 'none';
+        scanErrorArea.style.display = 'block';
+        scanErrorArea.textContent = message;
+    }
+
+    scanInputModal.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
+            e.preventDefault();
             btnSearchBarcode.click();
         }
     });
 
-    // --- HTML5 QrCode Camera Scanner ---
-    const btnToggleCamera = document.getElementById('btnToggleCamera');
-    const qrReaderDiv = document.getElementById('qr-reader');
-    let html5QrCode = null;
-    let isScanning = false;
+    function stopCameraScanner() {
+        if (!html5QrCode || !isScanning) {
+            qrReaderDiv.style.display = 'none';
+            btnToggleCamera.innerHTML = '<i class="bi bi-camera me-1"></i>May anh';
+            btnToggleCamera.className = 'btn btn-outline-secondary';
+            return Promise.resolve();
+        }
+
+        return html5QrCode.stop()
+            .catch(() => null)
+            .finally(() => {
+                qrReaderDiv.style.display = 'none';
+                isScanning = false;
+                btnToggleCamera.innerHTML = '<i class="bi bi-camera me-1"></i>May anh';
+                btnToggleCamera.className = 'btn btn-outline-secondary';
+            });
+    }
 
     btnToggleCamera.addEventListener('click', () => {
         if (!isScanning) {
             qrReaderDiv.style.display = 'block';
-            html5QrCode = new Html5Qrcode("qr-reader");
+            html5QrCode = new Html5Qrcode('qr-reader');
             const config = { fps: 10, qrbox: { width: 300, height: 120 } }; 
             
             html5QrCode.start(
-                { facingMode: "environment" }, // Back camera
+                { facingMode: 'environment' },
                 config,
                 (decodedText, decodedResult) => {
                     // Success callback
@@ -886,57 +997,87 @@
     });
 
     // Stop scanning when modal closes
-    const scanModalEl = document.getElementById('scanModal');
     if (scanModalEl) {
         scanModalEl.addEventListener('hidden.bs.modal', function () {
-            if (isScanning && html5QrCode) {
-                btnToggleCamera.click(); // Stop
-            }
+            stopCameraScanner();
         });
     }
 
     btnSearchBarcode.addEventListener('click', () => {
         const barcode = scanInputModal.value.trim();
-        if (!barcode) return;
-        
-        // Lookup Product
-        fetch('/api/v1/products/barcode/' + barcode)
+        if (!barcode) {
+            showScanError('Vui long quet hoac nhap ma truoc khi tra cuu.');
+            return;
+        }
+
+        fetch('/api/v1/inventory/scan?code=' + encodeURIComponent(barcode))
             .then(res => {
                 if(!res.ok) throw new Error('Not found');
                 return res.json();
             })
-            .then(product => {
-                scanErrorArea.style.display = 'none';
-                scanResultArea.style.display = 'block';
-                document.getElementById('resProductName').textContent = product.name;
-                document.getElementById('resProductSku').textContent = product.sku;
-                document.getElementById('resProductBarcode').textContent = product.barcode;
-                currentProductId = product.id;
-                
-                loadTimelineAndHistory(product.id, barcode, product.uomName);
+            .then(data => {
+                renderScanSummary(data);
+                loadTimelineAndHistory(data.product.id);
             })
-            .catch(err => {
-                scanResultArea.style.display = 'none';
-                scanErrorArea.style.display = 'block';
-                scanErrorArea.textContent = 'Product not found for barcode: ' + barcode;
+            .catch(() => {
+                showScanError('Khong tim thay thong tin cho ma: ' + barcode);
             });
     });
 
-    function loadTimelineAndHistory(productId, barcode, uomName) {
+    function renderInventoryBreakdown(details, uomName) {
+        const body = document.getElementById('inventoryBreakdownBody');
+        document.getElementById('resInventoryCount').textContent = String(details.length);
+
+        if (!details.length) {
+            body.innerHTML = '<tr><td colspan="8" class="text-center text-muted py-3">Chua co du lieu ton kho.</td></tr>';
+            return;
+        }
+
+        body.innerHTML = details.map((detail) => {
+            const minMax = detail.minQty != null
+                ? `${numberFormatter.format(Number(detail.minQty))} / ${detail.maxQty != null ? numberFormatter.format(Number(detail.maxQty)) : '∞'}`
+                : 'N/A';
+            const expDate = detail.expDate ? formatDateOnly(detail.expDate) : 'N/A';
+            const location = detail.locationCode ? `<span class="mono-badge">${detail.locationCode}</span>` : 'Chua gan';
+            return `
+                <tr>
+                    <td>${detail.warehouseName || 'N/A'}</td>
+                    <td>${location}</td>
+                    <td><span class="qty-chip onhand">${formatQuantity(detail.qtyOnHand, uomName)}</span></td>
+                    <td><span class="qty-chip reserve">${formatQuantity(detail.qtyReserved, uomName)}</span></td>
+                    <td><span class="qty-chip available">${formatQuantity(detail.qtyAvailable, uomName)}</span></td>
+                    <td>${minMax}</td>
+                    <td>${expDate}</td>
+                    <td><span class="status-pill ${statusClass(detail.status)}">${detail.statusLabel || 'Normal'}</span></td>
+                </tr>
+            `;
+        }).join('');
+    }
+
+    function renderScanSummary(data) {
+        const product = data.product || {};
+        const batch = data.batch || null;
+        const details = Array.isArray(data.inventoryDetails) ? data.inventoryDetails : [];
+        const uomName = product.uomName || '';
+
+        clearScanError();
+        scanResultArea.style.display = 'block';
+        document.getElementById('resProductName').textContent = product.name || 'N/A';
+        document.getElementById('resProductSku').textContent = product.sku || 'N/A';
+        document.getElementById('resProductBarcode').textContent = product.barcode || 'N/A';
+        document.getElementById('resScanMeta').textContent =
+            `Loai ma: ${data.type === 'BATCH' ? 'Batch' : 'San pham'} | DVT: ${uomName || 'N/A'} | Batch: ${batch ? batch.code : 'Khong co'}`;
+        document.getElementById('resProductTotalStock').textContent = formatQuantity(data.totalOnHand, uomName);
+        document.getElementById('resReservedStock').textContent = formatQuantity(data.totalReserved, uomName);
+        document.getElementById('resAvailableStock').textContent = formatQuantity(data.totalAvailable, uomName);
+        renderInventoryBreakdown(details, uomName);
+    }
+
+    function loadTimelineAndHistory(productId) {
         // Fetch Timeline
         fetch('/api/v1/timeline/products/' + productId)
             .then(res => res.json())
             .then(events => {
-                // Calculate total stock from events
-                let globalStock = 0;
-                events.forEach(ev => {
-                    if (ev.eventType !== 'TRANSFER') {
-                        globalStock += ev.quantityChange;
-                    }
-                });
-                const uomText = uomName ? ' ' + uomName : '';
-                document.getElementById('resProductTotalStock').textContent = globalStock + uomText;
-
                 // Populate Timeline Tab
                 const tlContainer = document.getElementById('timelineContainer');
                 tlContainer.innerHTML = '';
@@ -947,14 +1088,14 @@
                     events.forEach(ev => {
                         let color = ev.eventType === 'INBOUND' ? '#22c55e' : (ev.eventType === 'OUTBOUND' ? '#ef4444' : '#3b82f6');
                         let sign = ev.quantityChange > 0 ? '+' : '';
-                        let d = new Date(ev.timestamp).toLocaleString();
+                        let d = formatDateTime(ev.timestamp);
                         let wBadge = ev.warehouseName ? `<span class="badge bg-light text-dark border ms-1 fw-normal" style="font-size:0.75rem;"><i class="bi bi-building"></i> ${ev.warehouseName}</span>` : '';
                         
                         html += `
                             <div class="mb-4 position-relative">
                                 <span style="position:absolute; left:-25.5px; top:3px; width:10px; height:10px; border-radius:50%; background:${color}; outline:4px solid #fff;"></span>
                                 <div style="font-size:0.75rem; color:#64748b; margin-bottom: 2px;">${d}</div>
-                                <div style="font-weight:700; color:#0f172a; font-size:0.9rem;">${ev.eventType} <span class="badge bg-light text-dark border ms-1" style="font-family:monospace">${ev.referenceCode}</span> ${wBadge}</div>
+                                <div style="font-weight:700; color:#0f172a; font-size:0.9rem;">${eventLabel(ev.eventType)} <span class="badge bg-light text-dark border ms-1" style="font-family:monospace">${ev.referenceCode}</span> ${wBadge}</div>
                                 <div style="font-size:0.85rem; color:${color}; font-weight:700; margin-top:2px;">Số lượng: ${sign}${ev.quantityChange}</div>
                             </div>
                         `;
@@ -971,18 +1112,22 @@
                 } else {
                     [...events].reverse().forEach(ev => {
                         let sign = ev.quantityChange > 0 ? '+' : '';
-                        let d = new Date(ev.timestamp).toLocaleString();
+                        let d = formatDateTime(ev.timestamp);
                         let badgeColor = ev.eventType === 'INBOUND' ? 'success' : (ev.eventType === 'OUTBOUND' ? 'danger' : 'primary');
                         histContainer.innerHTML += `
                             <tr>
                                 <td>${d}</td>
-                                <td><span class="badge bg-${badgeColor}">${ev.eventType}</span></td>
+                                <td><span class="badge bg-${badgeColor}">${eventLabel(ev.eventType)}</span></td>
                                 <td><span class="mono-badge" style="font-size:0.75rem;">${ev.referenceCode}</span></td>
-                                <td style="font-weight:700; color:${ev.quantityChange > 0 ? '#15803d':'#b91c1c'};">${sign}${ev.quantityChange}</td>
+                                <td style="font-weight:700; color:${ev.quantityChange > 0 ? '#15803d':'#b91c1c'};">${sign}${numberFormatter.format(Number(ev.quantityChange || 0))}</td>
                             </tr>
                         `;
                     });
                 }
+            })
+            .catch(() => {
+                document.getElementById('timelineContainer').innerHTML = '<div class="text-muted text-center mt-4">Khong tai duoc timeline.</div>';
+                document.getElementById('historyContainer').innerHTML = '<tr><td colspan="4" class="text-center text-muted py-3">Khong co giao dich nao.</td></tr>';
             });
     }
 </script>
